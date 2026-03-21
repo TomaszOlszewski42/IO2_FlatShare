@@ -1,12 +1,38 @@
 services:
   backend:
     build:
-      context: ./src/backend         # Wchodzimy do folderu z solucją
-      dockerfile: FlatShareBackend/Dockerfile # Ścieżka względem 'context'
+      context: ./src/backend
+      dockerfile: FlatShareBackend/Dockerfile
+    container_name: flatshare-backend
     ports:
       - "8080:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+    restart: always
+
+  frontend:
+    build:
+      context: ./src/frontend
+      dockerfile: Dockerfile
+    container_name: flatshare-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    develop:
+      watch:
+        - action: sync
+          path: ./src
+          target: /app/src
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: ./package.json
+          target: /app/package.json
+        - action: rebuild
+          path: ./vite.config.ts
+          target: /app/vite.config.ts
+    restart: always
 
   database:
     image: postgres:18-alpine
@@ -16,10 +42,23 @@ services:
       POSTGRES_PASSWORD: WSzczebrzeszynieChrzaszczBrzmiWTrzcinie
       POSTGRES_DB: FlatShareDB
     ports:
-      - "8001:5432" # Pierwszy port to port po stronie hosta, drugi to port, z którym chcemy się łączyć z poziomu innych zkonteneryzowanych aplikacji
+      - "8001:8001" # Pierwszy port to port po stronie hosta, drugi to port, z którym chcemy się łączyć z poziomu innych zkonteneryzowanych aplikacji
     volumes:
       - database-data:/var/lib/postgres/data 
     restart: always
 
+  azurite: # azure blob emulation
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: flatshare-azurite
+    ports:
+      - "10000:10000" # Blob service
+      - "10001:10001" # Queue service
+      - "10002:10002" # Table service
+    volumes:
+      - azurite:/data
+    command: "azurite --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0 --location /data --debug /data/debug.log"
+    restart: always
+
 volumes:
   database-data:
+  azurite:
