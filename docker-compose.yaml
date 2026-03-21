@@ -42,7 +42,7 @@ services:
       POSTGRES_PASSWORD: WSzczebrzeszynieChrzaszczBrzmiWTrzcinie
       POSTGRES_DB: FlatShareDB
     ports:
-      - "8001:8001" # Pierwszy port to port po stronie hosta, drugi to port, z którym chcemy się łączyć z poziomu innych zkonteneryzowanych aplikacji
+      - "8001:5432" # Pierwszy port to port po stronie hosta, drugi to port, z którym chcemy się łączyć z poziomu innych zkonteneryzowanych aplikacji
     volumes:
       - database-data:/var/lib/postgres/data 
     restart: always
