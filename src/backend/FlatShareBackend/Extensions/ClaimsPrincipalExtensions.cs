@@ -7,7 +7,7 @@ namespace FlatShareBackend.Extensions
     {
         public static Guid GetRequiredUserId(this ClaimsPrincipal principal)
         {
-            var value = principal.FindFirstValue(JwtRegisteredClaimNames.Sub);
+            var value = principal.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (!Guid.TryParse(value, out var userId))
             {
