@@ -15,18 +15,16 @@ export function Toast({ toast, onRemove }: ToastProps) {
   const alertClass = alertClasses[toast.type]
 
   return (
-    <div class={`alert ${alertClass} shadow-lg mb-3`} role="alert">
-      <div class="flex items-center justify-between w-full">
-        <span>{toast.message}</span>
-        <button
-          type="button"
-          onClick={() => onRemove(toast.id)}
-          class="btn btn-ghost btn-sm btn-circle"
-          aria-label="Close notification"
-        >
-          ✕
-        </button>
-      </div>
+    <div class={`alert alert-soft ${alertClass}`} role="alert">
+      <span>{toast.message}</span>
+      <button
+        type="button"
+        onClick={() => onRemove(toast.id)}
+        class="btn btn-ghost btn-sm btn-circle"
+        aria-label="Close notification"
+      >
+        ✕
+      </button>
     </div>
   )
 }

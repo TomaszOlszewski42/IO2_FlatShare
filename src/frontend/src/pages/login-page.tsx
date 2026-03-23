@@ -4,6 +4,7 @@ import { useState } from 'preact/hooks'
 
 import { AppButton } from '../components/ui/app-button'
 import { TextInput } from '../components/ui/text-input'
+import { AuthCard } from '../components/layout/auth-card'
 import { persistAuthSession } from '../services/auth-session'
 import { login } from '../services/auth-api'
 import { usePageErrorHandler } from '../services/use-page-error-handler'
@@ -48,56 +49,53 @@ export function LoginPage(_: RoutableProps) {
   }
 
   return (
-    <section class="flex w-full flex-1 items-center justify-center py-6">
-      <div class="card w-full max-w-md border border-base-300 bg-base-100/85 shadow-lg">
-        <div class="card-body">
-          <h1 class="card-title text-2xl">Log in</h1>
-          <p class="text-sm text-base-content/70">Access your FlatShare account.</p>
+    <AuthCard
+      title="Log in"
+      subtitle="Access your FlatShare account."
+      footer={
+        <p>
+          Don&apos;t have an account?{' '}
+          <a class="link link-primary" href="/register">
+            Register
+          </a>
+        </p>
+      }
+    >
+      <form class="mt-4 flex flex-col gap-4" onSubmit={onSubmit}>
+        <TextInput
+          id="login-email"
+          name="email"
+          label="Email"
+          type="email"
+          value={email}
+          placeholder="you@example.com"
+          autoComplete="email"
+          required
+          disabled={isSubmitting}
+          error={getFieldError('email') || undefined}
+          onInput={(event) => setEmail((event.currentTarget as HTMLInputElement).value)}
+        />
 
-          <form class="mt-4 flex flex-col gap-4" onSubmit={onSubmit}>
-            <TextInput
-              id="login-email"
-              name="email"
-              label="Email"
-              type="email"
-              value={email}
-              placeholder="you@example.com"
-              autoComplete="email"
-              required
-              disabled={isSubmitting}
-              error={getFieldError('email') || undefined}
-              onInput={(event) => setEmail((event.currentTarget as HTMLInputElement).value)}
-            />
+        <TextInput
+          id="login-password"
+          name="password"
+          label="Password"
+          type="password"
+          value={password}
+          placeholder="********"
+          autoComplete="current-password"
+          required
+          disabled={isSubmitting}
+          error={getFieldError('password') || undefined}
+          onInput={(event) => setPassword((event.currentTarget as HTMLInputElement).value)}
+        />
 
-            <TextInput
-              id="login-password"
-              name="password"
-              label="Password"
-              type="password"
-              value={password}
-              placeholder="********"
-              autoComplete="current-password"
-              required
-              disabled={isSubmitting}
-              error={getFieldError('password') || undefined}
-              onInput={(event) => setPassword((event.currentTarget as HTMLInputElement).value)}
-            />
+        {generalError ? <div class="alert alert-soft alert-error text-sm">{generalError}</div> : null}
 
-            {generalError ? <div class="alert alert-error text-sm">{generalError}</div> : null}
-
-            <AppButton className="mt-2" type="submit" loading={isSubmitting}>
-              Log in
-            </AppButton>
-          </form>
-
-          <p class="mt-3 text-sm text-base-content/70">
-            Don&apos;t have an account?{' '}
-            <a class="link link-primary" href="/register">
-              Register
-            </a>
-          </p>
-        </div>
-      </div>
-    </section>
+        <AppButton className="mt-2" type="submit" loading={isSubmitting}>
+          Log in
+        </AppButton>
+      </form>
+    </AuthCard>
   )
 }
