@@ -5,19 +5,25 @@ import { useState } from 'preact/hooks'
 import { AppButton } from '../components/ui/app-button'
 import { TextInput } from '../components/ui/text-input'
 import { persistAuthSession } from '../services/auth-session'
-import { ApiHttpError, login } from '../services/auth-api'
+import { login } from '../services/auth-api'
+import { usePageErrorHandler } from '../services/use-page-error-handler'
 
 export function LoginPage(_: RoutableProps) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [generalError, setGeneralError] = useState<string | null>(null)
+
+  const { handleError, getFieldError, clearFieldErrors } = usePageErrorHandler({
+    captureFieldErrors: true,
+  })
 
   async function onSubmit(event: SubmitEvent) {
     event.preventDefault()
 
     setIsSubmitting(true)
-    setErrorMessage(null)
+    setGeneralError(null)
+    clearFieldErrors()
 
     try {
       const session = await login({ email, password })
@@ -28,10 +34,13 @@ export function LoginPage(_: RoutableProps) {
       })
       route('/')
     } catch (error) {
-      if (error instanceof ApiHttpError) {
-        setErrorMessage(error.response?.message ?? 'Login failed. Check your credentials and try again.')
-      } else {
-        setErrorMessage('Unexpected error while logging in. Please try again.')
+      handleError(error)
+      // Check if there are general errors (not field-specific)
+      const fieldErr = (error as any)?.response?.errors
+      if (!fieldErr) {
+        setGeneralError(
+          (error as any)?.message || 'Login failed. Check your credentials and try again.',
+        )
       }
     } finally {
       setIsSubmitting(false)
@@ -56,6 +65,7 @@ export function LoginPage(_: RoutableProps) {
               autoComplete="email"
               required
               disabled={isSubmitting}
+              error={getFieldError('email') || undefined}
               onInput={(event) => setEmail((event.currentTarget as HTMLInputElement).value)}
             />
 
@@ -69,10 +79,11 @@ export function LoginPage(_: RoutableProps) {
               autoComplete="current-password"
               required
               disabled={isSubmitting}
+              error={getFieldError('password') || undefined}
               onInput={(event) => setPassword((event.currentTarget as HTMLInputElement).value)}
             />
 
-            {errorMessage ? <div class="alert alert-error text-sm">{errorMessage}</div> : null}
+            {generalError ? <div class="alert alert-error text-sm">{generalError}</div> : null}
 
             <AppButton className="mt-2" type="submit" loading={isSubmitting}>
               Log in

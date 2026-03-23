@@ -1,15 +1,18 @@
 const API_BASE = '/api/v1'
 
-type ApiFieldError = {
-  field: string
-  message: string
-}
-
+/**
+ * Represents the standard .NET Problem Details error format (RFC 7807)
+ * See: https://tools.ietf.org/html/rfc7807
+ */
 type ApiErrorResponse = {
-  status: number
-  error: string
+  type?: string
+  title?: string
+  status?: number
+  detail?: string
   message?: string
-  fieldErrors?: ApiFieldError[]
+  traceId?: string
+  // Field validation errors - maps field names to array of error messages
+  errors?: Record<string, string[]>
 }
 
 export class ApiHttpError extends Error {
