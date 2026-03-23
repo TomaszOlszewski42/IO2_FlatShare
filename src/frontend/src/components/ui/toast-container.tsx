@@ -5,7 +5,7 @@ export function ToastContainer() {
   const { toasts, removeToast } = useErrorHandler()
 
   return (
-    <div class="fixed bottom-4 right-4 z-50 max-w-sm">
+    <div class="toast toast-top toast-end z-50">
       {toasts.map((toast) => (
         <Toast key={toast.id} toast={toast} onRemove={removeToast} />
       ))}
