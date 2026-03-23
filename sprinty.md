@@ -6,6 +6,9 @@
 (potencjalnie)
 - rejestracja użytkownika
 ## Sprint 2
+- poprawki z poprzedniego sprintu
+- reset hasła
+- ci/cd do frontendu i w dockerze
 - stworzenie ogłoszenia przez właściciela mieszkania
 - podgląd szczegółów swoich ogłoszeń
 - dodawanie informacji o niedostępności mieszkania / pokoju
