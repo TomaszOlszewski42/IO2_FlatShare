@@ -20,12 +20,7 @@ export default defineConfig(({ mode }) => {
           target: backendUrl,
           changeOrigin: true,
           secure: false,
-        },
-        '/weatherforecast': {
-          target: backendUrl,
-          changeOrigin: true,
-          secure: false,
-        },
+        }
       },
     },
   }
