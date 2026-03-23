@@ -4,7 +4,8 @@ import { useState } from 'preact/hooks'
 
 import { AppButton } from '../components/ui/app-button'
 import { TextInput } from '../components/ui/text-input'
-import { ApiHttpError, register } from '../services/auth-api'
+import { register } from '../services/auth-api'
+import { usePageErrorHandler } from '../services/use-page-error-handler'
 
 export function RegisterPage(_: RoutableProps) {
   const [firstName, setFirstName] = useState('')
@@ -12,29 +13,30 @@ export function RegisterPage(_: RoutableProps) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
+  const [generalError, setGeneralError] = useState<string | null>(null)
+
+  const { handleError, getFieldError, clearFieldErrors } = usePageErrorHandler({
+    captureFieldErrors: true,
+  })
 
   async function onSubmit(event: SubmitEvent) {
     event.preventDefault()
 
     setIsSubmitting(true)
-    setErrorMessage(null)
-    setFieldErrors({})
+    setGeneralError(null)
+    clearFieldErrors()
 
     try {
       await register({ firstName, lastName, email, password })
       route('/login')
     } catch (error) {
-      if (error instanceof ApiHttpError) {
-        const mappedErrors = Object.fromEntries(
-          (error.response?.fieldErrors ?? []).map((entry) => [entry.field.toLowerCase(), entry.message]),
+      handleError(error)
+      // Check if there are general errors (not field-specific)
+      const fieldErr = (error as any)?.response?.errors
+      if (!fieldErr) {
+        setGeneralError(
+          (error as any)?.message || 'Registration failed. Please fix the form and try again.',
         )
-
-        setFieldErrors(mappedErrors)
-        setErrorMessage(error.response?.message ?? 'Registration failed. Please fix the form and try again.')
-      } else {
-        setErrorMessage('Unexpected error while creating your account. Please try again.')
       }
     } finally {
       setIsSubmitting(false)
@@ -59,7 +61,7 @@ export function RegisterPage(_: RoutableProps) {
               autoComplete="given-name"
               required
               disabled={isSubmitting}
-              error={fieldErrors.firstname ?? fieldErrors.firstName}
+              error={getFieldError('firstName') || getFieldError('firstname') || undefined}
               onInput={(event) => setFirstName((event.currentTarget as HTMLInputElement).value)}
             />
 
@@ -73,7 +75,7 @@ export function RegisterPage(_: RoutableProps) {
               autoComplete="family-name"
               required
               disabled={isSubmitting}
-              error={fieldErrors.lastname ?? fieldErrors.lastName}
+              error={getFieldError('lastName') || getFieldError('lastname') || undefined}
               onInput={(event) => setLastName((event.currentTarget as HTMLInputElement).value)}
             />
 
@@ -87,7 +89,7 @@ export function RegisterPage(_: RoutableProps) {
               autoComplete="email"
               required
               disabled={isSubmitting}
-              error={fieldErrors.email}
+              error={getFieldError('email') || undefined}
               onInput={(event) => setEmail((event.currentTarget as HTMLInputElement).value)}
             />
 
@@ -101,11 +103,11 @@ export function RegisterPage(_: RoutableProps) {
               autoComplete="new-password"
               required
               disabled={isSubmitting}
-              error={fieldErrors.password}
+              error={getFieldError('password') || undefined}
               onInput={(event) => setPassword((event.currentTarget as HTMLInputElement).value)}
             />
 
-            {errorMessage ? <div class="alert alert-error text-sm">{errorMessage}</div> : null}
+            {generalError ? <div class="alert alert-error text-sm">{generalError}</div> : null}
 
             <AppButton className="mt-2" type="submit" loading={isSubmitting}>
               Register
