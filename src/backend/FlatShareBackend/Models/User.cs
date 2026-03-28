@@ -30,6 +30,7 @@ namespace FlatShareBackend.Models
 
         public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
 
-        public ICollection<UserSession> Sessions { get; set; } = new List<UserSession>();
+        public ICollection<UserSession> Sessions { get; set; } = [];
+        public ICollection<Listing> Listings { get; set; } = [];
     }
 }
