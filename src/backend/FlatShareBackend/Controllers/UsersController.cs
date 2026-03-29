@@ -54,5 +54,20 @@ namespace FlatShareBackend.Controllers
                 });
             }
         }
+
+        [HttpGet("{userId:guid}")]
+        [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetById(Guid userId, CancellationToken cancellationToken)
+        {
+            var user = await _userService.GetByIdAsync(userId, cancellationToken);
+
+            if (user is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(user);
+        }
     }
 }

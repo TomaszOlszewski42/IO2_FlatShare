@@ -51,5 +51,23 @@ namespace FlatShareBackend.Services
                 }
             };
         }
+
+        public async Task<UserDto?> GetByIdAsync(Guid userId, CancellationToken cancellationToken = default)
+        {
+            var user = await _userRepository.GetByIdAsync(userId, cancellationToken);
+
+            if (user is null)
+            {
+                return null;
+            }
+
+            return new UserDto
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email
+            };
+        }
     }
 }
