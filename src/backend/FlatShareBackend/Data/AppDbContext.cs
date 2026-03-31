@@ -21,7 +21,7 @@ namespace FlatShareBackend.Data
             {
                 entity.HasIndex(x => x.Id).IsUnique();
 
-                entity.HasOne<User>()
+                entity.HasOne(x => x.Owner)
                     .WithMany()
                     .HasForeignKey(x => x.OwnerId)
                     .IsRequired()

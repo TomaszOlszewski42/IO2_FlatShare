@@ -25,6 +25,7 @@ public class ListingsController : ControllerBase
     [HttpPost()]
     public async Task<IActionResult> Create([FromBody] CreateListingRequest request)
     {
+        // TODO: Add try catch, probably add another error for unauthorized access
         var createdGuid = await _listingService.Create(request, _userGuid);
         var createdResult = new
         {

@@ -15,6 +15,13 @@ public class ListingRepositoryDB : IListingRepository
 
     public async Task Create(Listing listing)
     {
+        var userExists = _dbContext.Users.First(u => u.Id == listing.OwnerId);
+
+        if (userExists == null)
+        {
+            throw new Exception($"BŁĄD: Użytkownika o ID {listing.OwnerId} nie ma w bazie danych!");
+        }
+
         _dbContext.Add(listing);
         await _dbContext.SaveChangesAsync();
     }

@@ -22,7 +22,7 @@ namespace FlatShareBackend
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
-
+            
             builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.SectionName));
 
             builder.Services.AddDbContext<AppDbContext>(options =>
@@ -60,6 +60,9 @@ namespace FlatShareBackend
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+            builder.Services.AddScoped<IListingRepository, ListingRepositoryDB>();
+            builder.Services.AddScoped<IListingService, ListingServce>();
+            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             var app = builder.Build();
 
