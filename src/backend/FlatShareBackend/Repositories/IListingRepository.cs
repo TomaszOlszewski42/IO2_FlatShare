@@ -4,6 +4,6 @@ namespace FlatShareBackend.Repositories;
 
 public interface IListingRepository
 {
-    public Task CreateListing(Listing listing);
-    public Task<Listing> GetListing(int listingId, Guid requetingUser);
+    public Task Create(Listing listing);
+    public Task<Listing> Get(Guid listingId, Guid requestingUser);
 }

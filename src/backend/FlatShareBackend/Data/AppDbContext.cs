@@ -20,9 +20,14 @@ namespace FlatShareBackend.Data
             modelBuilder.Entity<Listing>(entity =>
             {
                 entity.HasIndex(x => x.Id).IsUnique();
-                entity.HasOne(x => x.Owner)
-                        .WithMany(x => x.Listings)
-                        .HasForeignKey(x => x.OwnerId);
+
+                entity.HasOne<User>()
+                    .WithMany()
+                    .HasForeignKey(x => x.OwnerId)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.OwnsOne(x => x.Location);
             });
 
             modelBuilder.Entity<User>(entity =>

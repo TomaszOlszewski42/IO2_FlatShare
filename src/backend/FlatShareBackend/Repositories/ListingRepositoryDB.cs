@@ -1,16 +1,31 @@
-﻿using FlatShareBackend.Models;
+﻿using FlatShareBackend.Data;
+using FlatShareBackend.Exceptions;
+using FlatShareBackend.Models;
 
 namespace FlatShareBackend.Repositories;
 
 public class ListingRepositoryDB : IListingRepository
 {
-    public Task CreateListing(Listing listing)
+    private AppDbContext _dbContext;
+
+    public ListingRepositoryDB(AppDbContext dbContext)
     {
-        throw new NotImplementedException();
+        _dbContext = dbContext;
     }
 
-    public Task<Listing> GetListing(int listingId, Guid requetingUser)
+    public async Task Create(Listing listing)
     {
-        throw new NotImplementedException();
+        _dbContext.Add(listing);
+        await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task<Listing> Get(Guid listingId, Guid requestingUser)
+    {
+        var listing = await _dbContext.Listings.FindAsync(listingId) ?? throw new InvalidIdException("Invalid guid of listing");
+        if (listing.OwnerId != requestingUser)
+        {
+            throw new UnauthorizedDatabaseOperation("This user is not the owner of the listing\n");
+        }
+        return listing;
     }
 }
