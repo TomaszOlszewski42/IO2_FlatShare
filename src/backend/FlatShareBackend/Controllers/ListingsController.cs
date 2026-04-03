@@ -1,10 +1,9 @@
 ﻿using FlatShareBackend.Dtos.Listings;
 using FlatShareBackend.Extensions;
+using FlatShareBackend.Models;
 using FlatShareBackend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace FlatShareBackend.Controllers;
 
@@ -13,8 +12,8 @@ namespace FlatShareBackend.Controllers;
 [Route("api/v1/listings")]
 public class ListingsController : ControllerBase
 {
-    private IListingService _listingService;
-    private Guid _userGuid;
+    private readonly IListingService _listingService;
+    private readonly Guid _userGuid;
 
     public ListingsController(IListingService listingService, IHttpContextAccessor httpAccessor)
     {
@@ -43,25 +42,27 @@ public class ListingsController : ControllerBase
     }
 
     [HttpPatch("{listingId}")]
-    public async Task<IActionResult> Edit(int listingId)
+    public async Task<IActionResult> Edit(Guid listingId)
     {
         return BadRequest();
     }
 
     [HttpPatch("{listingId}/hide")]
-    public async Task<IActionResult> Hide(int listingId)
+    public async Task<IActionResult> Hide(Guid listingId)
     {
-        return BadRequest();
+        await _listingService.ChangeState(listingId, _userGuid, Listing.State.HIDDEN);
+        return Ok();
     }
 
     [HttpPatch("{listingId}/archive")]
-    public async Task<IActionResult> Archive(int listingId)
+    public async Task<IActionResult> Archive(Guid listingId)
     {
-        return BadRequest();
+        await _listingService.ChangeState(listingId, _userGuid, Listing.State.ARCHIVED);
+        return Ok();
     }
 
     [HttpPatch("{listingId}/unavailability")]
-    public async Task<IActionResult> AddUnavailability(int listingId)
+    public async Task<IActionResult> AddUnavailability(Guid listingId)
     {
         return BadRequest();
     }

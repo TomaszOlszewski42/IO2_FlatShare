@@ -2,18 +2,27 @@
 
 namespace FlatShareBackend.Models;
 
+
 public class Listing
 {
-    public Guid Id { get; set; }
-    public Guid OwnerId { get; set; }
+    public enum State
+    {
+        ACTIVE,
+        HIDDEN,
+        ARCHIVED
+    }
+
+    public required Guid Id { get; set; }
+    public required Guid OwnerId { get; set; }
     public User Owner { get; set; }
-    public string Title { get; set; }
-    public string Description { get; set; }
-    public decimal Price { get; set; }
-    public string Currency { get; set; }
-    public DateOnly AvailableFrom { get; set; }
-    public string OwnerContact { get; set; }
-    public decimal Area { get; set; }
-    public DateOnly AvailableSince { get; set; }
-    public Address Location { get; set; }
+    public required string Title { get; set; }
+    public required string Description { get; set; }
+    public required decimal Price { get; set; }
+    public required string Currency { get; set; }
+    public required DateOnly AvailableFrom { get; set; }
+    public required string OwnerContact { get; set; }
+    public required decimal Area { get; set; }
+    public required DateOnly AvailableSince { get; set; }
+    public required Address Location { get; set; }
+    public required State Status { get; set; }
 }

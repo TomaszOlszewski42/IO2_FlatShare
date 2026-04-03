@@ -15,6 +15,11 @@ public class ListingServce : IListingService
         _repository = repository;
     }
 
+    public async Task ChangeState(Guid listingId, Guid requestingUser, Listing.State state)
+    {
+        await _repository.ChangeState(listingId, requestingUser, state);
+    }
+
     public async Task<Guid> Create(CreateListingRequest request, Guid userId)
     {
         var guid = Guid.NewGuid();
@@ -30,7 +35,8 @@ public class ListingServce : IListingService
             AvailableSince = request.AvailableSince,
             OwnerContact = request.OwnerContact,
             Area = request.Area,
-            Location = request.Location
+            Location = request.Location,
+            Status = Listing.State.ACTIVE
         };
 
         await _repository.Create(listing);

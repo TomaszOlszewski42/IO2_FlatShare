@@ -6,7 +6,7 @@ namespace FlatShareBackend.Repositories;
 
 public class ListingRepositoryDB : IListingRepository
 {
-    private AppDbContext _dbContext;
+    private readonly AppDbContext _dbContext;
 
     public ListingRepositoryDB(AppDbContext dbContext)
     {
@@ -34,5 +34,16 @@ public class ListingRepositoryDB : IListingRepository
             throw new UnauthorizedDatabaseOperation("This user is not the owner of the listing\n");
         }
         return listing;
+    }
+
+    public async Task ChangeState(Guid listingId, Guid requestingUser, Listing.State state)
+    {
+        var listing = await _dbContext.Listings.FindAsync(listingId) ?? throw new InvalidCastException("Invalid guid of listing");
+        if (listing.OwnerId != requestingUser)
+        {
+            throw new UnauthorizedDatabaseOperation("This user is not the owner of the listing\n");
+        } 
+        listing.Status = state;
+        await _dbContext.SaveChangesAsync();
     }
 }
