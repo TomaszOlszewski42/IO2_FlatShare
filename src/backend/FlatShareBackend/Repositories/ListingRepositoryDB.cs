@@ -15,35 +15,40 @@ public class ListingRepositoryDB : IListingRepository
 
     public async Task Create(Listing listing)
     {
-        var userExists = _dbContext.Users.First(u => u.Id == listing.OwnerId);
-
-        if (userExists == null)
-        {
-            throw new Exception($"BŁĄD: Użytkownika o ID {listing.OwnerId} nie ma w bazie danych!");
-        }
-
+        var userExists = _dbContext.Users.First(u => u.Id == listing.OwnerId) 
+            ?? throw new InvalidIdException($"User with this ID doesn't exist");
+        
         _dbContext.Add(listing);
         await _dbContext.SaveChangesAsync();
     }
 
     public async Task<Listing> Get(Guid listingId, Guid requestingUser)
     {
-        var listing = await _dbContext.Listings.FindAsync(listingId) ?? throw new InvalidIdException("Invalid guid of listing");
+        return await FindListing(listingId, requestingUser);
+    }
+
+    public async Task ChangeState(Guid listingId, Guid requestingUser, Listing.State state)
+    {
+        var listing = await FindListing(listingId, requestingUser);
+        listing.Status = state;
+        await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task AddUnavailability(Guid listingId, Guid requestingUser, DateRange dates)
+    {
+        var listing = await FindListing(listingId, requestingUser);
+        listing.UnavailableDates.Add(dates);
+        await _dbContext.SaveChangesAsync();
+    }
+
+    private async Task<Listing> FindListing(Guid listingId, Guid requestingUser)
+    {
+        var listing = await _dbContext.Listings.FindAsync(listingId) 
+            ?? throw new InvalidCastException("Invalid guid of listing");
         if (listing.OwnerId != requestingUser)
         {
             throw new UnauthorizedDatabaseOperation("This user is not the owner of the listing\n");
         }
         return listing;
-    }
-
-    public async Task ChangeState(Guid listingId, Guid requestingUser, Listing.State state)
-    {
-        var listing = await _dbContext.Listings.FindAsync(listingId) ?? throw new InvalidCastException("Invalid guid of listing");
-        if (listing.OwnerId != requestingUser)
-        {
-            throw new UnauthorizedDatabaseOperation("This user is not the owner of the listing\n");
-        } 
-        listing.Status = state;
-        await _dbContext.SaveChangesAsync();
     }
 }

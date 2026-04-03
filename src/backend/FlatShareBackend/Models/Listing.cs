@@ -25,4 +25,7 @@ public class Listing
     public required DateOnly AvailableSince { get; set; }
     public required Address Location { get; set; }
     public required State Status { get; set; }
+    public List<DateRange> UnavailableDates {get; set;} = [];
+
+    // TODO: missing match score and attributes fields
 }

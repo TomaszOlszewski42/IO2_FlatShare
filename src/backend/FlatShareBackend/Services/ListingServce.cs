@@ -15,6 +15,11 @@ public class ListingServce : IListingService
         _repository = repository;
     }
 
+    public async Task AddUnvailability(Guid listingId, Guid requestingUser, DateRange dates)
+    {
+        await _repository.AddUnavailability(listingId, requestingUser, dates);
+    }
+
     public async Task ChangeState(Guid listingId, Guid requestingUser, Listing.State state)
     {
         await _repository.ChangeState(listingId, requestingUser, state);
@@ -47,5 +52,10 @@ public class ListingServce : IListingService
     {
         var listing = await _repository.Get(listingId, requetingUser);
         return new ListingDto(listing);
+    }
+
+    public async Task<Listing> TestingGet(Guid listingId, Guid user)
+    {
+        return await _repository.Get(listingId, user);
     }
 }

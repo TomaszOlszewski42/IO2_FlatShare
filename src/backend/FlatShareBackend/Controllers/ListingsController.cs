@@ -4,6 +4,7 @@ using FlatShareBackend.Models;
 using FlatShareBackend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FlatShareBackend.Controllers;
 
@@ -41,6 +42,12 @@ public class ListingsController : ControllerBase
         return Ok(await _listingService.Get(listingId, _userGuid));
     }
 
+    [HttpGet("{listingId}/test")]
+    public async Task<IActionResult> GetTest(Guid listingId)
+    {
+        return Ok(await _listingService.TestingGet(listingId, _userGuid));
+    }
+
     [HttpPatch("{listingId}")]
     public async Task<IActionResult> Edit(Guid listingId)
     {
@@ -61,9 +68,10 @@ public class ListingsController : ControllerBase
         return Ok();
     }
 
-    [HttpPatch("{listingId}/unavailability")]
-    public async Task<IActionResult> AddUnavailability(Guid listingId)
+    [HttpPost("{listingId}/unavailability")]
+    public async Task<IActionResult> AddUnavailability([FromBody] DateRange dates, Guid listingId)
     {
-        return BadRequest();
+        await _listingService.AddUnvailability(listingId, _userGuid, dates);
+        return Ok();
     }
 }
