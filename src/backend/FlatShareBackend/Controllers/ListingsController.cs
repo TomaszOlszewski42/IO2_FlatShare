@@ -4,11 +4,10 @@ using FlatShareBackend.Models;
 using FlatShareBackend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FlatShareBackend.Controllers;
 
-[Authorize]
+
 [ApiController]
 [Route("api/v1/listings")]
 public class ListingsController : ControllerBase
@@ -22,6 +21,7 @@ public class ListingsController : ControllerBase
         _listingService = listingService;
     }
 
+    [Authorize(Roles = "LANDLORD")]
     [HttpPost()]
     public async Task<IActionResult> Create([FromBody] CreateListingRequest request)
     {
@@ -43,12 +43,16 @@ public class ListingsController : ControllerBase
     }
 
     [HttpPatch("{listingId}")]
+    [Authorize(Roles = "LANDLORD")]
     public async Task<IActionResult> Edit([FromBody] EditListingRequest request, Guid listingId)
     {
         await _listingService.Edit(listingId, _userGuid, request);
         return Ok();
     }
 
+
+    // TODO: check if admin should also has this 
+    [Authorize(Roles = "LANDLORD, ADMIN")]
     [HttpPatch("{listingId}/publish")]
     public async Task<IActionResult> Publish(Guid listingId)
     {
@@ -56,6 +60,7 @@ public class ListingsController : ControllerBase
         return Ok();
     }
 
+    [Authorize(Roles = "LANDLORD")]
     [HttpPatch("{listingId}/hide")]
     public async Task<IActionResult> Hide(Guid listingId)
     {
@@ -63,6 +68,8 @@ public class ListingsController : ControllerBase
         return Ok();
     }
 
+    // TODO: check if admin should also has this
+    [Authorize(Roles = "LANDLORD, ADMIN")]
     [HttpPatch("{listingId}/archive")]
     public async Task<IActionResult> Archive(Guid listingId)
     {
@@ -70,6 +77,7 @@ public class ListingsController : ControllerBase
         return Ok();
     }
 
+    [Authorize(Roles = "LANDLORD")]
     [HttpPatch("{listingId}/submit")]
     public async Task<IActionResult> Submit(Guid listingId)
     {
@@ -77,6 +85,7 @@ public class ListingsController : ControllerBase
         return Ok();
     }
 
+    [Authorize(Roles = "ADMIN")]
     [HttpPatch("{listingId}/request-fixes")]
     public async Task<IActionResult> RequestFixes(Guid listingId)
     {
@@ -85,6 +94,7 @@ public class ListingsController : ControllerBase
         return Ok();
     }
 
+    [Authorize(Roles = "LANDLORD")]
     [HttpPost("{listingId}/unavailability")]
     public async Task<IActionResult> AddUnavailability([FromBody] DateRange dates, Guid listingId)
     {
