@@ -12,6 +12,5 @@ public record CreateListingRequest
     public required DateOnly AvailableSince { get; init; } // Strasznie dziwna nazwa, brzmi na potencjalny błąd
     public required Address Location { get; init; }
     // następujące propertisy nie są potrzebne w tym sprincie
-    // public required decimal MatchScore { get; init; } // Co to jest?
     // public required some_type Attributes { get; init; }
 }

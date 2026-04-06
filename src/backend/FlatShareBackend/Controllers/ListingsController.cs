@@ -49,9 +49,17 @@ public class ListingsController : ControllerBase
     }
 
     [HttpPatch("{listingId}")]
-    public async Task<IActionResult> Edit(Guid listingId)
+    public async Task<IActionResult> Edit([FromBody] EditListingRequest request, Guid listingId)
     {
-        return BadRequest();
+        await _listingService.Edit(listingId, _userGuid, request);
+        return Ok();
+    }
+
+    [HttpPatch("{listingId}/publish")]
+    public async Task<IActionResult> Publish(Guid listingId)
+    {
+        await _listingService.ChangeState(listingId, _userGuid, Listing.State.ACTIVE);
+        return Ok();
     }
 
     [HttpPatch("{listingId}/hide")]
@@ -65,6 +73,21 @@ public class ListingsController : ControllerBase
     public async Task<IActionResult> Archive(Guid listingId)
     {
         await _listingService.ChangeState(listingId, _userGuid, Listing.State.ARCHIVED);
+        return Ok();
+    }
+
+    [HttpPatch("{listingId}/submit")]
+    public async Task<IActionResult> Submit(Guid listingId)
+    {
+        await _listingService.ChangeState(listingId, _userGuid, Listing.State.AWAITING_REVIEW);
+        return Ok();
+    }
+
+    [HttpPatch("{listingId}/request-fixes")]
+    public async Task<IActionResult> RequestFixes(Guid listingId)
+    {
+        // TODO: state transfer validation
+        await _listingService.ChangeState(listingId, _userGuid, Listing.State.AWAITING_FIXES);
         return Ok();
     }
 

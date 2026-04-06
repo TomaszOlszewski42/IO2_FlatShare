@@ -6,11 +6,11 @@ using FlatShareBackend.Repositories;
 
 namespace FlatShareBackend.Services;
 
-public class ListingServce : IListingService
+public class ListingService : IListingService
 {
-    private IListingRepository _repository;
+    private readonly IListingRepository _repository;
 
-    public ListingServce(IListingRepository repository)
+    public ListingService(IListingRepository repository)
     {
         _repository = repository;
     }
@@ -48,6 +48,11 @@ public class ListingServce : IListingService
         return guid;
     }
 
+    public async Task Edit(Guid listingId, Guid requestingUser, EditListingRequest editRequest)
+    {
+        await _repository.Edit(listingId, requestingUser, editRequest);
+    }
+
     public async Task<ListingDto> Get(Guid listingId, Guid requetingUser)
     {
         var listing = await _repository.Get(listingId, requetingUser);
@@ -58,4 +63,5 @@ public class ListingServce : IListingService
     {
         return await _repository.Get(listingId, user);
     }
+    
 }

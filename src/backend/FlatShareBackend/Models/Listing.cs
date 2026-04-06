@@ -9,7 +9,9 @@ public class Listing
     {
         ACTIVE,
         HIDDEN,
-        ARCHIVED
+        ARCHIVED,
+        AWAITING_REVIEW,
+        AWAITING_FIXES
     }
 
     public required Guid Id { get; set; }
@@ -27,5 +29,20 @@ public class Listing
     public required State Status { get; set; }
     public List<DateRange> UnavailableDates {get; set;} = [];
 
-    // TODO: missing match score and attributes fields
+    // TODO: missing attributes field
+
+    public void EditFromRequest(EditListingRequest request)
+    {
+        Title = request.Title ?? Title;
+        Description = request.Description ?? Description;
+        Price = request.Price ?? Price;
+        Currency = request.Currency ?? Currency;
+        AvailableFrom = request.AvailableFrom ?? AvailableFrom;
+        OwnerContact = request.OwnerContact ?? OwnerContact;
+        Area = request.Area ?? Area;
+        AvailableSince = request.AvailableSince ?? AvailableSince;
+        Location = request.Location ?? Location;
+        // Podejrzane: teraz da się tym zasdaniczo dodać datę mimo że jest do tego oddzielny endpoint
+        UnavailableDates = request.UnavailableDates ?? UnavailableDates; 
+    }
 }

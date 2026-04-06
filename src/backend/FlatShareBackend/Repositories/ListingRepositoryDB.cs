@@ -1,4 +1,5 @@
 ﻿using FlatShareBackend.Data;
+using FlatShareBackend.Dtos.Listings;
 using FlatShareBackend.Exceptions;
 using FlatShareBackend.Models;
 
@@ -24,24 +25,33 @@ public class ListingRepositoryDB : IListingRepository
 
     public async Task<Listing> Get(Guid listingId, Guid requestingUser)
     {
-        return await FindListing(listingId, requestingUser);
+        return await FindListingCheckOwner(listingId, requestingUser);
     }
 
     public async Task ChangeState(Guid listingId, Guid requestingUser, Listing.State state)
     {
-        var listing = await FindListing(listingId, requestingUser);
+        var listing = await FindListingCheckOwner(listingId, requestingUser);
         listing.Status = state;
         await _dbContext.SaveChangesAsync();
     }
 
     public async Task AddUnavailability(Guid listingId, Guid requestingUser, DateRange dates)
     {
-        var listing = await FindListing(listingId, requestingUser);
+        var listing = await FindListingCheckOwner(listingId, requestingUser);
         listing.UnavailableDates.Add(dates);
         await _dbContext.SaveChangesAsync();
     }
 
-    private async Task<Listing> FindListing(Guid listingId, Guid requestingUser)
+    public async Task Edit(Guid listingId, Guid requestingUser, EditListingRequest editRequest)
+    {
+        var listing = await FindListingCheckOwner(listingId, requestingUser);
+        listing.EditFromRequest(editRequest);
+        await _dbContext.SaveChangesAsync();
+    }
+
+
+    // TODO: rethink if this should be done here or in service
+    private async Task<Listing> FindListingCheckOwner(Guid listingId, Guid requestingUser)
     {
         var listing = await _dbContext.Listings.FindAsync(listingId) 
             ?? throw new InvalidCastException("Invalid guid of listing");
@@ -50,5 +60,11 @@ public class ListingRepositoryDB : IListingRepository
             throw new UnauthorizedDatabaseOperation("This user is not the owner of the listing\n");
         }
         return listing;
+    }
+
+    private async Task<Listing> FindListing(Guid listingId)
+    {
+        return await _dbContext.Listings.FindAsync(listingId) 
+            ?? throw new InvalidCastException("Invalid guid of listing");
     }
 }

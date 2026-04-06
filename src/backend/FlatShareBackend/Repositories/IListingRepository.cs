@@ -1,4 +1,5 @@
-﻿using FlatShareBackend.Models;
+﻿using FlatShareBackend.Dtos.Listings;
+using FlatShareBackend.Models;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FlatShareBackend.Repositories;
@@ -9,4 +10,5 @@ public interface IListingRepository
     public Task<Listing> Get(Guid listingId, Guid requestingUser);
     public Task ChangeState(Guid listingId, Guid requestingUser, Listing.State state);
     public Task AddUnavailability(Guid listingId, Guid requestingUser, DateRange dates);
+    public Task Edit(Guid listingId, Guid requestingUser, EditListingRequest editRequest);
 }
