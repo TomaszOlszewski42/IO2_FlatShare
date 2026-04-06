@@ -3,10 +3,12 @@ using FlatShareBackend.Models;
 using FlatShareBackend.Options;
 using FlatShareBackend.Repositories;
 using FlatShareBackend.Services;
+using FlatShareBackend.Validators;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Data;
 using System.Text;
 
 namespace FlatShareBackend
@@ -63,6 +65,14 @@ namespace FlatShareBackend
             builder.Services.AddScoped<IListingRepository, ListingRepositoryDB>();
             builder.Services.AddScoped<IListingService, ListingService>();
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            builder.Services.AddScoped<IListingValidator, ListingValidator>();
+
+            // Validation rules that will be used by IListingValidator
+            builder.Services.AddTransient<IListingRuleValidator, AreaValidator>();
+            builder.Services.AddTransient<IListingRuleValidator, CurrencyValidator>();
+            builder.Services.AddTransient<IListingRuleValidator, OwnerContactValidator>();
+            builder.Services.AddTransient<IListingRuleValidator, PriceValidator>();
+            // --------------------------------------------
 
             var app = builder.Build();
 

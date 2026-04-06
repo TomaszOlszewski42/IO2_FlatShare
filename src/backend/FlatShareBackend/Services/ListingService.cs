@@ -3,20 +3,28 @@ using FlatShareBackend.Dtos.Listings;
 using FlatShareBackend.Exceptions;
 using FlatShareBackend.Models;
 using FlatShareBackend.Repositories;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
 
 namespace FlatShareBackend.Services;
 
 public class ListingService : IListingService
 {
     private readonly IListingRepository _repository;
+    private readonly IListingValidator _listingValidator;
 
-    public ListingService(IListingRepository repository)
+    public ListingService(IListingRepository repository, IListingValidator listingValidator)
     {
         _repository = repository;
+        _listingValidator = listingValidator;
     }
 
     public async Task AddUnvailability(Guid listingId, Guid requestingUser, DateRange dates)
     {
+        if (dates.From > dates.To)
+        {
+            throw new ListingValidationException("Period of time 'from' can't be later than 'to'");
+        }
+
         var listing = await _repository.Get(listingId) 
             ?? throw new ArgumentException("No listing with this id");
         listing.UnavailableDates.Add(dates);
@@ -55,6 +63,8 @@ public class ListingService : IListingService
             Status = Listing.State.AWAITING_REVIEW
         };
 
+        _listingValidator.Validate(listing);
+
         await _repository.Add(listing);
         return guid;
     }
@@ -67,6 +77,11 @@ public class ListingService : IListingService
         {
             throw new UnauthorizedDatabaseOperation("Unauthorized listing operation");
         }
+
+        // TODO: rozważyć czy jest to rozsądne rozwiązanie w ogólności
+        var listingCopy = listing.DeepCopy();
+        listingCopy.EditFromRequest(editRequest);
+        _listingValidator.Validate(listingCopy);
 
         listing.EditFromRequest(editRequest);
         await _repository.SaveChangesAsync();

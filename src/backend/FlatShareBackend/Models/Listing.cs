@@ -45,4 +45,24 @@ public class Listing
         // TODO: Podejrzane: teraz da się tym zasdaniczo dodać datę mimo że jest do tego oddzielny endpoint
         UnavailableDates = request.UnavailableDates ?? UnavailableDates; 
     }
+
+    public Listing DeepCopy()
+    {
+        var addressCopy = Location with {};
+        return new Listing
+        {
+            Id = Id,
+            OwnerId = OwnerId,
+            Title = Title,
+            Description = Description,
+            Price = Price,
+            Currency = Currency,
+            AvailableFrom = AvailableFrom,
+            AvailableSince = AvailableSince,
+            OwnerContact = OwnerContact,
+            Area = Area,
+            Location = addressCopy,
+            Status = Status
+        };
+    }
 }
