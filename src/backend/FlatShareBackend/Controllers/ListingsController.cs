@@ -36,6 +36,7 @@ public class ListingsController : ControllerBase
         return Created($"api/v1/listings/{createdGuid}", createdResult);
     }
 
+    [Authorize()]
     [HttpGet("{listingId}")]
     public async Task<IActionResult> GetDetails(Guid listingId)
     {
@@ -100,5 +101,12 @@ public class ListingsController : ControllerBase
     {
         await _listingService.AddUnvailability(listingId, _userGuid, dates);
         return Ok();
+    }
+
+    [Authorize(Roles = "LANDLORD, ADMIN")]
+    [HttpGet("all")]
+    public async Task<IActionResult> GetAllListings()
+    {
+        return Ok(await _listingService.GetOwnersListingsIds(_userGuid));
     }
 }

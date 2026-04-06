@@ -92,4 +92,9 @@ public class ListingService : IListingService
         var listing = await _repository.Get(listingId);
         return new ListingDto(listing);
     }
+
+    public async Task<List<Guid>> GetOwnersListingsIds(Guid requestingUser)
+    {
+        return await _repository.GetOwnersListingsIds(requestingUser);
+    }
 }

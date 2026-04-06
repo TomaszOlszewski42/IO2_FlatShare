@@ -11,4 +11,5 @@ public interface IListingService
     public Task ChangeState(Guid listingId, Guid requestingUser, Listing.State state);
     public Task AddUnvailability(Guid listingId, Guid requestingUser, DateRange dates);
     public Task Edit(Guid listingId, Guid requestingUser, EditListingRequest editRequest);
+    public Task<List<Guid>> GetOwnersListingsIds(Guid requestingUser);
 }

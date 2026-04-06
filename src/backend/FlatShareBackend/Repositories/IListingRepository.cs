@@ -9,4 +9,5 @@ public interface IListingRepository
     public Task Add(Listing listing);
     public Task<Listing> Get(Guid listingId);
     public Task SaveChangesAsync();
+    public Task<List<Guid>> GetOwnersListingsIds(Guid ownerId);
 }

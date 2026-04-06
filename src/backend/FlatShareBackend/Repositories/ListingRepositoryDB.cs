@@ -2,6 +2,7 @@
 using FlatShareBackend.Dtos.Listings;
 using FlatShareBackend.Exceptions;
 using FlatShareBackend.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace FlatShareBackend.Repositories;
 
@@ -27,6 +28,11 @@ public class ListingRepositoryDB : IListingRepository
     {
         return await _dbContext.Listings.FindAsync(listingId) 
             ?? throw new InvalidCastException("Invalid guid of listing");
+    }
+
+    public async Task<List<Guid>> GetOwnersListingsIds(Guid ownerId)
+    {
+        return await _dbContext.Listings.Where(l => l.OwnerId == ownerId).Select(l => l.Id).ToListAsync();
     }
 
     public async Task SaveChangesAsync()
