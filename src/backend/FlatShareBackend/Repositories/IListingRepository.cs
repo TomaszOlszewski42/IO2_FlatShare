@@ -6,9 +6,7 @@ namespace FlatShareBackend.Repositories;
 
 public interface IListingRepository
 {
-    public Task Create(Listing listing);
-    public Task<Listing> Get(Guid listingId, Guid requestingUser);
-    public Task ChangeState(Guid listingId, Guid requestingUser, Listing.State state);
-    public Task AddUnavailability(Guid listingId, Guid requestingUser, DateRange dates);
-    public Task Edit(Guid listingId, Guid requestingUser, EditListingRequest editRequest);
+    public Task Add(Listing listing);
+    public Task<Listing> Get(Guid listingId);
+    public Task SaveChangesAsync();
 }

@@ -42,12 +42,6 @@ public class ListingsController : ControllerBase
         return Ok(await _listingService.Get(listingId, _userGuid));
     }
 
-    [HttpGet("{listingId}/test")]
-    public async Task<IActionResult> GetTest(Guid listingId)
-    {
-        return Ok(await _listingService.TestingGet(listingId, _userGuid));
-    }
-
     [HttpPatch("{listingId}")]
     public async Task<IActionResult> Edit([FromBody] EditListingRequest request, Guid listingId)
     {

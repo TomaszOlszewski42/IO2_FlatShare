@@ -17,12 +17,23 @@ public class ListingService : IListingService
 
     public async Task AddUnvailability(Guid listingId, Guid requestingUser, DateRange dates)
     {
-        await _repository.AddUnavailability(listingId, requestingUser, dates);
+        var listing = await _repository.Get(listingId) 
+            ?? throw new ArgumentException("No listing with this id");
+        listing.UnavailableDates.Add(dates);
+        await _repository.SaveChangesAsync();
     }
 
     public async Task ChangeState(Guid listingId, Guid requestingUser, Listing.State state)
     {
-        await _repository.ChangeState(listingId, requestingUser, state);
+        var listing = await _repository.Get(listingId);
+        
+        if (listing.OwnerId != requestingUser)
+        {
+            throw new UnauthorizedDatabaseOperation("Unauthorized listing operation");
+        }
+
+        listing.Status = state;
+        await _repository.SaveChangesAsync();
     }
 
     public async Task<Guid> Create(CreateListingRequest request, Guid userId)
@@ -41,27 +52,29 @@ public class ListingService : IListingService
             OwnerContact = request.OwnerContact,
             Area = request.Area,
             Location = request.Location,
-            Status = Listing.State.ACTIVE
+            Status = Listing.State.AWAITING_REVIEW
         };
 
-        await _repository.Create(listing);
+        await _repository.Add(listing);
         return guid;
     }
 
     public async Task Edit(Guid listingId, Guid requestingUser, EditListingRequest editRequest)
     {
-        await _repository.Edit(listingId, requestingUser, editRequest);
+        var listing = await _repository.Get(listingId);
+
+        if (listing.OwnerId != requestingUser)
+        {
+            throw new UnauthorizedDatabaseOperation("Unauthorized listing operation");
+        }
+
+        listing.EditFromRequest(editRequest);
+        await _repository.SaveChangesAsync();
     }
 
     public async Task<ListingDto> Get(Guid listingId, Guid requetingUser)
     {
-        var listing = await _repository.Get(listingId, requetingUser);
+        var listing = await _repository.Get(listingId);
         return new ListingDto(listing);
     }
-
-    public async Task<Listing> TestingGet(Guid listingId, Guid user)
-    {
-        return await _repository.Get(listingId, user);
-    }
-    
 }

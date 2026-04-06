@@ -10,6 +10,5 @@ public interface IListingService
     public Task<ListingDto> Get(Guid listingId, Guid requetingUser);
     public Task ChangeState(Guid listingId, Guid requestingUser, Listing.State state);
     public Task AddUnvailability(Guid listingId, Guid requestingUser, DateRange dates);
-    public Task<Listing> TestingGet(Guid listingId, Guid user);
     public Task Edit(Guid listingId, Guid requestingUser, EditListingRequest editRequest);
 }

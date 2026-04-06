@@ -42,7 +42,7 @@ public class Listing
         Area = request.Area ?? Area;
         AvailableSince = request.AvailableSince ?? AvailableSince;
         Location = request.Location ?? Location;
-        // Podejrzane: teraz da się tym zasdaniczo dodać datę mimo że jest do tego oddzielny endpoint
+        // TODO: Podejrzane: teraz da się tym zasdaniczo dodać datę mimo że jest do tego oddzielny endpoint
         UnavailableDates = request.UnavailableDates ?? UnavailableDates; 
     }
 }
