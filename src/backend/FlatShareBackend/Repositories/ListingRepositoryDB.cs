@@ -30,9 +30,27 @@ public class ListingRepositoryDB : IListingRepository
             ?? throw new InvalidCastException("Invalid guid of listing");
     }
 
-    public async Task<List<Guid>> GetOwnersListingsIds(Guid ownerId)
+    public async Task<List<Listing>> QueryListings(string? city, string? district, string? street, string? aptNumber, 
+        Guid? ownerId)
     {
-        return await _dbContext.Listings.Where(l => l.OwnerId == ownerId).Select(l => l.Id).ToListAsync();
+        var query = _dbContext.Listings.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(city))
+            query = query.Where(x => x.Location.City == city);
+
+        if (!string.IsNullOrWhiteSpace(district))
+            query = query.Where(x => x.Location.District == district);
+
+        if (!string.IsNullOrWhiteSpace(street))
+            query = query.Where(x => x.Location.Street == street);
+
+        if (!string.IsNullOrWhiteSpace(aptNumber))
+            query = query.Where(x => x.Location.AptNumber == aptNumber);
+
+        if (ownerId.HasValue)
+            query = query.Where(x => x.OwnerId == ownerId.Value);
+
+        return await query.ToListAsync();
     }
 
     public async Task SaveChangesAsync()

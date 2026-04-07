@@ -93,8 +93,10 @@ public class ListingService : IListingService
         return new ListingDto(listing);
     }
 
-    public async Task<List<Guid>> GetOwnersListingsIds(Guid requestingUser)
+    public async Task<List<ListingDto>> QueryListings(string? City, string? District, string? Street, string? AptNumber, 
+        Guid? OwnerId)
     {
-        return await _repository.GetOwnersListingsIds(requestingUser);
+        var listings = await _repository.QueryListings(City, District, Street, AptNumber, OwnerId);
+        return [.. listings.Select(s => new ListingDto(s))];
     }
 }

@@ -103,10 +103,11 @@ public class ListingsController : ControllerBase
         return Ok();
     }
 
-    [Authorize(Roles = "LANDLORD, ADMIN")]
-    [HttpGet("all")]
-    public async Task<IActionResult> GetAllListings()
+    [Authorize]
+    [HttpGet()]
+    public async Task<IActionResult> QueryListings([FromQuery] string? City, [FromQuery] string? District, 
+        [FromQuery] string? Street, [FromQuery] string? AptNumber, [FromQuery] Guid? OwnerId)
     {
-        return Ok(await _listingService.GetOwnersListingsIds(_userGuid));
+        return Ok(await _listingService.QueryListings(City, District, Street, AptNumber, OwnerId));
     }
 }
