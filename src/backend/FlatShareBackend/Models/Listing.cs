@@ -27,8 +27,8 @@ public class Listing
     public required DateOnly AvailableSince { get; set; }
     public required Address Location { get; set; }
     public required State Status { get; set; }
-    public List<DateRange> UnavailableDates {get; set;} = [];
-
+    public List<DateRange> UnavailableDates { get; set; } = [];
+    public List<Guid> Photos { get; set; } = [];
     // TODO: missing attributes field
 
     public void EditFromRequest(EditListingRequest request)

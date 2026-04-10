@@ -3,7 +3,6 @@ using FlatShareBackend.Dtos.Listings;
 using FlatShareBackend.Exceptions;
 using FlatShareBackend.Models;
 using FlatShareBackend.Repositories;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
 
 namespace FlatShareBackend.Services;
 
@@ -11,11 +10,13 @@ public class ListingService : IListingService
 {
     private readonly IListingRepository _repository;
     private readonly IListingValidator _listingValidator;
+    public readonly IFilesService _fileService;
 
-    public ListingService(IListingRepository repository, IListingValidator listingValidator)
+    public ListingService(IListingRepository repository, IListingValidator listingValidator, IFilesService fileService)
     {
         _repository = repository;
         _listingValidator = listingValidator;
+        _fileService = fileService;
     }
 
     public async Task AddUnvailability(Guid listingId, Guid requestingUser, DateRange dates)
@@ -25,7 +26,7 @@ public class ListingService : IListingService
             throw new ListingValidationException("Period of time 'from' can't be later than 'to'");
         }
 
-        var listing = await _repository.Get(listingId) 
+        var listing = await _repository.Get(listingId)
             ?? throw new ArgumentException("No listing with this id");
         listing.UnavailableDates.Add(dates);
         await _repository.SaveChangesAsync();
@@ -34,7 +35,7 @@ public class ListingService : IListingService
     public async Task ChangeState(Guid listingId, Guid requestingUser, Listing.State state)
     {
         var listing = await _repository.Get(listingId);
-        
+
         if (listing.OwnerId != requestingUser)
         {
             throw new UnauthorizedDatabaseOperation("Unauthorized listing operation");
@@ -98,5 +99,51 @@ public class ListingService : IListingService
     {
         var listings = await _repository.QueryListings(City, District, Street, AptNumber, OwnerId);
         return [.. listings.Select(s => new ListingDto(s))];
+    }
+
+    public async Task<Guid> UploadPhoto(Guid listingId, IFormFile formFile, Guid requestingUser)
+    {
+        var listing = await _repository.Get(listingId);
+        
+        if (requestingUser != listing.OwnerId) // TODO: probably should allow admin
+        {
+            throw new UnauthorizedDatabaseOperation("Missing permission to delete this photo");
+        }
+
+        var fileStream = formFile.OpenReadStream();
+        var photoId = await _fileService.UploadFromStream(fileStream);
+        listing.Photos.Add(photoId);
+        await _repository.SaveChangesAsync();
+        return photoId;
+    }
+
+    public async Task<Stream> GetPhotoStream(Guid listingId, Guid photoId)
+    {
+        var listing = await _repository.Get(listingId);
+        if (!listing.Photos.Contains(photoId))
+        {
+            throw new InvalidIdException("This photo ID does not belong to this listing!");
+        }
+        var photoStream =  await _fileService.GetFile($"{photoId}");
+        return photoStream;
+    }
+
+    public async Task<IEnumerable<Guid>> GetAllPhotosId(Guid listingId)
+    {
+        var listing = await _repository.Get(listingId);
+        return listing.Photos;
+    } 
+
+    public async Task DeletePhoto(Guid listingId, Guid photoId, Guid requestingUser)
+    {
+        var listing = await _repository.Get(listingId);
+
+        if (requestingUser != listing.OwnerId) // TODO: probably should allow admin
+        {
+            throw new UnauthorizedDatabaseOperation("Missing permission to delete this photo");
+        }
+
+        listing.Photos.Remove(photoId);
+        await _repository.SaveChangesAsync();
     }
 }

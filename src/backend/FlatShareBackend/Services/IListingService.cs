@@ -14,4 +14,8 @@ public interface IListingService
     public Task Edit(Guid listingId, Guid requestingUser, EditListingRequest editRequest);
     public Task<List<ListingDto>> QueryListings(string? City, string? District, 
         string? Street, string? AptNumber, Guid? OwnerId);
+    public Task<Guid> UploadPhoto(Guid listingId, IFormFile formFile, Guid requestingUser);
+    public Task<Stream> GetPhotoStream(Guid listingId, Guid photoId);
+    public Task<IEnumerable<Guid>> GetAllPhotosId(Guid listingId);
+    public Task DeletePhoto(Guid listingId, Guid photoId, Guid requestingUser);
 }

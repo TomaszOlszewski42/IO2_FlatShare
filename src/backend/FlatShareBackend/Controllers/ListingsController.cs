@@ -110,4 +110,36 @@ public class ListingsController : ControllerBase
     {
         return Ok(await _listingService.QueryListings(City, District, Street, AptNumber, OwnerId));
     }
+
+    [HttpPost("{listingId}/photos")]
+    public async Task<IActionResult> UploadPhoto(IFormFile photo, Guid listingId)
+    {
+        var photoId = await _listingService.UploadPhoto(listingId, photo, _userGuid);
+        return CreatedAtAction(nameof(GetPhoto), new { listingId = listingId, photoId = photoId }, null);
+    }
+
+    [HttpGet("{listingId}/photos/{photoId}")]
+    public async Task<IActionResult> GetPhoto(Guid listingId, Guid photoId)
+    {
+        var stream = await _listingService.GetPhotoStream(listingId, photoId);
+        return File(stream, "image/jpeg");
+    }
+
+    [HttpGet("{listingId}/photos")]
+    public async Task<IActionResult> GetAllPhotosIds(Guid listingId)
+    {
+        var result = new
+        {
+            listingId = listingId,
+            photos = await _listingService.GetAllPhotosId(listingId)
+        };
+        return Ok(result);
+    }
+
+    [HttpDelete("{listingId}/photos/{photoId}")]
+    public async Task<IActionResult> DeletePhoto(Guid listingId, Guid photoId)
+    {
+        await _listingService.DeletePhoto(listingId, photoId, _userGuid);
+        return NoContent();
+    }
 }
