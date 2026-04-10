@@ -6,6 +6,7 @@ public class ListingDto
 {
     public ListingDto(Listing listing)
     {
+        Id = listing.Id;
         Title = listing.Title;
         Description = listing.Description;
         Price = listing.Price;
@@ -16,6 +17,7 @@ public class ListingDto
         AvailableSince = listing.AvailableSince;
         Location = listing.Location;
     }
+    public Guid Id { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }
     public decimal Price { get; set; }

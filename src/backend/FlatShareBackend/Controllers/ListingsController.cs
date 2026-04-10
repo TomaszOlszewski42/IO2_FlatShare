@@ -111,6 +111,7 @@ public class ListingsController : ControllerBase
         return Ok(await _listingService.QueryListings(City, District, Street, AptNumber, OwnerId));
     }
 
+    [Authorize(Roles = "LANDLORD")]
     [HttpPost("{listingId}/photos")]
     public async Task<IActionResult> UploadPhoto(IFormFile photo, Guid listingId)
     {
@@ -118,6 +119,7 @@ public class ListingsController : ControllerBase
         return CreatedAtAction(nameof(GetPhoto), new { listingId = listingId, photoId = photoId }, null);
     }
 
+    [Authorize]
     [HttpGet("{listingId}/photos/{photoId}")]
     public async Task<IActionResult> GetPhoto(Guid listingId, Guid photoId)
     {
@@ -125,6 +127,7 @@ public class ListingsController : ControllerBase
         return File(stream, "image/jpeg");
     }
 
+    [Authorize]
     [HttpGet("{listingId}/photos")]
     public async Task<IActionResult> GetAllPhotosIds(Guid listingId)
     {
@@ -136,6 +139,7 @@ public class ListingsController : ControllerBase
         return Ok(result);
     }
 
+    [Authorize(Roles = "LANDLORD, ADMIN")]
     [HttpDelete("{listingId}/photos/{photoId}")]
     public async Task<IActionResult> DeletePhoto(Guid listingId, Guid photoId)
     {
