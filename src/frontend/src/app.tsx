@@ -1,3 +1,5 @@
+import { PasswordResetRequestPage } from './pages/password-reset-request-page'
+import { PasswordResetConfirmPage } from './pages/password-reset-confirm-page'
 import { AppShell } from './components/layout/app-shell'
 import { HomePage } from './pages/home-page'
 import { LoginPage } from './pages/login-page'
@@ -25,6 +27,8 @@ export function App() {
         <HomePage path="/" />
         <LoginPage path="/login" />
         <RegisterPage path="/register" />
+        <PasswordResetRequestPage path="/password-reset/request" />
+        <PasswordResetConfirmPage path="/password-reset/confirm" />
       </Router>
     </AppShell>
   )
