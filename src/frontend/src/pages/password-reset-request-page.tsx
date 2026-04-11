@@ -3,21 +3,19 @@ import { route } from 'preact-router'
 
 import { FormErrorSummary } from '../components/forms/form-error-summary'
 import { TextInput } from '../components/ui/text-input'
-import { mapFormErrors } from '../services/form-error-mapper'
 import { requestPasswordReset } from '../services/password-reset-api'
+import { usePageErrorHandler } from '../hooks/use-page-error-handler'
 
 export function PasswordResetRequestPage(_props: { path?: string }) {
   const [email, setEmail] = useState('')
-  const [error, setError] = useState<string | null>(null)
+  const { errorMessage, fieldErrors, clearErrors, handleError } = usePageErrorHandler()
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({})
 
   async function handleSubmit(event: Event) {
     event.preventDefault()
-    setError(null)
+    clearErrors()
     setSuccessMessage(null)
-    setFieldErrors({})
     setIsSubmitting(true)
 
     try {
@@ -26,9 +24,7 @@ export function PasswordResetRequestPage(_props: { path?: string }) {
         response.message || 'If the account exists, password reset instructions have been sent.',
       )
     } catch (caughtError) {
-      const mappedError = mapFormErrors(caughtError)
-      setError(mappedError.summary ?? 'Request failed.')
-      setFieldErrors(mappedError.fieldErrors)
+      handleError(caughtError, 'Request failed.')
     } finally {
       setIsSubmitting(false)
     }
@@ -56,7 +52,7 @@ export function PasswordResetRequestPage(_props: { path?: string }) {
           onInput={(event) => setEmail((event.currentTarget as HTMLInputElement).value)}
         />
 
-        <FormErrorSummary error={error} />
+        <FormErrorSummary error={errorMessage} />
         {successMessage ? <div class="alert alert-success text-sm">{successMessage}</div> : null}
 
         <div class="flex gap-3">
