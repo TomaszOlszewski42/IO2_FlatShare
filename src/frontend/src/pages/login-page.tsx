@@ -1,6 +1,7 @@
 import type { RoutableProps } from 'preact-router'
 import { route } from 'preact-router'
 import { useState } from 'preact/hooks'
+import { usePageErrorHandler } from '../hooks/use-page-error-handler'
 
 import { AppButton } from '../components/ui/app-button'
 import { TextInput } from '../components/ui/text-input'
@@ -8,21 +9,18 @@ import { persistAuthSession } from '../services/auth-session'
 import { login } from '../services/auth-api'
 
 import { FormErrorSummary } from '../components/forms/form-error-summary'
-import { mapFormErrors } from '../services/form-error-mapper'
 
 export function LoginPage(_: RoutableProps) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({})
+  const { errorMessage, fieldErrors, clearErrors, handleError } = usePageErrorHandler()
 
   async function onSubmit(event: SubmitEvent) {
     event.preventDefault()
 
     setIsSubmitting(true)
-    setErrorMessage(null)
-    setFieldErrors({})
+    clearErrors()
 
     try {
       const session = await login({ email, password })
@@ -33,9 +31,7 @@ export function LoginPage(_: RoutableProps) {
       })
       route('/')
     } catch (error) {
-      const mappedError = mapFormErrors(error)
-      setErrorMessage(mappedError.summary ?? 'Login failed. Check your credentials and try again.')
-      setFieldErrors(mappedError.fieldErrors)
+      handleError(error, 'Login failed. Check your credentials and try again.')
     } finally {
       setIsSubmitting(false)
     }
