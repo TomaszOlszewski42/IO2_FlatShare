@@ -5,17 +5,60 @@ export type FormErrorsResult = {
   fieldErrors: FormFieldErrors;
 };
 
-type ApiErrorLike = {
+type ApiFieldErrorItem = {
+  field?: string;
   message?: string;
-  errors?: Record<string, string[] | string>;
-  fieldErrors?: Record<string, string[] | string>;
 };
 
-function normalizeFieldErrors(
-  value: Record<string, string[] | string> | undefined,
-): FormFieldErrors {
+type ApiFieldErrorsValue =
+  | Record<string, string[] | string>
+  | ApiFieldErrorItem[];
+
+type ApiErrorLike = {
+  message?: string;
+  errors?: ApiFieldErrorsValue;
+  fieldErrors?: ApiFieldErrorsValue;
+};
+
+function appendFieldError(
+  result: FormFieldErrors,
+  fieldName: string,
+  message: string,
+): void {
+  if (!result[fieldName]) {
+    result[fieldName] = [];
+  }
+
+  result[fieldName].push(message);
+}
+
+function normalizeFieldErrors(value: ApiFieldErrorsValue | undefined): FormFieldErrors {
   if (!value) {
     return {};
+  }
+
+  if (Array.isArray(value)) {
+    const result: FormFieldErrors = {};
+
+    for (const item of value) {
+      if (!item || typeof item !== 'object') {
+        continue;
+      }
+
+      const fieldName =
+        typeof item.field === 'string' && item.field.trim().length > 0
+          ? item.field
+          : 'general';
+
+      const message =
+        typeof item.message === 'string' && item.message.trim().length > 0
+          ? item.message
+          : 'Invalid value.';
+
+      appendFieldError(result, fieldName, message);
+    }
+
+    return result;
   }
 
   return Object.fromEntries(
