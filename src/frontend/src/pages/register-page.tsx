@@ -4,7 +4,8 @@ import { useState } from 'preact/hooks'
 
 import { AppButton } from '../components/ui/app-button'
 import { TextInput } from '../components/ui/text-input'
-import { ApiHttpError, register } from '../services/auth-api'
+import { register } from '../services/auth-api'
+import { ApiHttpError } from '../services/api-client'
 
 export function RegisterPage(_: RoutableProps) {
   const [firstName, setFirstName] = useState('')
@@ -13,26 +14,19 @@ export function RegisterPage(_: RoutableProps) {
   const [password, setPassword] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
 
   async function onSubmit(event: SubmitEvent) {
     event.preventDefault()
 
     setIsSubmitting(true)
     setErrorMessage(null)
-    setFieldErrors({})
 
     try {
       await register({ firstName, lastName, email, password })
       route('/login')
     } catch (error) {
       if (error instanceof ApiHttpError) {
-        const mappedErrors = Object.fromEntries(
-          (error.response?.fieldErrors ?? []).map((entry) => [entry.field.toLowerCase(), entry.message]),
-        )
-
-        setFieldErrors(mappedErrors)
-        setErrorMessage(error.response?.message ?? 'Registration failed. Please fix the form and try again.')
+        setErrorMessage(error.message || 'Registration failed. Please fix the form and try again.')
       } else {
         setErrorMessage('Unexpected error while creating your account. Please try again.')
       }
@@ -59,7 +53,6 @@ export function RegisterPage(_: RoutableProps) {
               autoComplete="given-name"
               required
               disabled={isSubmitting}
-              error={fieldErrors.firstname ?? fieldErrors.firstName}
               onInput={(event) => setFirstName((event.currentTarget as HTMLInputElement).value)}
             />
 
@@ -73,7 +66,6 @@ export function RegisterPage(_: RoutableProps) {
               autoComplete="family-name"
               required
               disabled={isSubmitting}
-              error={fieldErrors.lastname ?? fieldErrors.lastName}
               onInput={(event) => setLastName((event.currentTarget as HTMLInputElement).value)}
             />
 
@@ -87,7 +79,6 @@ export function RegisterPage(_: RoutableProps) {
               autoComplete="email"
               required
               disabled={isSubmitting}
-              error={fieldErrors.email}
               onInput={(event) => setEmail((event.currentTarget as HTMLInputElement).value)}
             />
 
@@ -101,7 +92,6 @@ export function RegisterPage(_: RoutableProps) {
               autoComplete="new-password"
               required
               disabled={isSubmitting}
-              error={fieldErrors.password}
               onInput={(event) => setPassword((event.currentTarget as HTMLInputElement).value)}
             />
 
