@@ -53,6 +53,23 @@ namespace FlatShareBackend.Controllers
                 }
                 });
             }
+            catch (InvalidRoleException ex)
+            {
+                return BadRequest(new ApiErrorResponse
+                {
+                    Timestamp = DateTime.UtcNow,
+                    Status = StatusCodes.Status400BadRequest,
+                    Error = "ValidationError",
+                    FieldErrors = new List<ApiFieldError>
+                {
+                    new()
+                    {
+                        Field = "role",
+                        Message = ex.Message
+                    }
+                }
+                });
+            }
         }
 
         [HttpGet("{userId:guid}")]
