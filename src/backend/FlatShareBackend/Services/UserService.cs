@@ -26,12 +26,14 @@ namespace FlatShareBackend.Services
                 throw new EmailAlreadyExistsException("Email already exists.");
             }
 
+            var parsedRole = ParseRole(request.Role);
+
             var user = new User
             {
                 FirstName = request.FirstName.Trim(),
                 LastName = request.LastName.Trim(),
                 Email = normalizedEmail,
-                Role = UserRole.Tenant,
+                Role = parsedRole,
                 Status = UserStatus.Active
             };
 
@@ -47,8 +49,48 @@ namespace FlatShareBackend.Services
                     Id = user.Id,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
-                    Email = user.Email
+                    Email = user.Email,
+                    Role = ToApiRole(user.Role)
                 }
+            };
+        }
+
+        private static UserRole ParseRole(string role)
+        {
+            return role.Trim().ToUpperInvariant() switch
+            {
+                "LANDLORD" => UserRole.Landlord,
+                "TENANT" => UserRole.Tenant,
+                _ => throw new InvalidRoleException("Role must be either LANDLORD or TENANT.")
+            };
+        }
+
+        private static string ToApiRole(UserRole role)
+        {
+            return role switch
+            {
+                UserRole.Landlord => "LANDLORD",
+                UserRole.Tenant => "TENANT",
+                UserRole.Admin => "ADMIN",
+                _ => throw new InvalidOperationException("Unsupported user role.")
+            };
+        }
+
+        public async Task<UserDto?> GetByIdAsync(Guid userId, CancellationToken cancellationToken = default)
+        {
+            var user = await _userRepository.GetByIdAsync(userId, cancellationToken);
+
+            if (user is null)
+            {
+                return null;
+            }
+
+            return new UserDto
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email
             };
         }
     }
