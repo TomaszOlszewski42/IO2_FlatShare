@@ -1,4 +1,4 @@
-import type { ListingStatus } from '../../utils/format-status-label'
+import type { ListingStatus } from '../../types/listing-status'
 import { formatStatusLabel } from '../../utils/format-status-label'
 import { FormField } from '../ui/form-field'
 import { CreateListingButton } from './listings-action-buttons'
@@ -58,7 +58,7 @@ export function ListingsToolbar({
               value={selectedStatus}
               onChange={(event) => onStatusChange((event.currentTarget as HTMLSelectElement).value as ListingFilterValue)}
             >
-              {['ALL', 'DRAFT', 'UNDER_REVIEW', 'ACTIVE', 'HIDDEN', 'ARCHIVED'].map((status) => (
+              {['ALL', 'DRAFT', 'UNDER_REVIEW', 'AWAITING_REVIEW', 'AWAITING_FIXES', 'ACTIVE', 'HIDDEN', 'ARCHIVED'].map((status) => (
                 <option key={status} value={status}>
                   {status === 'ALL' ? 'Wszystkie statusy' : formatStatusLabel(status as ListingStatus)}
                 </option>
