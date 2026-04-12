@@ -1,49 +1,47 @@
 import type { JSX } from 'preact'
+
 import { FormFieldError } from '../forms/form-field-error'
 
-type TextInputProps = {
+type TextAreaProps = {
   id: string
   name: string
   label: string
-  type?: 'text' | 'email' | 'password'
   value: string
   placeholder?: string
-  autoComplete?: string
+  rows?: number
   required?: boolean
   disabled?: boolean
   error?: string
   errors?: string[]
-  onInput: JSX.GenericEventHandler<HTMLInputElement>
+  onInput: JSX.GenericEventHandler<HTMLTextAreaElement>
 }
 
-export function TextInput({
+export function TextArea({
   id,
   name,
   label,
-  type = 'text',
   value,
   placeholder,
-  autoComplete,
+  rows = 4,
   required = false,
   disabled = false,
   error,
   errors,
   onInput,
-}: TextInputProps) {
+}: TextAreaProps) {
   const errorId = `${id}-error`
   const hasError = Boolean(error) || Boolean(errors?.length)
 
   return (
     <label class="form-control w-full" for={id}>
       <span class="label-text mb-1">{label}</span>
-      <input
+      <textarea
         id={id}
         name={name}
-        class={`input w-full ${hasError ? 'input-error' : 'input-bordered'}`}
-        type={type}
+        class={`textarea w-full ${hasError ? 'textarea-error' : 'textarea-bordered'}`}
         value={value}
         placeholder={placeholder}
-        autoComplete={autoComplete}
+        rows={rows}
         required={required}
         disabled={disabled}
         aria-invalid={hasError}
