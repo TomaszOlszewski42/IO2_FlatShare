@@ -5,7 +5,6 @@ import { usePageErrorHandler } from '../hooks/use-page-error-handler'
 
 import { AppButton } from '../components/ui/app-button'
 import { TextInput } from '../components/ui/text-input'
-import { AuthCard } from '../components/layout/auth-card'
 import { persistAuthSession } from '../services/auth-session'
 import { login } from '../services/auth-api'
 
