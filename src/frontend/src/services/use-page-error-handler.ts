@@ -1,4 +1,4 @@
-import { ApiHttpError } from './auth-api'
+import { ApiHttpError } from './api-client'
 import { useErrorHandler, type FieldError, type ErrorInfo } from './error-handler-context'
 
 export type HandleErrorOptions = {
@@ -83,32 +83,38 @@ export function usePageErrorHandler(options: HandleErrorOptions = {}) {
  * Parse ApiHttpError into a standardized ErrorInfo format
  */
 export function parseApiError(error: ApiHttpError): ErrorInfo {
-  const response = error.response
-
   let message = error.message || 'An error occurred. Please try again.'
   let fieldErrors: FieldError[] = []
 
-  if (response) {
+  const response = error.body
+
+  if (response && typeof response === 'object') {
+    const responseData = response as Record<string, unknown>
+
     // Handle .NET Problem Detail format with 'errors' object
-    if ('errors' in response && typeof response.errors === 'object' && response.errors !== null) {
-      const errors = response.errors as Record<string, string[]>
+    if ('errors' in responseData && typeof responseData.errors === 'object' && responseData.errors !== null) {
+      const errors = responseData.errors as Record<string, string[]>
       fieldErrors = Object.entries(errors).map(([field, messages]) => ({
         field,
         messages: Array.isArray(messages) ? messages : [String(messages)],
       }))
 
       // Use title, detail, or custom message
-      message = response.title || response.detail || response.message || message
+      message =
+        (typeof responseData.title === 'string' ? responseData.title : null) ||
+        (typeof responseData.detail === 'string' ? responseData.detail : null) ||
+        (typeof responseData.message === 'string' ? responseData.message : null) ||
+        message
     }
     // Handle fieldErrors array format
-    else if ('fieldErrors' in response && Array.isArray((response as any).fieldErrors)) {
-      const fe = (response as any).fieldErrors as Array<{ field?: string; message?: string }>
+    else if ('fieldErrors' in responseData && Array.isArray(responseData.fieldErrors)) {
+      const fe = responseData.fieldErrors as Array<{ field?: string; message?: string }>
       fieldErrors = fe.map((f) => ({
         field: f.field || '',
         messages: [f.message || ''],
       }))
 
-      message = response.message || message
+      message = (typeof responseData.message === 'string' ? responseData.message : null) || message
     }
   }
 
