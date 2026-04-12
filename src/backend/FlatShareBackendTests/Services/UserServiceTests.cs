@@ -24,8 +24,10 @@ namespace FlatShareBackendTests.Services
             _userService = new UserService(_userRepositoryMock.Object, _passwordHasherMock.Object);
         }
 
-        [Fact]
-        public async Task RegisterAsync_ValidRequest_CreatesUserAndReturnsResponse()
+        [Theory]
+        [InlineData("LANDLORD")]
+        [InlineData("TENANT")]
+        public async Task RegisterAsync_ValidRequest_CreatesUserAndReturnsResponse(string userRole)
         {
             // Arrange
             var request = new RegisterUserRequest
@@ -33,7 +35,8 @@ namespace FlatShareBackendTests.Services
                 FirstName = "John",
                 LastName = "Doe",
                 Email = "john.doe@test.com",
-                Password = "Password123"
+                Password = "Password123",
+                Role = userRole
             };
 
             _userRepositoryMock.Setup(repo => repo.EmailExistsAsync("john.doe@test.com", It.IsAny<CancellationToken>()))
@@ -56,7 +59,7 @@ namespace FlatShareBackendTests.Services
         public async Task RegisterAsync_EmailAlreadyExists_ThrowsEmailAlreadyExistsException()
         {
             // Arrange
-            var request = new RegisterUserRequest { Email = "existing@test.com", Password = "Password123", FirstName = "A", LastName = "B" };
+            var request = new RegisterUserRequest { Email = "existing@test.com", Password = "Password123", FirstName = "A", LastName = "B", Role = "TENANT" };
 
             _userRepositoryMock.Setup(repo => repo.EmailExistsAsync("existing@test.com", It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
