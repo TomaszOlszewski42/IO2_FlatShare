@@ -29,7 +29,7 @@ export function LoginPage(_: RoutableProps) {
       route('/')
     } catch (error) {
       if (error instanceof ApiHttpError) {
-        setErrorMessage(error.message || 'Login failed. Check your credentials and try again.')
+        setErrorMessage(error.response?.message ?? 'Login failed. Check your credentials and try again.')
       } else {
         setErrorMessage('Unexpected error while logging in. Please try again.')
       }
@@ -77,14 +77,6 @@ export function LoginPage(_: RoutableProps) {
             <AppButton className="mt-2" type="submit" loading={isSubmitting}>
               Log in
             </AppButton>
-
-            <button
-              class="btn btn-link px-0"
-              type="button"
-              onClick={() => route('/password-reset/request')}
-            >
-              Forgot password?
-            </button>
           </form>
 
           <p class="mt-3 text-sm text-base-content/70">
