@@ -11,10 +11,26 @@ namespace FlatShareBackend.Data
 
         public DbSet<User> Users => Set<User>();
         public DbSet<UserSession> Sessions => Set<UserSession>();
+        public DbSet<Listing> Listings => Set<Listing>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Listing>(entity =>
+            {
+                entity.HasIndex(x => x.Id).IsUnique();
+
+                entity.HasOne(x => x.Owner)
+                    .WithMany()
+                    .HasForeignKey(x => x.OwnerId)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.OwnsOne(x => x.Location);
+
+                entity.OwnsMany(x => x.UnavailableDates);
+            });
 
             modelBuilder.Entity<User>(entity =>
             {
