@@ -1,15 +1,9 @@
 import { ListingSection } from './listing-section'
 import { formatLocation } from '../../utils/format-location'
+import type { ListingLocation } from '../../types/listing'
 
 type ListingLocationSectionProps = {
-  location: {
-    city: string
-    district?: string
-    street?: string
-    aptNumber?: string
-    buildingNumber?: string
-    postalCode?: string
-  }
+  location: ListingLocation
 }
 
 export function ListingLocationSection({ location }: ListingLocationSectionProps) {

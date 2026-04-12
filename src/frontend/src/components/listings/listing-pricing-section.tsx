@@ -1,6 +1,5 @@
 import { TextInput } from '../ui/text-input'
 import { FormField } from '../ui/form-field'
-import type { JSX } from 'preact'
 
 type ListingPricingSectionProps = {
   formData: {
