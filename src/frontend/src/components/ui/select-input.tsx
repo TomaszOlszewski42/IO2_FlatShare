@@ -1,55 +1,65 @@
-import type { JSX } from 'preact'
 import { FormFieldError } from '../forms/form-field-error'
 
-type TextInputProps = {
+type SelectOption = {
+  value: string
+  label: string
+}
+
+type SelectInputProps = {
   id: string
   name: string
   label: string
-  type?: 'text' | 'email' | 'password'
   value: string
-  placeholder?: string
-  autoComplete?: string
+  options: SelectOption[]
   required?: boolean
   disabled?: boolean
   error?: string
   errors?: string[]
-  onInput: JSX.GenericEventHandler<HTMLInputElement>
+  placeholder?: string
+  onChange: (event: Event) => void
 }
 
-export function TextInput({
+export function SelectInput({
   id,
   name,
   label,
-  type = 'text',
   value,
-  placeholder,
-  autoComplete,
+  options,
   required = false,
   disabled = false,
   error,
   errors,
-  onInput,
-}: TextInputProps) {
+  placeholder,
+  onChange,
+}: SelectInputProps) {
   const errorId = `${id}-error`
   const hasError = Boolean(error) || Boolean(errors?.length)
 
   return (
     <label class="form-control w-full" for={id}>
       <span class="label-text mb-1">{label}</span>
-      <input
+      <select
         id={id}
         name={name}
-        class={`input w-full ${hasError ? 'input-error' : 'input-bordered'}`}
-        type={type}
+        class={`select w-full ${hasError ? 'select-error' : 'select-bordered'}`}
         value={value}
-        placeholder={placeholder}
-        autoComplete={autoComplete}
         required={required}
         disabled={disabled}
         aria-invalid={hasError}
         aria-describedby={hasError ? errorId : undefined}
-        onInput={onInput}
-      />
+        onChange={onChange}
+      >
+        {placeholder ? (
+          <option value="" disabled={required}>
+            {placeholder}
+          </option>
+        ) : null}
+
+        {options.map((option) => (
+          <option value={option.value}>{option.label}</option>
+        ))}
+      </select>
+
       {hasError ? (
         <span id={errorId}>
           <FormFieldError error={error} errors={errors} />

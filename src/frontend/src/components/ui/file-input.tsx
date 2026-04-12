@@ -1,35 +1,30 @@
 import type { JSX } from 'preact'
+
 import { FormFieldError } from '../forms/form-field-error'
 
-type TextInputProps = {
+type FileInputProps = {
   id: string
   name: string
   label: string
-  type?: 'text' | 'email' | 'password'
-  value: string
-  placeholder?: string
-  autoComplete?: string
-  required?: boolean
+  accept?: string
+  multiple?: boolean
   disabled?: boolean
   error?: string
   errors?: string[]
-  onInput: JSX.GenericEventHandler<HTMLInputElement>
+  onChange: JSX.GenericEventHandler<HTMLInputElement>
 }
 
-export function TextInput({
+export function FileInput({
   id,
   name,
   label,
-  type = 'text',
-  value,
-  placeholder,
-  autoComplete,
-  required = false,
+  accept,
+  multiple = false,
   disabled = false,
   error,
   errors,
-  onInput,
-}: TextInputProps) {
+  onChange,
+}: FileInputProps) {
   const errorId = `${id}-error`
   const hasError = Boolean(error) || Boolean(errors?.length)
 
@@ -39,17 +34,16 @@ export function TextInput({
       <input
         id={id}
         name={name}
-        class={`input w-full ${hasError ? 'input-error' : 'input-bordered'}`}
-        type={type}
-        value={value}
-        placeholder={placeholder}
-        autoComplete={autoComplete}
-        required={required}
+        type="file"
+        class={`file-input w-full ${hasError ? 'file-input-error' : 'file-input-bordered'}`}
+        accept={accept}
+        multiple={multiple}
         disabled={disabled}
         aria-invalid={hasError}
         aria-describedby={hasError ? errorId : undefined}
-        onInput={onInput}
+        onChange={onChange}
       />
+
       {hasError ? (
         <span id={errorId}>
           <FormFieldError error={error} errors={errors} />

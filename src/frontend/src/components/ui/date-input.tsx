@@ -1,14 +1,14 @@
 import type { JSX } from 'preact'
+
 import { FormFieldError } from '../forms/form-field-error'
 
-type TextInputProps = {
+type DateInputProps = {
   id: string
   name: string
   label: string
-  type?: 'text' | 'email' | 'password'
   value: string
-  placeholder?: string
-  autoComplete?: string
+  min?: string
+  max?: string
   required?: boolean
   disabled?: boolean
   error?: string
@@ -16,20 +16,19 @@ type TextInputProps = {
   onInput: JSX.GenericEventHandler<HTMLInputElement>
 }
 
-export function TextInput({
+export function DateInput({
   id,
   name,
   label,
-  type = 'text',
   value,
-  placeholder,
-  autoComplete,
+  min,
+  max,
   required = false,
   disabled = false,
   error,
   errors,
   onInput,
-}: TextInputProps) {
+}: DateInputProps) {
   const errorId = `${id}-error`
   const hasError = Boolean(error) || Boolean(errors?.length)
 
@@ -40,10 +39,10 @@ export function TextInput({
         id={id}
         name={name}
         class={`input w-full ${hasError ? 'input-error' : 'input-bordered'}`}
-        type={type}
+        type="date"
         value={value}
-        placeholder={placeholder}
-        autoComplete={autoComplete}
+        min={min}
+        max={max}
         required={required}
         disabled={disabled}
         aria-invalid={hasError}
