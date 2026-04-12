@@ -8,7 +8,6 @@ import { ListingPricingSection } from './listing-pricing-section'
 import { ListingContactSection } from './listing-contact-section'
 import { ListingPublicationSection } from './listing-publication-section'
 import { TextInput } from '../ui/text-input'
-import { FormField } from '../ui/form-field'
 
 export type ListingFormData = {
   title: string
