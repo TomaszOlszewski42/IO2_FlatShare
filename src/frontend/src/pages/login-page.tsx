@@ -29,7 +29,7 @@ export function LoginPage(_: RoutableProps) {
         sessionId: session.sessionId,
         type: session.type,
       })
-      route('/')
+      route('/listings')
     } catch (error) {
       handleError(error, 'Login failed. Check your credentials and try again.')
     } finally {
