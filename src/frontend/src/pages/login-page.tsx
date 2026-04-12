@@ -35,13 +35,10 @@ export function LoginPage(_: RoutableProps) {
       })
       route('/')
     } catch (error) {
-      handleError(error)
-      // Check if there are general errors (not field-specific)
-      const fieldErr = (error as any)?.response?.errors
-      if (!fieldErr) {
-        setGeneralError(
-          (error as any)?.message || 'Login failed. Check your credentials and try again.',
-        )
+      if (error instanceof ApiHttpError) {
+        setErrorMessage(error.message || 'Login failed. Check your credentials and try again.')
+      } else {
+        setErrorMessage('Unexpected error while logging in. Please try again.')
       }
     } finally {
       setIsSubmitting(false)
@@ -90,7 +87,18 @@ export function LoginPage(_: RoutableProps) {
           onInput={(event) => setPassword((event.currentTarget as HTMLInputElement).value)}
         />
 
-        {generalError ? <div class="alert alert-soft alert-error text-sm">{generalError}</div> : null}
+            <AppButton className="mt-2" type="submit" loading={isSubmitting}>
+              Log in
+            </AppButton>
+
+            <button
+              class="btn btn-link px-0"
+              type="button"
+              onClick={() => route('/password-reset/request')}
+            >
+              Forgot password?
+            </button>
+          </form>
 
         <AppButton className="mt-2" type="submit" loading={isSubmitting}>
           Log in
