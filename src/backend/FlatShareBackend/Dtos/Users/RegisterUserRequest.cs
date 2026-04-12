@@ -21,5 +21,9 @@ namespace FlatShareBackend.Dtos.Users
         [MinLength(8)]
         [MaxLength(200)]
         public string Password { get; set; } = string.Empty;
+
+        [Required]
+        [RegularExpression("^(LANDLORD|TENANT)$", ErrorMessage = "Role must be either LANDLORD or TENANT.")]
+        public string Role { get; set; } = string.Empty;
     }
 }

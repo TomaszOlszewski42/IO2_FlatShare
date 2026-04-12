@@ -104,10 +104,7 @@ export function RegisterPage(_: RoutableProps) {
 
             <FormErrorSummary error={errorMessage} />
 
-            <AppButton className="mt-2" type="submit" loading={isSubmitting}>
-              Register
-            </AppButton>
-          </form>
+        {generalError ? <div class="alert alert-soft alert-error text-sm">{generalError}</div> : null}
 
           <p class="mt-3 text-sm text-base-content/70">
             Already registered?{' '}
