@@ -5,6 +5,8 @@ export type LoginRequest = {
   password: string
 }
 
+export type RegisterRole = 'LANDLORD' | 'TENANT'
+
 export type SessionResponse = {
   token: string
   sessionId: string
@@ -18,6 +20,7 @@ export type RegisterRequest = {
   lastName: string
   email: string
   password: string
+  role: RegisterRole
 }
 
 export type RegisterResponse = {
