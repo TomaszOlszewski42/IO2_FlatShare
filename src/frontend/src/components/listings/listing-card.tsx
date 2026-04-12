@@ -2,43 +2,22 @@ import { formatArea } from '../../utils/format-area'
 import { formatDate } from '../../utils/format-date'
 import { formatLocation } from '../../utils/format-location'
 import { formatPrice } from '../../utils/format-price'
-import type { ListingStatus } from '../../utils/format-status-label'
+import type { Listing } from '../../types/listing'
 import { AppButton } from '../ui/app-button'
 import { ListingMetaRow } from './listing-meta-row'
 import { ListingStatusBadge } from './listing-status-badge'
 
-export type ListingCardItem = {
-  listingId: string
-  title: string
-  status: ListingStatus
-  price: number
-  currency: string
-  area: number
-  rooms: number
-  availableFrom: string
-  location: {
-    city: string
-    district?: string
-    street?: string
-    buildingNumber?: string
-    postalCode?: string
-  }
-  allowPets: boolean
-  allowSmoking: boolean
-  furnished: boolean
-}
-
 type ListingCardProps = {
-  listing: ListingCardItem
+  listing: Listing
   onEdit?: (listingId: string) => void
   onViewDetails?: (listingId: string) => void
 }
 
 export function ListingCard({ listing, onEdit, onViewDetails }: ListingCardProps) {
   const featureBadges = [
-    { label: 'Umeblowane', value: listing.furnished },
-    { label: 'Zwierzęta', value: listing.allowPets },
-    { label: 'Palenie', value: listing.allowSmoking },
+    { label: 'Umeblowane', value: Boolean(listing.furnished) },
+    { label: 'Zwierzęta', value: Boolean(listing.allowPets) },
+    { label: 'Palenie', value: Boolean(listing.allowSmoking) },
   ]
 
   return (
@@ -49,14 +28,14 @@ export function ListingCard({ listing, onEdit, onViewDetails }: ListingCardProps
             <h2 class="card-title text-lg leading-tight">{listing.title}</h2>
             <p class="text-sm text-base-content/65">{formatLocation(listing.location)}</p>
           </div>
-          <ListingStatusBadge status={listing.status} />
+          {listing.status ? <ListingStatusBadge status={listing.status} /> : null}
         </div>
 
         <div class="rounded-box border border-base-300/70 bg-base-100 px-4">
           <ListingMetaRow label="Cena" value={`${formatPrice(listing.price)} / mies.`} icon={listing.currency} />
-          <ListingMetaRow label="Powierzchnia" value={formatArea(listing.area)} icon="m2" />
-          <ListingMetaRow label="Liczba pokoi" value={String(listing.rooms)} />
-          <ListingMetaRow label="Dostępne od" value={formatDate(listing.availableFrom)} />
+          <ListingMetaRow label="Powierzchnia" value={listing.area ? formatArea(listing.area) : '-'} icon="m2" />
+          <ListingMetaRow label="Liczba pokoi" value={listing.rooms ? String(listing.rooms) : '-'} />
+          <ListingMetaRow label="Dostępne od" value={listing.availableFrom ? formatDate(listing.availableFrom) : '-'} />
         </div>
 
         <div class="flex flex-wrap gap-2">
@@ -74,10 +53,10 @@ export function ListingCard({ listing, onEdit, onViewDetails }: ListingCardProps
         </div>
 
         <div class="card-actions justify-between">
-          <AppButton variant="ghost" className="btn-sm" onClick={() => onEdit?.(listing.listingId)}>
+          <AppButton variant="ghost" className="btn-sm" onClick={() => onEdit?.(listing.id)}>
             Edytuj
           </AppButton>
-          <AppButton variant="outline" className="btn-sm" onClick={() => onViewDetails?.(listing.listingId)}>
+          <AppButton variant="outline" className="btn-sm" onClick={() => onViewDetails?.(listing.id)}>
             Szczegóły
           </AppButton>
         </div>

@@ -6,6 +6,7 @@ type ListingLocationSectionProps = {
     city: string
     district?: string
     street?: string
+    aptNumber?: string
     buildingNumber?: string
     postalCode?: string
   }

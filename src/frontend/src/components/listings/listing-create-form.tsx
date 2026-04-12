@@ -10,7 +10,7 @@ import { ListingPublicationSection } from './listing-publication-section'
 import { TextInput } from '../ui/text-input'
 import { FormField } from '../ui/form-field'
 
-type ListingFormData = {
+export type ListingFormData = {
   title: string
   description: string
   pricePerMonth: number

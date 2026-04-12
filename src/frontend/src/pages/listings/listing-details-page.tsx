@@ -1,16 +1,18 @@
 import type { RoutableProps } from 'preact-router'
 import { route } from 'preact-router'
-import { useEffect, useMemo, useState } from 'preact/hooks'
+import { useEffect, useState } from 'preact/hooks'
 
 import { ListingDetailsHeader } from '../../components/listings/listing-details-header'
 import { ListingDetailsSkeleton } from '../../components/listings/listing-details-skeleton'
 import { ListingMetaRow } from '../../components/listings/listing-meta-row'
 import { ListingLocationSection } from '../../components/listings/listing-location-section'
 import { ListingSection } from '../../components/listings/listing-section'
+import { readAuthSession } from '../../services/auth-session'
+import { getListingById } from '../../services/listings-api'
+import type { Listing } from '../../types/listing'
 import { formatArea } from '../../utils/format-area'
 import { formatDate } from '../../utils/format-date'
 import { formatPrice } from '../../utils/format-price'
-import { mockListingById } from '../../data/mock-listings'
 import { formatStatusLabel } from '../../utils/format-status-label'
 
 type ListingDetailsRouteProps = RoutableProps & {
@@ -19,23 +21,45 @@ type ListingDetailsRouteProps = RoutableProps & {
 
 export function ListingDetailsPage({ listingId }: ListingDetailsRouteProps) {
   const [isLoading, setIsLoading] = useState(true)
+  const [listing, setListing] = useState<Listing | null>(null)
 
   useEffect(() => {
-    const timeoutId = window.setTimeout(() => {
+    if (!listingId) {
       setIsLoading(false)
-    }, 700)
+      setListing(null)
+      return
+    }
+
+    const session = readAuthSession()
+
+    if (!session) {
+      route('/login')
+      return
+    }
+
+    let isMounted = true
+
+    setIsLoading(true)
+    void getListingById(listingId, session.token, session.type)
+      .then((item) => {
+        if (isMounted) {
+          setListing(item)
+        }
+      })
+      .catch(() => {
+        if (isMounted) {
+          setListing(null)
+        }
+      })
+      .finally(() => {
+        if (isMounted) {
+          setIsLoading(false)
+        }
+      })
 
     return () => {
-      window.clearTimeout(timeoutId)
+      isMounted = false
     }
-  }, [listingId])
-
-  const listing = useMemo(() => {
-    if (!listingId) {
-      return null
-    }
-
-    return mockListingById[listingId] ?? null
   }, [listingId])
 
   if (isLoading) {
@@ -57,16 +81,15 @@ export function ListingDetailsPage({ listingId }: ListingDetailsRouteProps) {
 
   const parameterRows = [
     { label: 'Cena', value: `${formatPrice(listing.price)} / mies.`, icon: listing.currency },
-    { label: 'Powierzchnia', value: formatArea(listing.area), icon: 'm2' },
-    { label: 'Liczba pokoi', value: String(listing.rooms) },
-    { label: 'Dostępne od', value: formatDate(listing.availableFrom) },
-    { label: 'Status publikacji', value: formatStatusLabel(listing.status) },
+    { label: 'Powierzchnia', value: listing.area ? formatArea(listing.area) : '-', icon: 'm2' },
+    { label: 'Dostępne od', value: listing.availableFrom ? formatDate(listing.availableFrom) : '-' },
+    { label: 'Status publikacji', value: listing.status ? formatStatusLabel(listing.status) : '-' },
   ]
 
   const featureRows = [
-    { label: 'Umeblowane', value: listing.furnished },
-    { label: 'Zwierzęta', value: listing.allowPets },
-    { label: 'Palenie', value: listing.allowSmoking },
+    { label: 'Umeblowane', value: Boolean(listing.furnished) },
+    { label: 'Zwierzęta', value: Boolean(listing.allowPets) },
+    { label: 'Palenie', value: Boolean(listing.allowSmoking) },
   ]
 
   return (
@@ -74,7 +97,7 @@ export function ListingDetailsPage({ listingId }: ListingDetailsRouteProps) {
       <ListingDetailsHeader
         title={listing.title}
         onBack={() => route('/listings')}
-        onEdit={() => route(`/listings/${listing.listingId}/edit`)}
+        onEdit={() => route(`/listings/${listing.id}/edit`)}
         onArchive={() => {
           // Placeholder for API action.
         }}
@@ -112,9 +135,9 @@ export function ListingDetailsPage({ listingId }: ListingDetailsRouteProps) {
         <div class="space-y-3 text-sm leading-relaxed text-base-content/80">
           <p>{listing.description}</p>
           <div class="grid gap-2 md:grid-cols-2">
-            <ListingMetaRow label="Kontakt" value={listing.contact} />
-            <ListingMetaRow label="Telefon" value={listing.phone || '-'} />
-            <ListingMetaRow label="Status" value={formatStatusLabel(listing.status)} />
+            <ListingMetaRow label="Kontakt" value={listing.contact || listing.ownerContact || '-'} />
+            <ListingMetaRow label="Telefon" value={listing.phone || listing.contactPhone || '-'} />
+            <ListingMetaRow label="Status" value={listing.status ? formatStatusLabel(listing.status) : '-'} />
           </div>
         </div>
       </ListingSection>
