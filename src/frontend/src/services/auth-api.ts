@@ -1,4 +1,16 @@
-import { apiRequest } from './api-client'
+import { ApiHttpError, apiRequest } from './api-client'
+
+type ApiFieldError = {
+  field: string
+  message: string
+}
+
+type ApiErrorResponse = {
+  status: number
+  error: string
+  message?: string
+  fieldErrors?: ApiFieldError[]
+}
 
 export type LoginRequest = {
   email: string
