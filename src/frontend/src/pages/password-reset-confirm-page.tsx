@@ -1,10 +1,7 @@
 import { useState } from 'preact/hooks'
 import { route } from 'preact-router'
-
-import { FormErrorSummary } from '../components/forms/form-error-summary'
-import { TextInput } from '../components/ui/text-input'
 import { confirmPasswordReset } from '../services/password-reset-api'
-import { mapFormErrors } from '../services/form-error-mapper'
+import { ApiHttpError } from '../services/api-client'
 
 export function PasswordResetConfirmPage(_props: { path?: string }) {
   const [resetToken, setResetToken] = useState('')
@@ -12,22 +9,22 @@ export function PasswordResetConfirmPage(_props: { path?: string }) {
   const [error, setError] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({})
 
   async function handleSubmit(event: Event) {
     event.preventDefault()
     setError(null)
     setSuccessMessage(null)
-    setFieldErrors({})
     setIsSubmitting(true)
 
     try {
       const response = await confirmPasswordReset({ resetToken, newPassword })
       setSuccessMessage(response.message || 'Password has been reset successfully.')
     } catch (caughtError) {
-      const mappedError = mapFormErrors(caughtError)
-      setError(mappedError.summary ?? 'Request failed.')
-      setFieldErrors(mappedError.fieldErrors)
+      if (caughtError instanceof ApiHttpError) {
+          setError(caughtError.message || 'Request failed.')
+      } else {
+        setError('Unexpected error occurred.')
+      }
     } finally {
       setIsSubmitting(false)
     }
@@ -37,35 +34,41 @@ export function PasswordResetConfirmPage(_props: { path?: string }) {
     <div class="mx-auto max-w-md space-y-6">
       <div class="space-y-2">
         <h1 class="text-2xl font-semibold">Set new password</h1>
-        <p class="text-sm opacity-80">Paste your reset token and choose a new password.</p>
+        <p class="text-sm opacity-80">
+          Paste your reset token and choose a new password.
+        </p>
       </div>
 
-      <form class="space-y-6" onSubmit={handleSubmit}>
-        <TextInput
-          id="resetToken"
-          name="resetToken"
-          label="Reset token"
-          type="text"
-          value={resetToken}
-          required
-          disabled={isSubmitting}
-          onInput={(event) => setResetToken((event.currentTarget as HTMLInputElement).value)}
-          errors={fieldErrors.resetToken}
-        />
+      <form class="space-y-4" onSubmit={handleSubmit}>
+        <div class="form-control">
+          <label class="label" for="resetToken">
+            <span class="label-text">Reset token</span>
+          </label>
+          <input
+            id="resetToken"
+            type="text"
+            class="input input-bordered w-full"
+            value={resetToken}
+            onInput={(event) => setResetToken((event.currentTarget as HTMLInputElement).value)}
+            required
+          />
+        </div>
 
-        <TextInput
-          id="newPassword"
-          name="newPassword"
-          label="New password"
-          type="password"
-          value={newPassword}
-          required
-          disabled={isSubmitting}
-          onInput={(event) => setNewPassword((event.currentTarget as HTMLInputElement).value)}
-          errors={fieldErrors.newPassword}
-        />
+        <div class="form-control">
+          <label class="label" for="newPassword">
+            <span class="label-text">New password</span>
+          </label>
+          <input
+            id="newPassword"
+            type="password"
+            class="input input-bordered w-full"
+            value={newPassword}
+            onInput={(event) => setNewPassword((event.currentTarget as HTMLInputElement).value)}
+            required
+          />
+        </div>
 
-        <FormErrorSummary error={error} />
+        {error ? <div class="alert alert-error text-sm">{error}</div> : null}
         {successMessage ? <div class="alert alert-success text-sm">{successMessage}</div> : null}
 
         <div class="flex gap-3">
