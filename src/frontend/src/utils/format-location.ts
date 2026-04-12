@@ -1,10 +1,10 @@
 type LocationInput = {
   city: string
-  district?: string
-  street?: string
-  aptNumber?: string
-  buildingNumber?: string
-  postalCode?: string
+  district?: string | null
+  street?: string | null
+  aptNumber?: string | null
+  buildingNumber?: string | null
+  postalCode?: string | null
 }
 
 export function formatLocation({ city, district, street, aptNumber, buildingNumber, postalCode }: LocationInput): string {
