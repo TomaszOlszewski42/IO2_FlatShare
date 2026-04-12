@@ -2,20 +2,49 @@ import type { RoutableProps } from 'preact-router'
 import { route } from 'preact-router'
 import { useState } from 'preact/hooks'
 
-import { ListingCreateForm } from '../../components/listings/listing-create-form'
+import { ListingCreateForm, type ListingFormData } from '../../components/listings/listing-create-form'
+import { readAuthSession } from '../../services/auth-session'
+import { createListing } from '../../services/listings-api'
+import type { CreateListingPayload } from '../../types/listing-forms'
 
 export function ListingCreatePage(_: RoutableProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  async function handleSubmit(formData: any) {
+  function mapToCreatePayload(formData: ListingFormData): CreateListingPayload {
+    return {
+      title: formData.title.trim(),
+      description: formData.description.trim(),
+      price: formData.pricePerMonth,
+      currency: 'PLN',
+      availableFrom: formData.availableFrom,
+      ownerContact: formData.contact.trim(),
+      area: formData.areaSqm,
+      availableSince: formData.availableFrom,
+      location: {
+        city: formData.city.trim(),
+        district: (formData.district || '').trim(),
+        street: (formData.street || '').trim(),
+        aptNumber: (formData.buildingNumber || '').trim(),
+      },
+    }
+  }
+
+  async function handleSubmit(formData: ListingFormData) {
+    const session = readAuthSession()
+
+    if (!session) {
+      route('/login')
+      return
+    }
+
     setIsSubmitting(true)
     try {
-      // TODO: Call API to create listing
-      console.log('Creating listing:', formData)
-      // Temporary: redirect to listings page on success
+      const payload = mapToCreatePayload(formData)
+      await createListing(payload, session.token, session.type)
       route('/listings')
     } catch (error) {
       console.error('Failed to create listing:', error)
+    } finally {
       setIsSubmitting(false)
     }
   }

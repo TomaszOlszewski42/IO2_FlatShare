@@ -6,48 +6,74 @@ import { ListingCard } from '../../components/listings/listing-card'
 import { ListingsEmptyState } from '../../components/listings/listings-empty-state'
 import { ListingsSkeleton } from '../../components/listings/listings-skeleton'
 import { ListingsToolbar } from '../../components/listings/listings-toolbar'
-import { mockListings } from '../../data/mock-listings'
+import { readAuthSession } from '../../services/auth-session'
+import { getListings } from '../../services/listings-api'
+import type { Listing } from '../../types/listing'
 import { formatLocation } from '../../utils/format-location'
-import type { ListingStatus } from '../../utils/format-status-label'
+import type { ListingStatus } from '../../types/listing-status'
 
 type ListingFilterValue = ListingStatus | 'ALL'
 
 export function ListingsPage(_: RoutableProps) {
   const [isLoading, setIsLoading] = useState(true)
+  const [listings, setListings] = useState<Listing[]>([])
   const [query, setQuery] = useState('')
   const [selectedStatus, setSelectedStatus] = useState<ListingFilterValue>('ALL')
 
   useEffect(() => {
-    const timeoutId = window.setTimeout(() => {
-      setIsLoading(false)
-    }, 650)
+    const session = readAuthSession()
+
+    if (!session) {
+      route('/login')
+      return
+    }
+
+    let isMounted = true
+
+    void getListings(session.token, undefined, session.type)
+      .then((items) => {
+        if (isMounted) {
+          setListings(items)
+        }
+      })
+      .catch(() => {
+        if (isMounted) {
+          setListings([])
+        }
+      })
+      .finally(() => {
+        if (isMounted) {
+          setIsLoading(false)
+        }
+      })
 
     return () => {
-      window.clearTimeout(timeoutId)
+      isMounted = false
     }
   }, [])
 
   const filteredListings = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase()
 
-    return mockListings.filter((listing) => {
+    return listings.filter((listing) => {
       const searchable = `${listing.title} ${formatLocation(listing.location)}`.toLowerCase()
       const statusMatches = selectedStatus === 'ALL' || listing.status === selectedStatus
       const queryMatches = !normalizedQuery || searchable.includes(normalizedQuery)
 
       return statusMatches && queryMatches
     })
-  }, [query, selectedStatus])
+  }, [query, selectedStatus, listings])
 
   const hasFilters = query.trim().length > 0
+  const activeCount = listings.filter((listing) => listing.status === 'ACTIVE').length
 
   return (
     <section class="flex w-full flex-1 flex-col gap-5">
       <ListingsToolbar
         query={query}
         selectedStatus={selectedStatus}
-        totalCount={mockListings.length}
-        activeCount={mockListings.filter((listing) => listing.status === 'ACTIVE').length}
+        totalCount={listings.length}
+        activeCount={activeCount}
         onQueryChange={setQuery}
         onStatusChange={setSelectedStatus}
         onCreateListing={() => route('/listings/create')}
@@ -59,7 +85,7 @@ export function ListingsPage(_: RoutableProps) {
         <div class="grid gap-4 md:grid-cols-2">
           {filteredListings.map((listing) => (
             <ListingCard
-              key={listing.listingId}
+              key={listing.id}
               listing={listing}
               onEdit={(listingId) => route(`/listings/${listingId}/edit`)}
               onViewDetails={(listingId) => route(`/listings/${listingId}`)}
