@@ -1,27 +1,33 @@
 import { useState } from 'preact/hooks'
+import { route } from 'preact-router'
 
-import { PasswordResetConfirmForm } from '../components/auth/password-reset-confirm-form'
-import { usePageErrorHandler } from '../hooks/use-page-error-handler'
+import { FormErrorSummary } from '../components/forms/form-error-summary'
+import { TextInput } from '../components/ui/text-input'
 import { confirmPasswordReset } from '../services/password-reset-api'
+import { mapFormErrors } from '../services/form-error-mapper'
 
 export function PasswordResetConfirmPage(_props: { path?: string }) {
   const [resetToken, setResetToken] = useState('')
   const [newPassword, setNewPassword] = useState('')
-  const { errorMessage, fieldErrors, clearErrors, handleError } = usePageErrorHandler()
+  const [error, setError] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({})
 
   async function handleSubmit(event: Event) {
     event.preventDefault()
-    clearErrors()
+    setError(null)
     setSuccessMessage(null)
+    setFieldErrors({})
     setIsSubmitting(true)
 
     try {
       const response = await confirmPasswordReset({ resetToken, newPassword })
       setSuccessMessage(response.message || 'Password has been reset successfully.')
     } catch (caughtError) {
-      handleError(caughtError, 'Request failed.')
+      const mappedError = mapFormErrors(caughtError)
+      setError(mappedError.summary ?? 'Request failed.')
+      setFieldErrors(mappedError.fieldErrors)
     } finally {
       setIsSubmitting(false)
     }
@@ -34,17 +40,44 @@ export function PasswordResetConfirmPage(_props: { path?: string }) {
         <p class="text-sm opacity-80">Paste your reset token and choose a new password.</p>
       </div>
 
-      <PasswordResetConfirmForm
-        resetToken={resetToken}
-        newPassword={newPassword}
-        isSubmitting={isSubmitting}
-        errorMessage={errorMessage}
-        successMessage={successMessage}
-        fieldErrors={fieldErrors}
-        onResetTokenInput={(event) => setResetToken((event.currentTarget as HTMLInputElement).value)}
-        onNewPasswordInput={(event) => setNewPassword((event.currentTarget as HTMLInputElement).value)}
-        onSubmit={handleSubmit}
-      />
+      <form class="space-y-6" onSubmit={handleSubmit}>
+        <TextInput
+          id="resetToken"
+          name="resetToken"
+          label="Reset token"
+          type="text"
+          value={resetToken}
+          required
+          disabled={isSubmitting}
+          onInput={(event) => setResetToken((event.currentTarget as HTMLInputElement).value)}
+          errors={fieldErrors.resetToken}
+        />
+
+        <TextInput
+          id="newPassword"
+          name="newPassword"
+          label="New password"
+          type="password"
+          value={newPassword}
+          required
+          disabled={isSubmitting}
+          onInput={(event) => setNewPassword((event.currentTarget as HTMLInputElement).value)}
+          errors={fieldErrors.newPassword}
+        />
+
+        <FormErrorSummary error={error} />
+        {successMessage ? <div class="alert alert-success text-sm">{successMessage}</div> : null}
+
+        <div class="flex gap-3">
+          <button class="btn btn-primary" type="submit" disabled={isSubmitting}>
+            {isSubmitting ? 'Saving...' : 'Reset password'}
+          </button>
+
+          <button class="btn btn-ghost" type="button" onClick={() => route('/login')}>
+            Back to login
+          </button>
+        </div>
+      </form>
     </div>
   )
 }

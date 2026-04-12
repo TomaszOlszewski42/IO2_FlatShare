@@ -79,24 +79,16 @@ export function LoginPage(_: RoutableProps) {
               Log in
             </AppButton>
 
-            <button
-              class="link link-primary w-fit text-left"
-              type="button"
-              onClick={() => route('/password-reset/request')}
-            >
+            <a class="link link-primary w-fit" href="/password-reset/request">
               Forgot password?
-            </button>
+            </a>
           </form>
 
           <p class="mt-3 text-sm text-base-content/70">
             Don&apos;t have an account?{' '}
-            <button
-              class="link link-primary"
-              type="button"
-              onClick={() => route('/register')}
-            >
+            <a class="link link-primary" href="/register">
               Register
-            </button>
+            </a>
           </p>
         </div>
       </div>

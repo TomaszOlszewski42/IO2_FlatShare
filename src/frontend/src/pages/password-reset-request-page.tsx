@@ -1,8 +1,10 @@
 import { useState } from 'preact/hooks'
+import { route } from 'preact-router'
 
-import { PasswordResetRequestForm } from '../components/auth/password-reset-request-form'
-import { usePageErrorHandler } from '../hooks/use-page-error-handler'
+import { FormErrorSummary } from '../components/forms/form-error-summary'
+import { TextInput } from '../components/ui/text-input'
 import { requestPasswordReset } from '../services/password-reset-api'
+import { usePageErrorHandler } from '../hooks/use-page-error-handler'
 
 export function PasswordResetRequestPage(_props: { path?: string }) {
   const [email, setEmail] = useState('')
@@ -37,15 +39,32 @@ export function PasswordResetRequestPage(_props: { path?: string }) {
         </p>
       </div>
 
-      <PasswordResetRequestForm
-        email={email}
-        isSubmitting={isSubmitting}
-        errorMessage={errorMessage}
-        successMessage={successMessage}
-        fieldErrors={fieldErrors}
-        onEmailInput={(event) => setEmail((event.currentTarget as HTMLInputElement).value)}
-        onSubmit={handleSubmit}
-      />
+      <form class="space-y-6" onSubmit={handleSubmit}>
+        <TextInput
+          id="email"
+          name="email"
+          label="Email"
+          type="email"
+          value={email}
+          required
+          disabled={isSubmitting}
+          errors={fieldErrors.email}
+          onInput={(event) => setEmail((event.currentTarget as HTMLInputElement).value)}
+        />
+
+        <FormErrorSummary error={errorMessage} />
+        {successMessage ? <div class="alert alert-success text-sm">{successMessage}</div> : null}
+
+        <div class="flex gap-3">
+          <button class="btn btn-primary" type="submit" disabled={isSubmitting}>
+            {isSubmitting ? 'Sending...' : 'Send reset instructions'}
+          </button>
+
+          <button class="btn btn-ghost" type="button" onClick={() => route('/login')}>
+            Back to login
+          </button>
+        </div>
+      </form>
     </div>
   )
 }
