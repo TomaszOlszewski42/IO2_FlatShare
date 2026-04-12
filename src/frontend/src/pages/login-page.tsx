@@ -1,26 +1,23 @@
 import type { RoutableProps } from 'preact-router'
 import { route } from 'preact-router'
 import { useState } from 'preact/hooks'
-import { usePageErrorHandler } from '../hooks/use-page-error-handler'
 
 import { AppButton } from '../components/ui/app-button'
 import { TextInput } from '../components/ui/text-input'
 import { persistAuthSession } from '../services/auth-session'
-import { login } from '../services/auth-api'
-
-import { FormErrorSummary } from '../components/forms/form-error-summary'
+import { ApiHttpError, login } from '../services/auth-api'
 
 export function LoginPage(_: RoutableProps) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const { errorMessage, fieldErrors, clearErrors, handleError } = usePageErrorHandler()
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   async function onSubmit(event: SubmitEvent) {
     event.preventDefault()
 
     setIsSubmitting(true)
-    clearErrors()
+    setErrorMessage(null)
 
     try {
       const session = await login({ email, password })
@@ -31,7 +28,11 @@ export function LoginPage(_: RoutableProps) {
       })
       route('/')
     } catch (error) {
-      handleError(error, 'Login failed. Check your credentials and try again.')
+      if (error instanceof ApiHttpError) {
+        setErrorMessage(error.response?.message ?? 'Login failed. Check your credentials and try again.')
+      } else {
+        setErrorMessage('Unexpected error while logging in. Please try again.')
+      }
     } finally {
       setIsSubmitting(false)
     }
@@ -55,7 +56,6 @@ export function LoginPage(_: RoutableProps) {
               autoComplete="email"
               required
               disabled={isSubmitting}
-              errors={fieldErrors.email}
               onInput={(event) => setEmail((event.currentTarget as HTMLInputElement).value)}
             />
 
@@ -69,34 +69,21 @@ export function LoginPage(_: RoutableProps) {
               autoComplete="current-password"
               required
               disabled={isSubmitting}
-              errors={fieldErrors.password}
               onInput={(event) => setPassword((event.currentTarget as HTMLInputElement).value)}
             />
 
-            <FormErrorSummary error={errorMessage} />
+            {errorMessage ? <div class="alert alert-error text-sm">{errorMessage}</div> : null}
 
             <AppButton className="mt-2" type="submit" loading={isSubmitting}>
               Log in
             </AppButton>
-
-            <button
-              class="link link-primary w-fit text-left"
-              type="button"
-              onClick={() => route('/password-reset/request')}
-            >
-              Forgot password?
-            </button>
           </form>
 
           <p class="mt-3 text-sm text-base-content/70">
             Don&apos;t have an account?{' '}
-            <button
-              class="link link-primary"
-              type="button"
-              onClick={() => route('/register')}
-            >
+            <a class="link link-primary" href="/register">
               Register
-            </button>
+            </a>
           </p>
         </div>
       </div>
