@@ -95,21 +95,26 @@ export function RegisterPage(_: RoutableProps) {
               onInput={(event) => setPassword((event.currentTarget as HTMLInputElement).value)}
             />
 
-            {errorMessage ? <div class="alert alert-error text-sm">{errorMessage}</div> : null}
+        <TextInput
+          id="register-password"
+          name="password"
+          label="Password"
+          type="password"
+          value={password}
+          placeholder="Create a strong password"
+          autoComplete="new-password"
+          required
+          disabled={isSubmitting}
+          error={getFieldError('password') || undefined}
+          onInput={(event) => setPassword((event.currentTarget as HTMLInputElement).value)}
+        />
 
-            <AppButton className="mt-2" type="submit" loading={isSubmitting}>
-              Register
-            </AppButton>
-          </form>
+        {generalError ? <div class="alert alert-soft alert-error text-sm">{generalError}</div> : null}
 
-          <p class="mt-3 text-sm text-base-content/70">
-            Already registered?{' '}
-            <a class="link link-primary" href="/login">
-              Log in
-            </a>
-          </p>
-        </div>
-      </div>
-    </section>
+        <AppButton className="mt-2" type="submit" loading={isSubmitting}>
+          Register
+        </AppButton>
+      </form>
+    </AuthCard>
   )
 }

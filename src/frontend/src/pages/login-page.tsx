@@ -5,6 +5,7 @@ import { usePageErrorHandler } from '../hooks/use-page-error-handler'
 
 import { AppButton } from '../components/ui/app-button'
 import { TextInput } from '../components/ui/text-input'
+import { AuthCard } from '../components/layout/auth-card'
 import { persistAuthSession } from '../services/auth-session'
 import { login } from '../services/auth-api'
 
@@ -84,14 +85,10 @@ export function LoginPage(_: RoutableProps) {
             </a>
           </form>
 
-          <p class="mt-3 text-sm text-base-content/70">
-            Don&apos;t have an account?{' '}
-            <a class="link link-primary" href="/register">
-              Register
-            </a>
-          </p>
-        </div>
-      </div>
-    </section>
+        <AppButton className="mt-2" type="submit" loading={isSubmitting}>
+          Log in
+        </AppButton>
+      </form>
+    </AuthCard>
   )
 }

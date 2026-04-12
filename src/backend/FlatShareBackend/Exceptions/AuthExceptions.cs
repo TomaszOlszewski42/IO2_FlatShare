@@ -19,4 +19,9 @@
     {
         public InvalidSessionException(string message) : base(message) { }
     }
+
+    public class InvalidRoleException : Exception
+    {
+        public InvalidRoleException(string message) : base(message) { }
+    }
 }

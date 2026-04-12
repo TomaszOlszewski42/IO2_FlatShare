@@ -53,6 +53,38 @@ namespace FlatShareBackend.Controllers
                 }
                 });
             }
+            catch (InvalidRoleException ex)
+            {
+                return BadRequest(new ApiErrorResponse
+                {
+                    Timestamp = DateTime.UtcNow,
+                    Status = StatusCodes.Status400BadRequest,
+                    Error = "ValidationError",
+                    FieldErrors = new List<ApiFieldError>
+                {
+                    new()
+                    {
+                        Field = "role",
+                        Message = ex.Message
+                    }
+                }
+                });
+            }
+        }
+
+        [HttpGet("{userId:guid}")]
+        [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetById(Guid userId, CancellationToken cancellationToken)
+        {
+            var user = await _userService.GetByIdAsync(userId, cancellationToken);
+
+            if (user is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(user);
         }
     }
 }
