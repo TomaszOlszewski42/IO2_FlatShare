@@ -8,6 +8,7 @@ export type ListingListQuery = {
   size?: number
   status?: ListingStatus
   city?: string
+  ownerId?: string
 }
 
 type ListingDto = {
@@ -66,6 +67,10 @@ function buildQueryString(params?: ListingListQuery): string {
 
   if (params.city) {
     searchParams.set('city', params.city)
+  }
+
+  if (params.ownerId) {
+    searchParams.set('ownerId', params.ownerId)
   }
 
   const queryString = searchParams.toString()
