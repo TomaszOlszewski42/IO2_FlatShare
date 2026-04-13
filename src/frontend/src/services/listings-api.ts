@@ -10,27 +10,33 @@ export type ListingListQuery = {
   city?: string
 }
 
-export type PageMeta = {
-  size: number
-  number: number
-  totalElements: number
-  totalPages: number
-}
-
-export type PaginatedListingsResponse = {
-  content: Listing[]
-  page: PageMeta
+type ListingDto = {
+  id: string
+  title: string
+  description: string
+  price: number
+  currency: string
+  availableFrom: string
+  ownerContact: string
+  area: number
+  availableSince: string
+  location: {
+    city: string
+    district: string
+    street: string
+    aptNumber: string
+  }
 }
 
 export type CreateListingResponse = {
   listingId: string
-  status: ListingStatus
+  status: string
   createdAt?: string
 }
 
 export type ListingStatusActionResponse = {
-  listingId: string
-  status: ListingStatus
+  listingId?: string
+  status?: ListingStatus | string
   updatedAt?: string
 }
 
@@ -71,11 +77,31 @@ export async function getListings(
   token: string,
   query?: ListingListQuery,
   type = 'Bearer',
-): Promise<PaginatedListingsResponse> {
-  return apiRequest<PaginatedListingsResponse>(`/listings${buildQueryString(query)}`, {
+): Promise<Listing[]> {
+  const items = await apiRequest<ListingDto[]>(`/listings${buildQueryString(query)}`, {
     method: 'GET',
     headers: getAuthHeaders(token, type),
   })
+
+  return items.map((item) => ({
+    id: item.id,
+    title: item.title,
+    description: item.description,
+    price: item.price,
+    currency: item.currency,
+    availableFrom: item.availableFrom,
+    availableSince: item.availableSince,
+    ownerContact: item.ownerContact,
+    contact: item.ownerContact,
+    area: item.area,
+    location: {
+      city: item.location.city,
+      district: item.location.district,
+      street: item.location.street,
+      aptNumber: item.location.aptNumber,
+      buildingNumber: item.location.aptNumber,
+    },
+  }))
 }
 
 export async function getListingById(
@@ -83,10 +109,30 @@ export async function getListingById(
   token: string,
   type = 'Bearer',
 ): Promise<Listing> {
-  return apiRequest<Listing>(`/listings/${listingId}`, {
+  const item = await apiRequest<ListingDto>(`/listings/${listingId}`, {
     method: 'GET',
     headers: getAuthHeaders(token, type),
   })
+
+  return {
+    id: item.id,
+    title: item.title,
+    description: item.description,
+    price: item.price,
+    currency: item.currency,
+    availableFrom: item.availableFrom,
+    availableSince: item.availableSince,
+    ownerContact: item.ownerContact,
+    contact: item.ownerContact,
+    area: item.area,
+    location: {
+      city: item.location.city,
+      district: item.location.district,
+      street: item.location.street,
+      aptNumber: item.location.aptNumber,
+      buildingNumber: item.location.aptNumber,
+    },
+  }
 }
 
 export async function createListing(
@@ -120,7 +166,7 @@ export async function hideListing(
   type = 'Bearer',
 ): Promise<ListingStatusActionResponse> {
   return apiRequest<ListingStatusActionResponse>(`/listings/${listingId}/hide`, {
-    method: 'POST',
+    method: 'PATCH',
     headers: getAuthHeaders(token, type),
   })
 }
@@ -131,7 +177,7 @@ export async function archiveListing(
   type = 'Bearer',
 ): Promise<ListingStatusActionResponse> {
   return apiRequest<ListingStatusActionResponse>(`/listings/${listingId}/archive`, {
-    method: 'POST',
+    method: 'PATCH',
     headers: getAuthHeaders(token, type),
   })
 }

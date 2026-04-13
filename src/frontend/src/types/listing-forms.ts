@@ -22,22 +22,17 @@ export interface CreateListingPayload {
   title: string
   description: string
   price: number
-  currency?: string
-  availableFrom?: string | null
-  contactEmail?: string | null
-  contactPhone?: string | null
+  currency: string
+  availableFrom: string
+  ownerContact: string
+  area: number
+  availableSince: string
   location: {
     city: string
-    district?: string | null
-    street?: string | null
-    houseNumber?: string | null
+    district: string
+    street: string
+    aptNumber: string
   }
-  attributes?: {
-    petsAllowed?: boolean
-    nonSmokingOnly?: boolean
-    preferredTenantProfile?: string | null
-  }
-  status?: ListingStatus
 }
 
 export interface UpdateListingPayload extends Partial<CreateListingPayload> {}

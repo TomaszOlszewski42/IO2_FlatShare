@@ -7,10 +7,10 @@ import { AppButton } from '../components/ui/app-button'
 import { SelectInput } from '../components/ui/select-input'
 import { TextInput } from '../components/ui/text-input'
 import { usePageErrorHandler } from '../hooks/use-page-error-handler'
-import { register } from '../services/auth-api'
+import { register, type RegisterRole } from '../services/auth-api'
 import { ApiHttpError } from '../services/api-client'
 
-const roleOptions = [
+const roleOptions: Array<{ value: RegisterRole; label: string }> = [
   { value: 'TENANT', label: 'Tenant' },
   { value: 'LANDLORD', label: 'Landlord' },
 ]
@@ -20,7 +20,7 @@ export function RegisterPage(_: RoutableProps) {
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [role, setRole] = useState('')
+  const [role, setRole] = useState<RegisterRole>('TENANT')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const { errorMessage, fieldErrors, clearErrors, handleError } = usePageErrorHandler()
@@ -112,17 +112,13 @@ export function RegisterPage(_: RoutableProps) {
             <SelectInput
               id="register-role"
               name="role"
-              label="Account type"
+              label="I am registering as"
               value={role}
               options={roleOptions}
-              placeholder="Choose account type"
               required
               disabled={isSubmitting}
-              errors={fieldErrors.role ?? fieldErrors.Role}
-              onChange={(event) => {
-                const target = event.currentTarget as HTMLSelectElement
-                setRole(target.value)
-              }}
+              errors={fieldErrors.role}
+              onChange={(event) => setRole((event.currentTarget as HTMLSelectElement).value as RegisterRole)}
             />
 
             <FormErrorSummary error={errorMessage} />
@@ -130,6 +126,7 @@ export function RegisterPage(_: RoutableProps) {
             <AppButton className="mt-2" type="submit" loading={isSubmitting}>
               Create account
             </AppButton>
+
           </form>
 
           <p class="mt-3 text-sm text-base-content/70">
