@@ -57,5 +57,6 @@ export async function refreshSession(
     headers: {
       Authorization: `${type} ${token}`,
     },
+    skipTokenRefresh: true,
   })
 }
