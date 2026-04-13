@@ -8,28 +8,12 @@ function isAuthenticated(): boolean {
   return Boolean(readAuthSession())
 }
 
-function getRoleBadgeLabel(): string | null {
-  const roles = readAuthSession()?.roles ?? []
-
-  if (roles.includes('LANDLORD')) {
-    return 'Landlord'
-  }
-
-  if (roles.includes('TENANT')) {
-    return 'Tenant'
-  }
-
-  return null
-}
-
 export function AuthControls() {
   const [authenticated, setAuthenticated] = useState<boolean>(isAuthenticated)
-  const [roleBadgeLabel, setRoleBadgeLabel] = useState<string | null>(getRoleBadgeLabel)
 
   useEffect(() => {
     const handleChange = () => {
       setAuthenticated(isAuthenticated())
-      setRoleBadgeLabel(getRoleBadgeLabel())
     }
 
     window.addEventListener('storage', handleChange)
@@ -56,7 +40,6 @@ export function AuthControls() {
 
   return (
     <div class="flex items-center gap-2">
-      {roleBadgeLabel ? <span class="badge badge-primary badge-outline">{roleBadgeLabel}</span> : null}
       <AppButton
         variant="ghost"
         className="btn-sm"

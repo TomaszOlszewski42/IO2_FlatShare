@@ -1,4 +1,5 @@
 import { appConfig } from '../../config/app-config'
+import { CurrentUserBadge } from './current-user-badge'
 import { AuthControls } from './auth-controls'
 
 export function TopBar() {
@@ -10,7 +11,8 @@ export function TopBar() {
             {appConfig.name}
           </a>
         </div>
-        <div class="navbar-end">
+        <div class="navbar-end gap-3">
+          <CurrentUserBadge />
           <AuthControls />
         </div>
       </div>

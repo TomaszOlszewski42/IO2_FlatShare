@@ -6,7 +6,7 @@ import { ListingCard } from '../../components/listings/listing-card'
 import { ListingsEmptyState } from '../../components/listings/listings-empty-state'
 import { ListingsSkeleton } from '../../components/listings/listings-skeleton'
 import { ListingsToolbar } from '../../components/listings/listings-toolbar'
-import { readAuthSession } from '../../services/auth-session'
+import { getAuthSessionRoles, readAuthSession } from '../../services/auth-session'
 import { getListings } from '../../services/listings-api'
 import type { Listing } from '../../types/listing'
 import { formatLocation } from '../../utils/format-location'
@@ -29,8 +29,9 @@ export function ListingsPage(_: RoutableProps) {
     }
 
     let isMounted = true
+    const ownerId = getAuthSessionRoles(session).includes('LANDLORD') ? session.userId : undefined
 
-    void getListings(session.token, undefined, session.type)
+    void getListings(session.token, ownerId ? { ownerId } : undefined, session.type)
       .then((items) => {
         if (isMounted) {
           setListings(items)
