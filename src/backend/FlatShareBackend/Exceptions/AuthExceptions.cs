@@ -24,4 +24,14 @@
     {
         public InvalidRoleException(string message) : base(message) { }
     }
+
+    public class InvalidPasswordResetTokenException : Exception
+    {
+        public InvalidPasswordResetTokenException(string message) : base(message) { }
+    }
+
+    public class ExpiredPasswordResetTokenException : Exception
+    {
+        public ExpiredPasswordResetTokenException(string message) : base(message) { }
+    }
 }

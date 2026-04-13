@@ -11,6 +11,7 @@ namespace FlatShareBackend.Data
 
         public DbSet<User> Users => Set<User>();
         public DbSet<UserSession> Sessions => Set<UserSession>();
+        public DbSet<PasswordResetToken> PasswordResetTokens => Set<PasswordResetToken>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -27,6 +28,17 @@ namespace FlatShareBackend.Data
             {
                 entity.HasOne(x => x.User)
                     .WithMany(x => x.Sessions)
+                    .HasForeignKey(x => x.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<PasswordResetToken>(entity =>
+            {
+                entity.HasIndex(x => x.TokenHash).IsUnique();
+                entity.HasIndex(x => x.UserId);
+
+                entity.HasOne(x => x.User)
+                    .WithMany(x => x.PasswordResetTokens)
                     .HasForeignKey(x => x.UserId)
                     .OnDelete(DeleteBehavior.Cascade);
             });

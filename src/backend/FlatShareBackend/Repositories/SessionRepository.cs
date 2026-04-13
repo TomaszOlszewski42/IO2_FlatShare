@@ -27,6 +27,15 @@ namespace FlatShareBackend.Repositories
                 .FirstOrDefaultAsync(x => x.Id == sessionId, cancellationToken);
         }
 
+        public Task<int> RevokeActiveSessionsByUserIdAsync(Guid userId, DateTime revokedAtUtc, CancellationToken cancellationToken = default)
+        {
+            return _dbContext.Sessions
+                .Where(x => x.UserId == userId && x.RevokedAtUtc == null && x.ExpiresAtUtc > revokedAtUtc)
+                .ExecuteUpdateAsync(
+                    setters => setters.SetProperty(x => x.RevokedAtUtc, revokedAtUtc),
+                    cancellationToken);
+        }
+
         public Task SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             return _dbContext.SaveChangesAsync(cancellationToken);

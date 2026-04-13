@@ -6,6 +6,7 @@ namespace FlatShareBackend.Repositories
     {
         Task<UserSession> AddAsync(UserSession session, CancellationToken cancellationToken = default);
         Task<UserSession?> GetByIdAsync(Guid sessionId, CancellationToken cancellationToken = default);
+        Task<int> RevokeActiveSessionsByUserIdAsync(Guid userId, DateTime revokedAtUtc, CancellationToken cancellationToken = default);
         Task SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

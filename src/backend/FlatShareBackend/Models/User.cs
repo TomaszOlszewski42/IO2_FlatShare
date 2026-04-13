@@ -31,5 +31,6 @@ namespace FlatShareBackend.Models
         public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
 
         public ICollection<UserSession> Sessions { get; set; } = new List<UserSession>();
+        public ICollection<PasswordResetToken> PasswordResetTokens { get; set; } = new List<PasswordResetToken>();
     }
 }

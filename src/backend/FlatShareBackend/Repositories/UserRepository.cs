@@ -34,5 +34,10 @@ namespace FlatShareBackend.Repositories
             await _dbContext.SaveChangesAsync(cancellationToken);
             return user;
         }
+
+        public Task SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            return _dbContext.SaveChangesAsync(cancellationToken);
+        }
     }
 }
