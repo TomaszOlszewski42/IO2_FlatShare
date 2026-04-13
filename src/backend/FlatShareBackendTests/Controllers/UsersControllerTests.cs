@@ -26,7 +26,7 @@ namespace FlatShareBackendTests.Controllers
         public async Task Register_ValidRequest_ReturnsCreated()
         {
             // Arrange
-            var request = new RegisterUserRequest { Email = "new@test.com", FirstName = "A", LastName = "B", Password = "Pass" };
+            var request = new RegisterUserRequest { Email = "new@test.com", FirstName = "A", LastName = "B", Password = "Pass1234", Role = "TENANT" };
             var response = new RegisterUserResponse { User = new UserDto { Id = Guid.NewGuid(), Email = "new@test.com" } };
 
             _userServiceMock.Setup(service => service.RegisterAsync(request, It.IsAny<CancellationToken>()))
@@ -44,7 +44,7 @@ namespace FlatShareBackendTests.Controllers
         public async Task Register_EmailExists_ReturnsBadRequestWithFieldErrors()
         {
             // Arrange
-            var request = new RegisterUserRequest { Email = "existing@test.com", FirstName = "A", LastName = "B", Password = "Pass" };
+            var request = new RegisterUserRequest { Email = "existing@test.com", FirstName = "A", LastName = "B", Password = "Pass1234", Role = "TENANT" };
 
             _userServiceMock.Setup(service => service.RegisterAsync(request, It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new EmailAlreadyExistsException("Email already exists."));

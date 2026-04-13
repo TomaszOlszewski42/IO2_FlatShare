@@ -4,16 +4,23 @@ import { useState } from 'preact/hooks'
 
 import { FormErrorSummary } from '../components/forms/form-error-summary'
 import { AppButton } from '../components/ui/app-button'
+import { SelectInput } from '../components/ui/select-input'
 import { TextInput } from '../components/ui/text-input'
 import { usePageErrorHandler } from '../hooks/use-page-error-handler'
 import { register } from '../services/auth-api'
 import { ApiHttpError } from '../services/api-client'
+
+const roleOptions = [
+  { value: 'TENANT', label: 'Tenant' },
+  { value: 'LANDLORD', label: 'Landlord' },
+]
 
 export function RegisterPage(_: RoutableProps) {
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [role, setRole] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const { errorMessage, fieldErrors, clearErrors, handleError } = usePageErrorHandler()
@@ -25,11 +32,11 @@ export function RegisterPage(_: RoutableProps) {
     clearErrors()
 
     try {
-      await register({ firstName, lastName, email, password })
+      await register({ firstName, lastName, email, password, role })
       route('/login')
     } catch (error) {
       if (error instanceof ApiHttpError) {
-        handleError(error, 'Registration failed. Please fix the form and try again.')
+        handleError(error.body ?? error, 'Registration failed. Please fix the form and try again.')
       } else {
         handleError(error, 'Unexpected error while creating your account. Please try again.')
       }
@@ -56,7 +63,7 @@ export function RegisterPage(_: RoutableProps) {
               autoComplete="given-name"
               required
               disabled={isSubmitting}
-              errors={fieldErrors.firstName}
+              errors={fieldErrors.firstName ?? fieldErrors.FirstName}
               onInput={(event) => setFirstName((event.currentTarget as HTMLInputElement).value)}
             />
 
@@ -70,7 +77,7 @@ export function RegisterPage(_: RoutableProps) {
               autoComplete="family-name"
               required
               disabled={isSubmitting}
-              errors={fieldErrors.lastName}
+              errors={fieldErrors.lastName ?? fieldErrors.LastName}
               onInput={(event) => setLastName((event.currentTarget as HTMLInputElement).value)}
             />
 
@@ -84,7 +91,7 @@ export function RegisterPage(_: RoutableProps) {
               autoComplete="email"
               required
               disabled={isSubmitting}
-              errors={fieldErrors.email}
+              errors={fieldErrors.email ?? fieldErrors.Email}
               onInput={(event) => setEmail((event.currentTarget as HTMLInputElement).value)}
             />
 
@@ -98,13 +105,32 @@ export function RegisterPage(_: RoutableProps) {
               autoComplete="new-password"
               required
               disabled={isSubmitting}
-              errors={fieldErrors.password}
+              errors={fieldErrors.password ?? fieldErrors.Password}
               onInput={(event) => setPassword((event.currentTarget as HTMLInputElement).value)}
+            />
+
+            <SelectInput
+              id="register-role"
+              name="role"
+              label="Account type"
+              value={role}
+              options={roleOptions}
+              placeholder="Choose account type"
+              required
+              disabled={isSubmitting}
+              errors={fieldErrors.role ?? fieldErrors.Role}
+              onChange={(event) => {
+                const target = event.currentTarget as HTMLSelectElement
+                setRole(target.value)
+              }}
             />
 
             <FormErrorSummary error={errorMessage} />
 
-        {generalError ? <div class="alert alert-soft alert-error text-sm">{generalError}</div> : null}
+            <AppButton className="mt-2" type="submit" loading={isSubmitting}>
+              Create account
+            </AppButton>
+          </form>
 
           <p class="mt-3 text-sm text-base-content/70">
             Already registered?{' '}

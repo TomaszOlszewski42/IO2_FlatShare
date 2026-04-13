@@ -1,6 +1,6 @@
 import { useState } from 'preact/hooks'
-
 import { mapFormErrors } from '../services/form-error-mapper'
+import { ApiHttpError } from '../services/api-client'
 
 type FieldErrors = Record<string, string[]>
 
@@ -14,7 +14,8 @@ export function usePageErrorHandler() {
   }
 
   function handleError(error: unknown, fallbackMessage = 'Something went wrong. Please try again.') {
-    const mappedError = mapFormErrors(error)
+    const source = error instanceof ApiHttpError ? error.body : error
+    const mappedError = mapFormErrors(source)
 
     setErrorMessage(mappedError.summary ?? fallbackMessage)
     setFieldErrors(mappedError.fieldErrors)
