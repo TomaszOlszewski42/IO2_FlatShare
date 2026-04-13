@@ -4,11 +4,12 @@ import { useEffect, useState } from 'preact/hooks'
 
 import { ListingDetailsHeader } from '../../components/listings/listing-details-header'
 import { ListingDetailsSkeleton } from '../../components/listings/listing-details-skeleton'
+import { ListingGallery } from '../../components/listings/listing-gallery'
 import { ListingMetaRow } from '../../components/listings/listing-meta-row'
 import { ListingLocationSection } from '../../components/listings/listing-location-section'
 import { ListingSection } from '../../components/listings/listing-section'
 import { readAuthSession } from '../../services/auth-session'
-import { getListingById } from '../../services/listings-api'
+import { getListingById, getListingPhotoIds } from '../../services/listings-api'
 import type { Listing } from '../../types/listing'
 import { formatArea } from '../../utils/format-area'
 import { formatDate } from '../../utils/format-date'
@@ -22,11 +23,13 @@ type ListingDetailsRouteProps = RoutableProps & {
 export function ListingDetailsPage({ listingId }: ListingDetailsRouteProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [listing, setListing] = useState<Listing | null>(null)
+  const [photoIds, setPhotoIds] = useState<string[]>([])
 
   useEffect(() => {
     if (!listingId) {
       setIsLoading(false)
       setListing(null)
+      setPhotoIds([])
       return
     }
 
@@ -40,15 +43,20 @@ export function ListingDetailsPage({ listingId }: ListingDetailsRouteProps) {
     let isMounted = true
 
     setIsLoading(true)
-    void getListingById(listingId, session.token, session.type)
-      .then((item) => {
+    void Promise.all([
+      getListingById(listingId, session.token, session.type),
+      getListingPhotoIds(listingId, session.token, session.type),
+    ])
+      .then(([item, photos]) => {
         if (isMounted) {
           setListing(item)
+          setPhotoIds(photos)
         }
       })
       .catch(() => {
         if (isMounted) {
           setListing(null)
+          setPhotoIds([])
         }
       })
       .finally(() => {
@@ -128,6 +136,8 @@ export function ListingDetailsPage({ listingId }: ListingDetailsRouteProps) {
           </div>
         </ListingSection>
       </div>
+
+      <ListingGallery listingId={listing.id} photoIds={photoIds} title={listing.title} />
 
       <ListingLocationSection location={listing.location} />
 

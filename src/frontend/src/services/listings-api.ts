@@ -40,6 +40,11 @@ export type ListingStatusActionResponse = {
   updatedAt?: string
 }
 
+type ListingPhotosDto = {
+  listingId: string
+  photos: string[]
+}
+
 function buildQueryString(params?: ListingListQuery): string {
   if (!params) {
     return ''
@@ -133,6 +138,19 @@ export async function getListingById(
       buildingNumber: item.location.aptNumber,
     },
   }
+}
+
+export async function getListingPhotoIds(
+  listingId: string,
+  token: string,
+  type = 'Bearer',
+): Promise<string[]> {
+  const response = await apiRequest<ListingPhotosDto>(`/listings/${listingId}/photos`, {
+    method: 'GET',
+    headers: getAuthHeaders(token, type),
+  })
+
+  return response.photos ?? []
 }
 
 export async function createListing(
