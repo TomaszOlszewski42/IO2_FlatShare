@@ -3,6 +3,9 @@ import { PasswordResetConfirmPage } from './pages/password-reset-confirm-page'
 import { AppShell } from './components/layout/app-shell'
 import { HomePage } from './pages/home-page'
 import { LoginPage } from './pages/login-page'
+import { ListingCreatePage } from './pages/listings/listing-create-page'
+import { ListingDetailsPage } from './pages/listings/listing-details-page'
+import { ListingsPage } from './pages/listings/listings-page'
 import { RegisterPage } from './pages/register-page'
 import { readAuthSession } from './services/auth-session'
 import { refreshSessionOnAppLoad } from './services/auth-bootstrap'
@@ -25,6 +28,9 @@ export function App() {
     <AppShell>
       <Router>
         <HomePage path="/" />
+        <ListingsPage path="/listings" />
+        <ListingCreatePage path="/listings/create" />
+        <ListingDetailsPage path="/listings/:listingId" />
         <LoginPage path="/login" />
         <RegisterPage path="/register" />
         <PasswordResetRequestPage path="/password-reset/request" />

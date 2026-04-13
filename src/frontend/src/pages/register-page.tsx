@@ -4,16 +4,23 @@ import { useState } from 'preact/hooks'
 
 import { FormErrorSummary } from '../components/forms/form-error-summary'
 import { AppButton } from '../components/ui/app-button'
+import { SelectInput } from '../components/ui/select-input'
 import { TextInput } from '../components/ui/text-input'
 import { usePageErrorHandler } from '../hooks/use-page-error-handler'
-import { register } from '../services/auth-api'
+import { register, type RegisterRole } from '../services/auth-api'
 import { ApiHttpError } from '../services/api-client'
+
+const roleOptions: Array<{ value: RegisterRole; label: string }> = [
+  { value: 'TENANT', label: 'Tenant' },
+  { value: 'LANDLORD', label: 'Landlord' },
+]
 
 export function RegisterPage(_: RoutableProps) {
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [role, setRole] = useState<RegisterRole>('TENANT')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const { errorMessage, fieldErrors, clearErrors, handleError } = usePageErrorHandler()
@@ -25,7 +32,7 @@ export function RegisterPage(_: RoutableProps) {
     clearErrors()
 
     try {
-      await register({ firstName, lastName, email, password })
+      await register({ firstName, lastName, email, password, role })
       route('/login')
     } catch (error) {
       if (error instanceof ApiHttpError) {
@@ -102,9 +109,25 @@ export function RegisterPage(_: RoutableProps) {
               onInput={(event) => setPassword((event.currentTarget as HTMLInputElement).value)}
             />
 
+            <SelectInput
+              id="register-role"
+              name="role"
+              label="I am registering as"
+              value={role}
+              options={roleOptions}
+              required
+              disabled={isSubmitting}
+              errors={fieldErrors.role}
+              onChange={(event) => setRole((event.currentTarget as HTMLSelectElement).value as RegisterRole)}
+            />
+
             <FormErrorSummary error={errorMessage} />
 
-        {generalError ? <div class="alert alert-soft alert-error text-sm">{generalError}</div> : null}
+            <AppButton className="mt-2" type="submit" loading={isSubmitting}>
+              Create account
+            </AppButton>
+
+          </form>
 
           <p class="mt-3 text-sm text-base-content/70">
             Already registered?{' '}
