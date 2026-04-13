@@ -28,6 +28,7 @@ export function LoginPage(_: RoutableProps) {
         token: session.token,
         sessionId: session.sessionId,
         type: session.type,
+        roles: session.roles,
       })
       route('/listings')
     } catch (error) {
