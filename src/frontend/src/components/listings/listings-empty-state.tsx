@@ -1,4 +1,3 @@
-import { EmptyStateContent } from '../common/empty-state-content'
 import { ClearFiltersButton, CreateListingButton } from './listings-action-buttons'
 import { ListingsSurface } from './listings-surface'
 import { RoleBoundary } from '../auth/role-boundary'
