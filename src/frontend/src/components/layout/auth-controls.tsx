@@ -1,29 +1,12 @@
 import { route } from 'preact-router'
-import { useEffect, useState } from 'preact/hooks'
-
 import { AppButton } from '../ui/app-button'
-import {
-  clearAuthSession,
-  readAuthSession,
-  subscribeToAuthChanges,
-} from '../../services/auth-session'
-
-function isAuthenticated(): boolean {
-  return Boolean(readAuthSession())
-}
+import { clearAuthSession } from '../../services/auth-session'
+import { useAuth } from '../../hooks/use-auth'
 
 export function AuthControls() {
-  const [authenticated, setAuthenticated] = useState<boolean>(isAuthenticated)
+  const { isAuthenticated } = useAuth()
 
-  useEffect(() => {
-    const handleChange = () => {
-      setAuthenticated(isAuthenticated())
-    }
-
-    return subscribeToAuthChanges(handleChange)
-  }, [])
-
-  if (!authenticated) {
+  if (!isAuthenticated) {
     return (
       <nav class="flex items-center gap-2">
         <a class="btn btn-ghost btn-sm" href="/login">

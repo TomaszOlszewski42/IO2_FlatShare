@@ -1,7 +1,10 @@
-import type { ListingStatus } from '../../types/listing-status'
-import { ArchiveListingButton } from './archive-listing-button'
 import { HideListingButton } from './hide-listing-button'
-import { ListingSection } from './listing-section'
+import { ArchiveListingButton } from './archive-listing-button'
+import { AppButton } from '../ui/app-button'
+import { route } from 'preact-router'
+import type { ListingStatus } from '../../types/listing-status'
+import { RoleBoundary } from '../auth/role-boundary'
+import { UserRole } from '../../types/user'
 
 type ListingOwnerActionsPanelProps = {
   listingId: string
@@ -23,33 +26,43 @@ export function ListingOwnerActionsPanel(props: ListingOwnerActionsPanelProps) {
   const archiveDisabled = props.isBusy || !canArchive(props.status)
 
   return (
-    <ListingSection
-      title="Owner actions"
-      className="[&_.card-body]:gap-4"
-    >
-      <p class="text-sm text-base-content/70">
-        Manage the visibility and lifecycle of this listing.
-      </p>
+    <RoleBoundary requiredRole={UserRole.Landlord}>
+      <section class="rounded-2xl border border-base-300 bg-base-100 p-5 shadow-sm">
+        <div class="mb-4">
+          <h2 class="text-lg font-semibold">Owner actions</h2>
+          <p class="mt-1 text-sm text-base-content/70">
+            Manage the visibility and lifecycle of this listing.
+          </p>
+        </div>
 
-      <div class="flex flex-col gap-3 sm:flex-row">
-        <HideListingButton
-          listingId={props.listingId}
-          disabled={hideDisabled}
-          onSuccess={props.onActionSuccess}
-        />
+        <div class="flex flex-col gap-3 sm:flex-row">
+          <AppButton
+            variant="outline"
+            onClick={() => route(`/listings/${props.listingId}/edit`)}
+            disabled={props.isBusy}
+          >
+            Edytuj
+          </AppButton>
 
-        <ArchiveListingButton
-          listingId={props.listingId}
-          disabled={archiveDisabled}
-          onSuccess={props.onActionSuccess}
-        />
-      </div>
+          <HideListingButton
+            listingId={props.listingId}
+            disabled={hideDisabled}
+            onSuccess={props.onActionSuccess}
+          />
 
-      {props.status ? (
-        <p class="text-xs text-base-content/60">
-          Current status: <span class="font-medium">{props.status}</span>
-        </p>
-      ) : null}
-    </ListingSection>
+          <ArchiveListingButton
+            listingId={props.listingId}
+            disabled={archiveDisabled}
+            onSuccess={props.onActionSuccess}
+          />
+        </div>
+
+        {props.status && (
+          <p class="mt-4 text-xs text-base-content/60">
+            Current status: <span class="font-medium">{props.status}</span>
+          </p>
+        )}
+      </section>
+    </RoleBoundary>
   )
 }

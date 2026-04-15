@@ -1,4 +1,11 @@
-import { configure } from 'enzyme'
-import Adapter from 'enzyme-adapter-preact-pure'
+const configureEnzyme = async () => {
+	try {
+		const { configure } = await import('enzyme')
+		const { default: Adapter } = await import('enzyme-adapter-preact-pure')
+		configure({ adapter: new Adapter() })
+	} catch {
+		// Enzyme is optional for suites that don't use it directly.
+	}
+}
 
-configure({ adapter: new Adapter() })
+await configureEnzyme()

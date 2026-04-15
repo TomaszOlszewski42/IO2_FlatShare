@@ -7,6 +7,7 @@ import { AppButton } from '../ui/app-button'
 import { ListingFeatureBadges } from './listing-feature-badges'
 import { ListingMetaRow } from './listing-meta-row'
 import { ListingStatusBadge } from './listing-status-badge'
+import { useAuth } from '../../hooks/use-auth'
 
 type ListingCardProps = {
   listing: Listing
@@ -15,6 +16,10 @@ type ListingCardProps = {
 }
 
 export function ListingCard({ listing, onEdit, onViewDetails }: ListingCardProps) {
+  const { session, isLandlord } = useAuth()
+  const isOwner = session?.userId === listing.ownerId
+  const canEdit = isLandlord && isOwner
+
   const featureBadges = [
     { label: 'Umeblowane', value: Boolean(listing.furnished) },
     { label: 'Zwierzęta', value: Boolean(listing.allowPets) },
@@ -41,10 +46,12 @@ export function ListingCard({ listing, onEdit, onViewDetails }: ListingCardProps
 
         <ListingFeatureBadges features={featureBadges} />
 
-        <div class="card-actions justify-between">
-          <AppButton variant="ghost" className="btn-sm" onClick={() => onEdit?.(listing.id)}>
-            Edytuj
-          </AppButton>
+        <div class="card-actions justify-end gap-2">
+          {canEdit && (
+            <AppButton variant="ghost" className="btn-sm" onClick={() => onEdit?.(listing.id)}>
+              Edytuj
+            </AppButton>
+          )}
           <AppButton variant="outline" className="btn-sm" onClick={() => onViewDetails?.(listing.id)}>
             Szczegóły
           </AppButton>
