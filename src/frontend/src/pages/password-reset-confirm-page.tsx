@@ -1,6 +1,7 @@
 import { useState } from 'preact/hooks'
 
 import { PasswordResetConfirmForm } from '../components/auth/password-reset-confirm-form'
+import { AuthCard } from '../components/layout/auth-card'
 import { usePageErrorHandler } from '../hooks/use-page-error-handler'
 import { confirmPasswordReset } from '../services/password-reset-api'
 
@@ -28,12 +29,10 @@ export function PasswordResetConfirmPage(_props: { path?: string }) {
   }
 
   return (
-    <div class="mx-auto max-w-md space-y-6">
-      <div class="space-y-2">
-        <h1 class="text-2xl font-semibold">Set new password</h1>
-        <p class="text-sm opacity-80">Paste your reset token and choose a new password.</p>
-      </div>
-
+    <AuthCard
+      title="Set new password"
+      subtitle="Paste your reset token and choose a new password."
+    >
       <PasswordResetConfirmForm
         resetToken={resetToken}
         newPassword={newPassword}
@@ -45,6 +44,6 @@ export function PasswordResetConfirmPage(_props: { path?: string }) {
         onNewPasswordInput={(event) => setNewPassword((event.currentTarget as HTMLInputElement).value)}
         onSubmit={handleSubmit}
       />
-    </div>
+    </AuthCard>
   )
 }

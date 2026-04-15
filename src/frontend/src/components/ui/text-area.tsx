@@ -1,6 +1,7 @@
 import type { JSX } from 'preact'
 
 import { FormFieldError } from '../forms/form-field-error'
+import { FormField } from './form-field'
 
 type TextAreaProps = {
   id: string
@@ -33,8 +34,7 @@ export function TextArea({
   const hasError = Boolean(error) || Boolean(errors?.length)
 
   return (
-    <label class="form-control w-full" for={id}>
-      <span class="label-text mb-1">{label}</span>
+    <FormField id={id} label={label}>
       <textarea
         id={id}
         name={name}
@@ -53,6 +53,6 @@ export function TextArea({
           <FormFieldError error={error} errors={errors} />
         </span>
       ) : null}
-    </label>
+    </FormField>
   )
 }
