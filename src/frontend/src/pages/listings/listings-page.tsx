@@ -6,30 +6,28 @@ import { ListingCard } from '../../components/listings/listing-card'
 import { ListingsEmptyState } from '../../components/listings/listings-empty-state'
 import { ListingsSkeleton } from '../../components/listings/listings-skeleton'
 import { ListingsToolbar } from '../../components/listings/listings-toolbar'
-import { getAuthSessionRoles, readAuthSession } from '../../services/auth-session'
 import { getListings } from '../../services/listings-api'
 import type { Listing } from '../../types/listing'
 import { formatLocation } from '../../utils/format-location'
 import type { ListingStatus } from '../../types/listing-status'
+import { useAuth } from '../../hooks/use-auth'
 
 type ListingFilterValue = ListingStatus | 'ALL'
 
 export function ListingsPage(_: RoutableProps) {
+  const { session, isLandlord } = useAuth()
   const [isLoading, setIsLoading] = useState(true)
   const [listings, setListings] = useState<Listing[]>([])
   const [query, setQuery] = useState('')
   const [selectedStatus, setSelectedStatus] = useState<ListingFilterValue>('ALL')
 
   useEffect(() => {
-    const session = readAuthSession()
-
     if (!session) {
-      route('/login')
       return
     }
 
     let isMounted = true
-    const ownerId = getAuthSessionRoles(session).includes('LANDLORD') ? session.userId : undefined
+    const ownerId = isLandlord ? session.userId : undefined
 
     void getListings(session.token, ownerId ? { ownerId } : undefined, session.type)
       .then((items) => {
@@ -51,7 +49,7 @@ export function ListingsPage(_: RoutableProps) {
     return () => {
       isMounted = false
     }
-  }, [])
+  }, [session, isLandlord])
 
   const filteredListings = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase()

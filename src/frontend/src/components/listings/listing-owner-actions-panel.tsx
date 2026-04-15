@@ -3,6 +3,8 @@ import { ArchiveListingButton } from './archive-listing-button'
 import { AppButton } from '../ui/app-button'
 import { route } from 'preact-router'
 import type { ListingStatus } from '../../types/listing-status'
+import { RoleBoundary } from '../auth/role-boundary'
+import { UserRole } from '../../types/user'
 
 type ListingOwnerActionsPanelProps = {
   listingId: string
@@ -24,41 +26,43 @@ export function ListingOwnerActionsPanel(props: ListingOwnerActionsPanelProps) {
   const archiveDisabled = props.isBusy || !canArchive(props.status)
 
   return (
-    <section class="rounded-2xl border border-base-300 bg-base-100 p-5 shadow-sm">
-      <div class="mb-4">
-        <h2 class="text-lg font-semibold">Zarządzanie ogłoszeniem</h2>
-        <p class="mt-1 text-sm text-base-content/70">
-          Zarządzaj widocznością i cyklem życia tego ogłoszenia.
-        </p>
-      </div>
+    <RoleBoundary requiredRole={UserRole.Landlord}>
+      <section class="rounded-2xl border border-base-300 bg-base-100 p-5 shadow-sm">
+        <div class="mb-4">
+          <h2 class="text-lg font-semibold">Zarządzanie ogłoszeniem</h2>
+          <p class="mt-1 text-sm text-base-content/70">
+            Zarządzaj widocznością i cyklem życia tego ogłoszenia.
+          </p>
+        </div>
 
-      <div class="flex flex-col gap-3 sm:flex-row">
-        <AppButton 
-          variant="outline"
-          onClick={() => route(`/listings/${props.listingId}/edit`)}
-          disabled={props.isBusy}
-        >
-          Edytuj
-        </AppButton>
+        <div class="flex flex-col gap-3 sm:flex-row">
+          <AppButton
+            variant="outline"
+            onClick={() => route(`/listings/${props.listingId}/edit`)}
+            disabled={props.isBusy}
+          >
+            Edytuj
+          </AppButton>
 
-        <HideListingButton
-          listingId={props.listingId}
-          disabled={hideDisabled}
-          onSuccess={props.onActionSuccess}
-        />
+          <HideListingButton
+            listingId={props.listingId}
+            disabled={hideDisabled}
+            onSuccess={props.onActionSuccess}
+          />
 
-        <ArchiveListingButton
-          listingId={props.listingId}
-          disabled={archiveDisabled}
-          onSuccess={props.onActionSuccess}
-        />
-      </div>
+          <ArchiveListingButton
+            listingId={props.listingId}
+            disabled={archiveDisabled}
+            onSuccess={props.onActionSuccess}
+          />
+        </div>
 
-      {props.status && (
-        <p class="mt-4 text-xs text-base-content/60">
-          Aktualny status: <span class="font-medium">{props.status}</span>
-        </p>
-      )}
-    </section>
+        {props.status && (
+          <p class="mt-4 text-xs text-base-content/60">
+            Aktualny status: <span class="font-medium">{props.status}</span>
+          </p>
+        )}
+      </section>
+    </RoleBoundary>
   )
 }
