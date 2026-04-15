@@ -204,3 +204,33 @@ export async function archiveListing(
     headers: getAuthHeaders(token, type),
   })
 }
+
+export async function uploadPhoto(
+  listingId: string,
+  photo: File,
+  token: string,
+  type = 'Bearer',
+): Promise<void> {
+  const formData = new FormData()
+  formData.append('photo', photo)
+
+  await apiRequest(`/listings/${listingId}/photos`, {
+    method: 'POST',
+    body: formData,
+    headers: {
+      Authorization: `${type} ${token}`,
+    },
+  })
+}
+
+export async function deletePhoto(
+  listingId: string,
+  photoId: string,
+  token: string,
+  type = 'Bearer',
+): Promise<void> {
+  await apiRequest(`/listings/${listingId}/photos/${photoId}`, {
+    method: 'DELETE',
+    headers: getAuthHeaders(token, type),
+  })
+}
