@@ -1,5 +1,6 @@
-import { mount } from 'enzyme'
 import { describe, expect, it, vi } from 'vitest'
+import { render } from 'preact'
+import { act } from 'preact/test-utils'
 
 import { appConfig } from '../../config/app-config'
 import { TopBar } from './top-bar'
@@ -22,18 +23,28 @@ vi.mock('../../hooks/use-auth', () => ({
 
 describe('TopBar', () => {
   it('renders brand link with app name', () => {
-    const wrapper = mount(<TopBar />)
+    const container = document.createElement('div')
+    document.body.appendChild(container)
 
-    const brandLink = wrapper.find('a[href="/"]').first()
+    act(() => {
+      render(<TopBar />, container)
+    })
 
-    expect(brandLink.exists()).toBe(true)
-    expect(brandLink.text()).toBe(appConfig.name)
+    const brandLink = container.querySelector('a[href="/"]')
+
+    expect(brandLink).not.toBeNull()
+    expect(brandLink?.textContent).toBe(appConfig.name)
   })
 
   it('renders the user badge and auth controls areas', () => {
-    const wrapper = mount(<TopBar />)
+    const container = document.createElement('div')
+    document.body.appendChild(container)
 
-    expect(wrapper.find('[data-test-id="current-user-badge"]').exists()).toBe(true)
-    expect(wrapper.find('[data-test-id="auth-controls"]').exists()).toBe(true)
+    act(() => {
+      render(<TopBar />, container)
+    })
+
+    expect(container.querySelector('[data-test-id="current-user-badge"]')).not.toBeNull()
+    expect(container.querySelector('[data-test-id="auth-controls"]')).not.toBeNull()
   })
 })

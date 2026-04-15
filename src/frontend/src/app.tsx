@@ -5,6 +5,7 @@ import { AppShell } from './components/layout/app-shell'
 import { HomePage } from './pages/home-page'
 import { LoginPage } from './pages/login-page'
 import { ListingCreatePage } from './pages/listings/listing-create-page'
+import { ListingEditPage } from './pages/listings/listing-edit-page'
 import { ListingDetailsPage } from './pages/listings/listing-details-page'
 import { ListingsPage } from './pages/listings/listings-page'
 import { RegisterPage } from './pages/register-page'
@@ -61,6 +62,7 @@ export function App() {
         <HomePage path="/" />
         <ProtectedRoute path="/listings" component={ListingsPage} />
         <ProtectedRoute path="/listings/create" component={ListingCreatePage} requiredRole={UserRole.Landlord} />
+        <ProtectedRoute path="/listings/:listingId/edit" component={ListingEditPage} requiredRole={UserRole.Landlord} />
         <ListingDetailsPage path="/listings/:listingId" />
         <LoginPage path="/login" />
         <RegisterPage path="/register" />

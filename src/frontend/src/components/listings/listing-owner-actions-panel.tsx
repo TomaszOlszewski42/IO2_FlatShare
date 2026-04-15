@@ -1,5 +1,7 @@
 import { HideListingButton } from './hide-listing-button'
 import { ArchiveListingButton } from './archive-listing-button'
+import { AppButton } from '../ui/app-button'
+import { route } from 'preact-router'
 import type { ListingStatus } from '../../types/listing-status'
 
 type ListingOwnerActionsPanelProps = {
@@ -24,13 +26,21 @@ export function ListingOwnerActionsPanel(props: ListingOwnerActionsPanelProps) {
   return (
     <section class="rounded-2xl border border-base-300 bg-base-100 p-5 shadow-sm">
       <div class="mb-4">
-        <h2 class="text-lg font-semibold">Owner actions</h2>
+        <h2 class="text-lg font-semibold">Zarządzanie ogłoszeniem</h2>
         <p class="mt-1 text-sm text-base-content/70">
-          Manage the visibility and lifecycle of this listing.
+          Zarządzaj widocznością i cyklem życia tego ogłoszenia.
         </p>
       </div>
 
       <div class="flex flex-col gap-3 sm:flex-row">
+        <AppButton 
+          variant="outline"
+          onClick={() => route(`/listings/${props.listingId}/edit`)}
+          disabled={props.isBusy}
+        >
+          Edytuj
+        </AppButton>
+
         <HideListingButton
           listingId={props.listingId}
           disabled={hideDisabled}
@@ -46,7 +56,7 @@ export function ListingOwnerActionsPanel(props: ListingOwnerActionsPanelProps) {
 
       {props.status && (
         <p class="mt-4 text-xs text-base-content/60">
-          Current status: <span class="font-medium">{props.status}</span>
+          Aktualny status: <span class="font-medium">{props.status}</span>
         </p>
       )}
     </section>
