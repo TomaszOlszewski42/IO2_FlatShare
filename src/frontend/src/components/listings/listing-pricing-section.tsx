@@ -1,5 +1,7 @@
-import { TextInput } from '../ui/text-input'
-import { FormField } from '../ui/form-field'
+import { CheckboxInput } from '../ui/checkbox-input'
+import { DateInput } from '../ui/date-input'
+import { NumberInput } from '../ui/number-input'
+import { ListingFormSection } from './listing-form-section'
 
 type ListingPricingSectionProps = {
   formData: {
@@ -28,23 +30,26 @@ type ListingPricingSectionProps = {
   onUpdate: <K extends keyof ListingPricingSectionProps['formData']>(field: K, value: any) => void
 }
 
-export function ListingPricingSection({ formData, errors, onUpdate }: ListingPricingSectionProps) {
+export function ListingPricingSection({
+  formData,
+  errors,
+  onUpdate,
+}: ListingPricingSectionProps) {
   return (
-    <div class="space-y-6 card-body">
-      <div>
-        <h2 class="text-xl font-semibold">Cena i szczegóły</h2>
-        <p class="text-sm text-base-content/65">Informacje o cenie i charakterystyce mieszkania.</p>
-      </div>
-
+    <ListingFormSection
+      title="Cena i szczegóły"
+      description="Informacje o cenie i charakterystyce mieszkania."
+    >
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <TextInput
+        <NumberInput
           id="pricePerMonth"
           name="pricePerMonth"
           label="Cena za miesiąc (PLN)"
-          type="text"
           placeholder="3000"
+          min={0}
+          step={0.01}
           required
-          value={String(formData.pricePerMonth) || ''}
+          value={formData.pricePerMonth || ''}
           error={errors.pricePerMonth}
           onInput={(e) => {
             const value = parseFloat((e.currentTarget as HTMLInputElement).value) || 0
@@ -52,14 +57,15 @@ export function ListingPricingSection({ formData, errors, onUpdate }: ListingPri
           }}
         />
 
-        <TextInput
+        <NumberInput
           id="areaSqm"
           name="areaSqm"
           label="Powierzchnia (m²)"
-          type="text"
           placeholder="50"
+          min={0}
+          step={0.01}
           required
-          value={String(formData.areaSqm) || ''}
+          value={formData.areaSqm || ''}
           error={errors.areaSqm}
           onInput={(e) => {
             const value = parseFloat((e.currentTarget as HTMLInputElement).value) || 0
@@ -69,53 +75,49 @@ export function ListingPricingSection({ formData, errors, onUpdate }: ListingPri
       </div>
 
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <FormField id="rooms" label="Liczba pokoi" error={errors.rooms}>
-          <input
-            id="rooms"
-            name="rooms"
-            class={`input w-full ${errors.rooms ? 'input-error' : 'input-bordered'}`}
-            type="number"
-            min="1"
-            required
-            value={formData.rooms}
-            onInput={(e) => {
-              const value = parseInt((e.currentTarget as HTMLInputElement).value) || 1
-              onUpdate('rooms', value)
-            }}
-          />
-        </FormField>
-
-        <FormField id="bathrooms" label="Liczba łazienek" error={errors.bathrooms}>
-          <input
-            id="bathrooms"
-            name="bathrooms"
-            class={`input w-full ${errors.bathrooms ? 'input-error' : 'input-bordered'}`}
-            type="number"
-            min="1"
-            required
-            value={formData.bathrooms}
-            onInput={(e) => {
-              const value = parseInt((e.currentTarget as HTMLInputElement).value) || 1
-              onUpdate('bathrooms', value)
-            }}
-          />
-        </FormField>
-      </div>
-
-      <FormField id="availableFrom" label="Dostępne od" error={errors.availableFrom}>
-        <input
-          id="availableFrom"
-          name="availableFrom"
-          class={`input w-full ${errors.availableFrom ? 'input-error' : 'input-bordered'}`}
-          type="date"
+        <NumberInput
+          id="rooms"
+          name="rooms"
+          label="Liczba pokoi"
+          min={1}
+          step={1}
           required
-          value={formData.availableFrom}
+          value={formData.rooms}
+          error={errors.rooms}
           onInput={(e) => {
-            const value = (e.currentTarget as HTMLInputElement).value
-            onUpdate('availableFrom', value)
+            const value = parseInt((e.currentTarget as HTMLInputElement).value) || 1
+            onUpdate('rooms', value)
           }}
         />
-      </FormField>
+
+        <NumberInput
+          id="bathrooms"
+          name="bathrooms"
+          label="Liczba łazienek"
+          min={1}
+          step={1}
+          required
+          value={formData.bathrooms}
+          error={errors.bathrooms}
+          onInput={(e) => {
+            const value = parseInt((e.currentTarget as HTMLInputElement).value) || 1
+            onUpdate('bathrooms', value)
+          }}
+        />
+      </div>
+
+      <DateInput
+        id="availableFrom"
+        name="availableFrom"
+        label="Dostępne od"
+        required
+        value={formData.availableFrom}
+        error={errors.availableFrom}
+        onInput={(e) => {
+          const value = (e.currentTarget as HTMLInputElement).value
+          onUpdate('availableFrom', value)
+        }}
+      />
 
       <div class="divider" />
 
@@ -123,46 +125,43 @@ export function ListingPricingSection({ formData, errors, onUpdate }: ListingPri
         <h3 class="font-semibold">Cechy mieszkania</h3>
 
         <div class="flex flex-col gap-3">
-          <label class="flex cursor-pointer items-center gap-3">
-            <input
-              type="checkbox"
-              class="checkbox checkbox-primary"
-              checked={formData.furnished}
-              onChange={(e) => {
-                const value = (e.currentTarget as HTMLInputElement).checked
-                onUpdate('furnished', value)
-              }}
-            />
-            <span>Umeblowane</span>
-          </label>
+          <CheckboxInput
+            id="furnished"
+            name="furnished"
+            label="Umeblowane"
+            checked={formData.furnished}
+            error={errors.furnished}
+            onChange={(e) => {
+              const value = (e.currentTarget as HTMLInputElement).checked
+              onUpdate('furnished', value)
+            }}
+          />
 
-          <label class="flex cursor-pointer items-center gap-3">
-            <input
-              type="checkbox"
-              class="checkbox checkbox-primary"
-              checked={formData.allowPets}
-              onChange={(e) => {
-                const value = (e.currentTarget as HTMLInputElement).checked
-                onUpdate('allowPets', value)
-              }}
-            />
-            <span>Zwierzęta dozwolone</span>
-          </label>
+          <CheckboxInput
+            id="allowPets"
+            name="allowPets"
+            label="Zwierzęta dozwolone"
+            checked={formData.allowPets}
+            error={errors.allowPets}
+            onChange={(e) => {
+              const value = (e.currentTarget as HTMLInputElement).checked
+              onUpdate('allowPets', value)
+            }}
+          />
 
-          <label class="flex cursor-pointer items-center gap-3">
-            <input
-              type="checkbox"
-              class="checkbox checkbox-primary"
-              checked={formData.allowSmoking}
-              onChange={(e) => {
-                const value = (e.currentTarget as HTMLInputElement).checked
-                onUpdate('allowSmoking', value)
-              }}
-            />
-            <span>Palenie dozwolone</span>
-          </label>
+          <CheckboxInput
+            id="allowSmoking"
+            name="allowSmoking"
+            label="Palenie dozwolone"
+            checked={formData.allowSmoking}
+            error={errors.allowSmoking}
+            onChange={(e) => {
+              const value = (e.currentTarget as HTMLInputElement).checked
+              onUpdate('allowSmoking', value)
+            }}
+          />
         </div>
       </div>
-    </div>
+    </ListingFormSection>
   )
 }

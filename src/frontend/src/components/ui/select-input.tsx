@@ -1,4 +1,5 @@
 import { FormFieldError } from '../forms/form-field-error'
+import { FormField } from './form-field'
 
 type SelectOption = {
   value: string
@@ -36,8 +37,7 @@ export function SelectInput({
   const hasError = Boolean(error) || Boolean(errors?.length)
 
   return (
-    <label class="form-control w-full" for={id}>
-      <span class="label-text mb-1">{label}</span>
+    <FormField id={id} label={label}>
       <select
         id={id}
         name={name}
@@ -56,7 +56,9 @@ export function SelectInput({
         ) : null}
 
         {options.map((option) => (
-          <option value={option.value}>{option.label}</option>
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
         ))}
       </select>
 
@@ -65,6 +67,6 @@ export function SelectInput({
           <FormFieldError error={error} errors={errors} />
         </span>
       ) : null}
-    </label>
+    </FormField>
   )
 }

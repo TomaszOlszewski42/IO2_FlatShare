@@ -1,6 +1,7 @@
 import { useState } from 'preact/hooks'
 
 import { PasswordResetRequestForm } from '../components/auth/password-reset-request-form'
+import { AuthCard } from '../components/layout/auth-card'
 import { usePageErrorHandler } from '../hooks/use-page-error-handler'
 import { requestPasswordReset } from '../services/password-reset-api'
 
@@ -29,14 +30,10 @@ export function PasswordResetRequestPage(_props: { path?: string }) {
   }
 
   return (
-    <div class="mx-auto max-w-md space-y-6">
-      <div class="space-y-2">
-        <h1 class="text-2xl font-semibold">Reset password</h1>
-        <p class="text-sm opacity-80">
-          Enter your email address and we will send you password reset instructions.
-        </p>
-      </div>
-
+    <AuthCard
+      title="Reset password"
+      subtitle="Enter your email address and we will send you password reset instructions."
+    >
       <PasswordResetRequestForm
         email={email}
         isSubmitting={isSubmitting}
@@ -46,6 +43,6 @@ export function PasswordResetRequestPage(_props: { path?: string }) {
         onEmailInput={(event) => setEmail((event.currentTarget as HTMLInputElement).value)}
         onSubmit={handleSubmit}
       />
-    </div>
+    </AuthCard>
   )
 }

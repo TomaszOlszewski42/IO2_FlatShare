@@ -9,7 +9,11 @@ type ListingsEmptyStateProps = {
   onCreateListing: () => void
 }
 
-export function ListingsEmptyState({ hasFilters, onClearFilters, onCreateListing }: ListingsEmptyStateProps) {
+export function ListingsEmptyState({
+  hasFilters,
+  onClearFilters,
+  onCreateListing,
+}: ListingsEmptyStateProps) {
   return (
     <ListingsSurface dashed translucent>
       <div class="card-body items-center py-10 text-center">
@@ -28,7 +32,7 @@ export function ListingsEmptyState({ hasFilters, onClearFilters, onCreateListing
           <p class="max-w-lg text-sm text-base-content/65">
             {hasFilters
               ? 'Zmień filtry lub frazę wyszukiwania, aby zobaczyć więcej wyników.'
-              : 'Kiedy dodasz pierwsze ogłoszenie, pojawi się ono tutaj razem ze statusem i kluczowymi metadanymi.'}
+              : 'Kiedy dodasz pierwsze ogłoszenie, pojawi się ono tutaj razem ze statusem i kluczowymi metadanami.'}
           </p>
         </RoleBoundary>
 
