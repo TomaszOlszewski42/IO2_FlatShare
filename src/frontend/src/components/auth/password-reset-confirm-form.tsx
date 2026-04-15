@@ -1,9 +1,7 @@
-import { route } from 'preact-router'
-
-import { PasswordResetNewPasswordField } from './password-reset-new-password-field'
+import { AuthFormActions } from './auth-form-actions'
 import { PasswordResetSuccessMessage } from './password-reset-success-message'
-import { PasswordResetTokenField } from './password-reset-token-field'
 import { FormErrorSummary } from '../forms/form-error-summary'
+import { TextInput } from '../ui/text-input'
 
 type PasswordResetConfirmFormProps = {
   resetToken: string
@@ -30,15 +28,25 @@ export function PasswordResetConfirmForm({
 }: PasswordResetConfirmFormProps) {
   return (
     <form class="space-y-6" onSubmit={onSubmit}>
-      <PasswordResetTokenField
+      <TextInput
+        id="resetToken"
+        name="resetToken"
+        label="Reset token"
+        type="text"
         value={resetToken}
+        required
         disabled={isSubmitting}
         errors={fieldErrors.resetToken}
         onInput={onResetTokenInput}
       />
 
-      <PasswordResetNewPasswordField
+      <TextInput
+        id="newPassword"
+        name="newPassword"
+        label="New password"
+        type="password"
         value={newPassword}
+        required
         disabled={isSubmitting}
         errors={fieldErrors.newPassword}
         onInput={onNewPasswordInput}
@@ -47,15 +55,11 @@ export function PasswordResetConfirmForm({
       <FormErrorSummary error={errorMessage} />
       <PasswordResetSuccessMessage message={successMessage} />
 
-      <div class="flex gap-3">
-        <button class="btn btn-primary" type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Saving...' : 'Reset password'}
-        </button>
-
-        <button class="btn btn-ghost" type="button" onClick={() => route('/login')}>
-          Back to login
-        </button>
-      </div>
+      <AuthFormActions
+        isSubmitting={isSubmitting}
+        idleLabel="Reset password"
+        loadingLabel="Saving..."
+      />
     </form>
   )
 }

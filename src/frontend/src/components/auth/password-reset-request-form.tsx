@@ -1,8 +1,7 @@
-import { route } from 'preact-router'
-
-import { PasswordResetEmailField } from './password-reset-email-field'
+import { AuthFormActions } from './auth-form-actions'
 import { PasswordResetSuccessMessage } from './password-reset-success-message'
 import { FormErrorSummary } from '../forms/form-error-summary'
+import { TextInput } from '../ui/text-input'
 
 type PasswordResetRequestFormProps = {
   email: string
@@ -25,8 +24,13 @@ export function PasswordResetRequestForm({
 }: PasswordResetRequestFormProps) {
   return (
     <form class="space-y-6" onSubmit={onSubmit}>
-      <PasswordResetEmailField
+      <TextInput
+        id="email"
+        name="email"
+        label="Email"
+        type="email"
         value={email}
+        required
         disabled={isSubmitting}
         errors={fieldErrors.email}
         onInput={onEmailInput}
@@ -35,15 +39,11 @@ export function PasswordResetRequestForm({
       <FormErrorSummary error={errorMessage} />
       <PasswordResetSuccessMessage message={successMessage} />
 
-      <div class="flex gap-3">
-        <button class="btn btn-primary" type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Sending...' : 'Send reset instructions'}
-        </button>
-
-        <button class="btn btn-ghost" type="button" onClick={() => route('/login')}>
-          Back to login
-        </button>
-      </div>
+      <AuthFormActions
+        isSubmitting={isSubmitting}
+        idleLabel="Send reset instructions"
+        loadingLabel="Sending..."
+      />
     </form>
   )
 }

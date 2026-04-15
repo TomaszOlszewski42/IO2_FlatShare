@@ -1,5 +1,6 @@
+import { ListingFormSection } from './listing-form-section'
 import { TextInput } from '../ui/text-input'
-import { FormField } from '../ui/form-field'
+import { TextArea } from '../ui/text-area'
 
 type ListingBasicInfoSectionProps = {
   formData: {
@@ -10,14 +11,16 @@ type ListingBasicInfoSectionProps = {
   onUpdate: <K extends 'title' | 'description'>(field: K, value: string) => void
 }
 
-export function ListingBasicInfoSection({ formData, errors, onUpdate }: ListingBasicInfoSectionProps) {
+export function ListingBasicInfoSection({
+  formData,
+  errors,
+  onUpdate,
+}: ListingBasicInfoSectionProps) {
   return (
-    <div class="space-y-6 card-body">
-      <div>
-        <h2 class="text-xl font-semibold">Informacje podstawowe</h2>
-        <p class="text-sm text-base-content/65">Tytuł i opis ogłoszenia.</p>
-      </div>
-
+    <ListingFormSection
+      title="Informacje podstawowe"
+      description="Tytuł i opis ogłoszenia."
+    >
       <TextInput
         id="title"
         name="title"
@@ -32,24 +35,24 @@ export function ListingBasicInfoSection({ formData, errors, onUpdate }: ListingB
         }}
       />
 
-      <FormField id="description" label="Opis ogłoszenia" error={errors.description}>
-        <textarea
-          id="description"
-          name="description"
-          class={`textarea w-full min-h-[150px] ${errors.description ? 'textarea-error' : ''}`}
-          placeholder="Opisz szczegóły mieszkania, wyposażenie, cechy lokalizacji oraz zasady wynajmu..."
-          required
-          value={formData.description}
-          onInput={(e) => {
-            const target = e.currentTarget as HTMLTextAreaElement
-            onUpdate('description', target.value)
-          }}
-        />
-      </FormField>
+      <TextArea
+        id="description"
+        name="description"
+        label="Opis ogłoszenia"
+        placeholder="Opisz szczegóły mieszkania, wyposażenie, cechy lokalizacji oraz zasady wynajmu..."
+        rows={6}
+        required
+        value={formData.description}
+        error={errors.description}
+        onInput={(e) => {
+          const target = e.currentTarget as HTMLTextAreaElement
+          onUpdate('description', target.value)
+        }}
+      />
 
       <div class="text-xs text-base-content/60">
-        <p>💡 Wskazówka: Im szczegółowszy opis, tym więcej zainteresowanych potencjalnych najemców.</p>
+        <p> Wskazówka: Im szczegółowszy opis, tym więcej zainteresowanych potencjalnych najemców.</p>
       </div>
-    </div>
+    </ListingFormSection>
   )
 }

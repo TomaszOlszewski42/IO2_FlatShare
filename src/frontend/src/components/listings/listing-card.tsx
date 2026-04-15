@@ -4,6 +4,7 @@ import { formatLocation } from '../../utils/format-location'
 import { formatPrice } from '../../utils/format-price'
 import type { Listing } from '../../types/listing'
 import { AppButton } from '../ui/app-button'
+import { ListingFeatureBadges } from './listing-feature-badges'
 import { ListingMetaRow } from './listing-meta-row'
 import { ListingStatusBadge } from './listing-status-badge'
 import { useAuth } from '../../hooks/use-auth'
@@ -43,19 +44,7 @@ export function ListingCard({ listing, onEdit, onViewDetails }: ListingCardProps
           <ListingMetaRow label="Dostępne od" value={listing.availableFrom ? formatDate(listing.availableFrom) : '-'} />
         </div>
 
-        <div class="flex flex-wrap gap-2">
-          {featureBadges.map((feature) => (
-            <span
-              key={feature.label}
-              class="badge badge-outline badge-sm gap-1.5 bg-base-100 text-base-content"
-            >
-              <span class={feature.value ? 'text-success' : 'text-error'} aria-hidden="true">
-                {feature.value ? '✓' : '✕'}
-              </span>
-              <span>{feature.label}</span>
-            </span>
-          ))}
-        </div>
+        <ListingFeatureBadges features={featureBadges} />
 
         <div class="card-actions justify-end gap-2">
           {canEdit && (

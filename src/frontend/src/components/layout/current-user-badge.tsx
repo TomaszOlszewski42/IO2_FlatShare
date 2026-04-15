@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'preact/hooks'
 
-import { getAuthChangedEventName, readAuthSession } from '../../services/auth-session'
+import { readAuthSession, subscribeToAuthChanges } from '../../services/auth-session'
 import { getUserById } from '../../services/user-api'
 import type { User } from '../../types/user'
 
@@ -47,7 +47,6 @@ export function CurrentUserBadge() {
         if (isMounted) {
           setUser(null)
         }
-
         return
       }
 
@@ -66,17 +65,13 @@ export function CurrentUserBadge() {
 
     void loadUser()
 
-    const handleAuthChange = () => {
+    const unsubscribe = subscribeToAuthChanges(() => {
       void loadUser()
-    }
-
-    window.addEventListener('storage', handleAuthChange)
-    window.addEventListener(getAuthChangedEventName(), handleAuthChange)
+    })
 
     return () => {
       isMounted = false
-      window.removeEventListener('storage', handleAuthChange)
-      window.removeEventListener(getAuthChangedEventName(), handleAuthChange)
+      unsubscribe()
     }
   }, [])
 

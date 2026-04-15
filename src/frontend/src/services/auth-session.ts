@@ -103,10 +103,6 @@ function notifyAuthChanged() {
   window.dispatchEvent(new CustomEvent(AUTH_CHANGED_EVENT))
 }
 
-export function getAuthChangedEventName(): string {
-  return AUTH_CHANGED_EVENT
-}
-
 export function persistAuthSession({ token, sessionId, type, roles = [] }: PersistAuthSessionInput) {
   const userId = getUserIdFromToken(token)
 
@@ -160,5 +156,15 @@ export function readAuthSession(): AuthSession | null {
     type,
     roles: parseSessionRoles(rawRoles),
     userId,
+  }
+}
+
+export function subscribeToAuthChanges(handler: () => void): () => void {
+  window.addEventListener('storage', handler)
+  window.addEventListener(AUTH_CHANGED_EVENT, handler)
+
+  return () => {
+    window.removeEventListener('storage', handler)
+    window.removeEventListener(AUTH_CHANGED_EVENT, handler)
   }
 }
