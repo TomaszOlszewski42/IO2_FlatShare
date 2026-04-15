@@ -1,4 +1,6 @@
 import { AppButton } from '../ui/app-button'
+import { RoleBoundary } from '../auth/role-boundary'
+import { UserRole } from '../../types/user'
 
 type ListingDetailsHeaderProps = {
   title: string
@@ -17,12 +19,14 @@ export function ListingDetailsHeader({ title, onBack, onEdit, onArchive }: Listi
         <h1 class="text-2xl font-semibold tracking-tight md:text-3xl">{title}</h1>
       </div>
 
-      <div class="flex flex-wrap gap-2">
-        <AppButton variant="outline" onClick={onArchive}>
-          Archiwizuj
-        </AppButton>
-        <AppButton onClick={onEdit}>Edytuj ogłoszenie</AppButton>
-      </div>
+      <RoleBoundary requiredRole={UserRole.Landlord}>
+        <div class="flex flex-wrap gap-2">
+          <AppButton variant="outline" onClick={onArchive}>
+            Archiwizuj
+          </AppButton>
+          <AppButton onClick={onEdit}>Edytuj ogłoszenie</AppButton>
+        </div>
+      </RoleBoundary>
     </header>
   )
 }
