@@ -20,45 +20,17 @@ type ListingEditFormProps = {
 
 export function ListingEditForm({ listingId, initialData, onSubmit, isSubmitting = false }: ListingEditFormProps) {
   const [formData, setFormData] = useState<ListingFormData>(initialData)
-  const [errors, setErrors] = useState<Partial<Record<keyof ListingFormData, string>>>({})
+  const errors: Partial<Record<keyof ListingFormData, string>> = {}
 
   function updateField<K extends keyof ListingFormData>(field: K, value: ListingFormData[K]) {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
     }))
-    if (errors[field]) {
-      setErrors((prev) => {
-        const newErrors = { ...prev }
-        delete newErrors[field]
-        return newErrors
-      })
-    }
-  }
-
-  function validateForm(): boolean {
-    const newErrors: Partial<Record<keyof ListingFormData, string>> = {}
-
-    if (!formData.title.trim()) newErrors.title = 'Tytuł jest wymagany'
-    if (!formData.description.trim()) newErrors.description = 'Opis jest wymagany'
-    if (formData.pricePerMonth <= 0) newErrors.pricePerMonth = 'Cena musi być większa niż 0'
-    if (formData.areaSqm <= 0) newErrors.areaSqm = 'Powierzchnia musi być większa niż 0'
-    if (formData.rooms < 1) newErrors.rooms = 'Co najmniej 1 pokój'
-    if (formData.bathrooms < 1) newErrors.bathrooms = 'Co najmniej 1 łazienka'
-    if (!formData.city.trim()) newErrors.city = 'Miasto/Gmina jest wymagane'
-    if (!formData.contact.trim()) newErrors.contact = 'Dane kontaktowe są wymagane'
-
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
   }
 
   function handleSubmit(event: JSX.TargetedSubmitEvent<HTMLFormElement>) {
     event.preventDefault()
-
-    if (!validateForm()) {
-      return
-    }
-
     onSubmit(formData)
   }
 
