@@ -59,14 +59,24 @@ export async function apiRequest<T>(
 ): Promise<T> {
   let response: Response
 
+  const isFormData = options.body instanceof FormData
+  const headers: Record<string, string> = { ...options.headers }
+
+  if (!isFormData && !headers['Content-Type'] && options.body !== undefined) {
+    headers['Content-Type'] = 'application/json'
+  }
+
+  const body = isFormData
+    ? (options.body as FormData)
+    : options.body !== undefined
+      ? JSON.stringify(options.body)
+      : undefined
+
   try {
     response = await fetch(`${API_BASE}${path}`, {
       method: options.method ?? 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(options.headers ?? {}),
-      },
-      body: options.body ? JSON.stringify(options.body) : undefined,
+      headers,
+      body,
     })
   } catch (error) {
     markBackendUnavailable()
