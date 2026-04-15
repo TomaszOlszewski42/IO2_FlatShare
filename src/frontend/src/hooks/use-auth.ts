@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'preact/hooks'
-import { getAuthChangedEventName, readAuthSession, type AuthSession } from '../services/auth-session'
+import {
+  readAuthSession,
+  subscribeToAuthChanges,
+  type AuthSession,
+} from '../services/auth-session'
 import { UserRole } from '../types/user'
 
 export function useAuth() {
@@ -10,13 +14,7 @@ export function useAuth() {
       setSession(readAuthSession())
     }
 
-    window.addEventListener('storage', handleChange)
-    window.addEventListener(getAuthChangedEventName(), handleChange)
-
-    return () => {
-      window.removeEventListener('storage', handleChange)
-      window.removeEventListener(getAuthChangedEventName(), handleChange)
-    }
+    return subscribeToAuthChanges(handleChange)
   }, [])
 
   const hasRole = (role: UserRole) => {
