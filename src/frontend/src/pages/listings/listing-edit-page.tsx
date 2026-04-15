@@ -4,6 +4,7 @@ import { useState, useEffect } from 'preact/hooks'
 
 import { ListingEditForm } from '../../components/listings/listing-edit-form'
 import type { ListingFormData } from '../../components/listings/listing-create-form'
+import { AppButton } from '../../components/ui/app-button'
 import { readAuthSession } from '../../services/auth-session'
 import { getListingById, updateListing } from '../../services/listings-api'
 import type { UpdateListingPayload } from '../../types/listing-forms'
@@ -52,16 +53,16 @@ export function ListingEditPage({ listingId }: ListingEditPageProps) {
       title: listing.title,
       description: listing.description,
       pricePerMonth: listing.price,
-      areaSqm: listing.area,
+      areaSqm: listing.area ?? 0,
       rooms: 1, // Assuming defaults if not in Listing type yet
       bathrooms: 1,
       availableFrom: listing.availableFrom?.split('T')[0] || new Date().toISOString().split('T')[0],
       city: listing.location.city,
-      district: listing.location.district,
-      street: listing.location.street,
-      buildingNumber: listing.location.aptNumber,
+      district: listing.location.district ?? undefined,
+      street: listing.location.street ?? undefined,
+      buildingNumber: listing.location.aptNumber ?? undefined,
       postalCode: '',
-      contact: listing.contact,
+      contact: listing.contact ?? listing.ownerContact ?? '',
       phone: '',
       allowPets: false,
       allowSmoking: false,
@@ -121,7 +122,7 @@ export function ListingEditPage({ listingId }: ListingEditPageProps) {
           <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
           <span>{error || 'Wystąpił nieoczekiwany błąd'}</span>
         </div>
-        <AppButton class="mt-4" onClick={() => route('/listings')}>Powrót do ogłoszeń</AppButton>
+        <AppButton className="mt-4" onClick={() => { route('/listings') }}>Powrót do ogłoszeń</AppButton>
       </div>
     )
   }

@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'preact/hooks'
-import { AppButton } from '../ui/app-button'
 import { ListingBackendPhoto } from './listing-backend-photo'
 import { getListingPhotoIds, uploadPhoto, deletePhoto } from '../../services/listings-api'
 import { readAuthSession } from '../../services/auth-session'
