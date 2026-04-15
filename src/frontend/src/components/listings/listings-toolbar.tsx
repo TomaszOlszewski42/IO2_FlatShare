@@ -3,6 +3,8 @@ import { formatStatusLabel } from '../../utils/format-status-label'
 import { FormField } from '../ui/form-field'
 import { CreateListingButton } from './listings-action-buttons'
 import { ListingsSurface } from './listings-surface'
+import { RoleBoundary } from '../auth/role-boundary'
+import { UserRole } from '../../types/user'
 
 type ListingFilterValue = ListingStatus | 'ALL'
 
@@ -30,10 +32,23 @@ export function ListingsToolbar({
       <div class="card-body gap-4">
         <div class="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <h1 class="text-2xl font-semibold tracking-tight">Twoje ogłoszenia</h1>
-            <p class="text-sm text-base-content/65">Zarządzaj publikacją i widocznością ofert.</p>
+            <RoleBoundary 
+              requiredRole={UserRole.Landlord} 
+              fallback={
+                <>
+                  <h1 class="text-2xl font-semibold tracking-tight">Available Listings</h1>
+                  <p class="text-sm text-base-content/65">Browse and find your next flat.</p>
+                </>
+              }
+            >
+              <h1 class="text-2xl font-semibold tracking-tight">Twoje ogłoszenia</h1>
+              <p class="text-sm text-base-content/65">Zarządzaj publikacją i widocznością ofert.</p>
+            </RoleBoundary>
           </div>
-          <CreateListingButton onClick={onCreateListing} />
+          
+          <RoleBoundary requiredRole={UserRole.Landlord}>
+            <CreateListingButton onClick={onCreateListing} />
+          </RoleBoundary>
         </div>
 
         <div class="flex flex-wrap items-center gap-2 text-sm">

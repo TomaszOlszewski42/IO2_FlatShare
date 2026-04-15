@@ -12,6 +12,8 @@ import { RegisterPage } from './pages/register-page'
 import { readAuthSession } from './services/auth-session'
 import { refreshSessionOnAppLoad } from './services/auth-bootstrap'
 import { getBackendUnavailableEventName, isBackendUnavailable } from './services/backend-availability'
+import { ProtectedRoute } from './components/auth/protected-route'
+import { UserRole } from './types/user'
 import Router from 'preact-router'
 import { route } from 'preact-router'
 import { useEffect } from 'preact/hooks'
@@ -58,9 +60,9 @@ export function App() {
     <AppShell>
       <Router>
         <HomePage path="/" />
-        <ListingsPage path="/listings" />
-        <ListingCreatePage path="/listings/create" />
-        <ListingEditPage path="/listings/:listingId/edit" />
+        <ProtectedRoute path="/listings" component={ListingsPage} />
+        <ProtectedRoute path="/listings/create" component={ListingCreatePage} requiredRole={UserRole.Landlord} />
+        <ProtectedRoute path="/listings/:listingId/edit" component={ListingEditPage} requiredRole={UserRole.Landlord} />
         <ListingDetailsPage path="/listings/:listingId" />
         <LoginPage path="/login" />
         <RegisterPage path="/register" />
