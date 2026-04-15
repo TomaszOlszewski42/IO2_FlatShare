@@ -10,6 +10,10 @@ jobs:
   frontend-build:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+      checks: write
+
     defaults:
       run:
         working-directory: src/frontend
@@ -27,6 +31,25 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Run frontend tests
+        id: run_tests
+        run: |
+          mkdir -p test-results
+          npm run test:ci
+        continue-on-error: true
+
+      - name: Publish test report
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: Frontend Test Results
+          path: src/frontend/test-results/junit.xml
+          reporter: java-junit
+
+      - name: Fail job if tests failed
+        if: steps.run_tests.outcome == 'failure'
+        run: exit 1
 
       - name: Build frontend
         run: npm run build
