@@ -2,7 +2,11 @@ import { route } from 'preact-router'
 import { useEffect, useState } from 'preact/hooks'
 
 import { AppButton } from '../ui/app-button'
-import { clearAuthSession, getAuthChangedEventName, readAuthSession } from '../../services/auth-session'
+import {
+  clearAuthSession,
+  readAuthSession,
+  subscribeToAuthChanges,
+} from '../../services/auth-session'
 
 function isAuthenticated(): boolean {
   return Boolean(readAuthSession())
@@ -16,13 +20,7 @@ export function AuthControls() {
       setAuthenticated(isAuthenticated())
     }
 
-    window.addEventListener('storage', handleChange)
-    window.addEventListener(getAuthChangedEventName(), handleChange)
-
-    return () => {
-      window.removeEventListener('storage', handleChange)
-      window.removeEventListener(getAuthChangedEventName(), handleChange)
-    }
+    return subscribeToAuthChanges(handleChange)
   }, [])
 
   if (!authenticated) {

@@ -1,6 +1,7 @@
 import type { ListingStatus } from '../../types/listing-status'
 import { formatStatusLabel } from '../../utils/format-status-label'
-import { FormField } from '../ui/form-field'
+import { SelectInput } from '../ui/select-input'
+import { TextInput } from '../ui/text-input'
 import { CreateListingButton } from './listings-action-buttons'
 import { ListingsSurface } from './listings-surface'
 
@@ -15,6 +16,20 @@ type ListingsToolbarProps = {
   onStatusChange: (value: ListingFilterValue) => void
   onCreateListing: () => void
 }
+
+const statusOptions = [
+  'ALL',
+  'DRAFT',
+  'UNDER_REVIEW',
+  'AWAITING_REVIEW',
+  'AWAITING_FIXES',
+  'ACTIVE',
+  'HIDDEN',
+  'ARCHIVED',
+].map((status) => ({
+  value: status,
+  label: status === 'ALL' ? 'Wszystkie statusy' : formatStatusLabel(status as ListingStatus),
+}))
 
 export function ListingsToolbar({
   query,
@@ -42,29 +57,26 @@ export function ListingsToolbar({
         </div>
 
         <div class="grid gap-3 md:grid-cols-[2fr_1fr]">
-          <FormField label="Szukaj">
-            <input
-              class="input w-full"
-              type="text"
-              value={query}
-              placeholder="Tytuł, miasto, dzielnica"
-              onInput={(event: any) => onQueryChange(event.currentTarget.value)}
-            />
-          </FormField>
+          <TextInput
+            id="listings-query"
+            name="query"
+            label="Szukaj"
+            type="text"
+            value={query}
+            placeholder="Tytuł, miasto, dzielnica"
+            onInput={(event) => onQueryChange((event.currentTarget as HTMLInputElement).value)}
+          />
 
-          <FormField label="Status">
-            <select
-              class="select w-full"
-              value={selectedStatus}
-              onChange={(event) => onStatusChange((event.currentTarget as HTMLSelectElement).value as ListingFilterValue)}
-            >
-              {['ALL', 'DRAFT', 'UNDER_REVIEW', 'AWAITING_REVIEW', 'AWAITING_FIXES', 'ACTIVE', 'HIDDEN', 'ARCHIVED'].map((status) => (
-                <option key={status} value={status}>
-                  {status === 'ALL' ? 'Wszystkie statusy' : formatStatusLabel(status as ListingStatus)}
-                </option>
-              ))}
-            </select>
-          </FormField>
+          <SelectInput
+            id="listings-status"
+            name="status"
+            label="Status"
+            value={selectedStatus}
+            options={statusOptions}
+            onChange={(event) =>
+              onStatusChange((event.currentTarget as HTMLSelectElement).value as ListingFilterValue)
+            }
+          />
         </div>
       </div>
     </ListingsSurface>

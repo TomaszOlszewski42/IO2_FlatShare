@@ -1,6 +1,7 @@
-import { HideListingButton } from './hide-listing-button'
-import { ArchiveListingButton } from './archive-listing-button'
 import type { ListingStatus } from '../../types/listing-status'
+import { ArchiveListingButton } from './archive-listing-button'
+import { HideListingButton } from './hide-listing-button'
+import { ListingSection } from './listing-section'
 
 type ListingOwnerActionsPanelProps = {
   listingId: string
@@ -22,13 +23,13 @@ export function ListingOwnerActionsPanel(props: ListingOwnerActionsPanelProps) {
   const archiveDisabled = props.isBusy || !canArchive(props.status)
 
   return (
-    <section class="rounded-2xl border border-base-300 bg-base-100 p-5 shadow-sm">
-      <div class="mb-4">
-        <h2 class="text-lg font-semibold">Owner actions</h2>
-        <p class="mt-1 text-sm text-base-content/70">
-          Manage the visibility and lifecycle of this listing.
-        </p>
-      </div>
+    <ListingSection
+      title="Owner actions"
+      className="[&_.card-body]:gap-4"
+    >
+      <p class="text-sm text-base-content/70">
+        Manage the visibility and lifecycle of this listing.
+      </p>
 
       <div class="flex flex-col gap-3 sm:flex-row">
         <HideListingButton
@@ -44,11 +45,11 @@ export function ListingOwnerActionsPanel(props: ListingOwnerActionsPanelProps) {
         />
       </div>
 
-      {props.status && (
-        <p class="mt-4 text-xs text-base-content/60">
+      {props.status ? (
+        <p class="text-xs text-base-content/60">
           Current status: <span class="font-medium">{props.status}</span>
         </p>
-      )}
-    </section>
+      ) : null}
+    </ListingSection>
   )
 }
