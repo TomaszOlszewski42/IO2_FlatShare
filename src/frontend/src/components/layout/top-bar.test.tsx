@@ -12,6 +12,14 @@ vi.mock('./auth-controls', () => ({
   AuthControls: () => <div data-test-id="auth-controls" />,
 }))
 
+vi.mock('../../hooks/use-auth', () => ({
+  useAuth: vi.fn(() => ({
+    isLandlord: false,
+    isAuthenticated: false,
+    hasRole: () => false,
+  })),
+}))
+
 describe('TopBar', () => {
   it('renders brand link with app name', () => {
     const wrapper = mount(<TopBar />)
