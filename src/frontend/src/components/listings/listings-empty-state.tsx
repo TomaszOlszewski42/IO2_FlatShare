@@ -1,5 +1,7 @@
 import { ClearFiltersButton, CreateListingButton } from './listings-action-buttons'
 import { ListingsSurface } from './listings-surface'
+import { RoleBoundary } from '../auth/role-boundary'
+import { UserRole } from '../../types/user'
 
 type ListingsEmptyStateProps = {
   hasFilters: boolean
@@ -12,15 +14,30 @@ export function ListingsEmptyState({ hasFilters, onClearFilters, onCreateListing
     <ListingsSurface dashed translucent>
       <div class="card-body items-center py-10 text-center">
         <h2 class="text-xl font-semibold">Brak ogłoszeń do wyświetlenia</h2>
-        <p class="max-w-lg text-sm text-base-content/65">
-          {hasFilters
-            ? 'Zmień filtry lub frazę wyszukiwania, aby zobaczyć więcej wyników.'
-            : 'Kiedy dodasz pierwsze ogłoszenie, pojawi się ono tutaj razem ze statusem i kluczowymi metadanymi.'}
-        </p>
+        
+        <RoleBoundary 
+          requiredRole={UserRole.Landlord}
+          fallback={
+            <p class="max-w-lg text-sm text-base-content/65">
+              {hasFilters
+                ? 'Zmień filtry lub frazę wyszukiwania, aby zobaczyć więcej wyników.'
+                : 'Currently there are no active listings available. Check back later!'}
+            </p>
+          }
+        >
+          <p class="max-w-lg text-sm text-base-content/65">
+            {hasFilters
+              ? 'Zmień filtry lub frazę wyszukiwania, aby zobaczyć więcej wyników.'
+              : 'Kiedy dodasz pierwsze ogłoszenie, pojawi się ono tutaj razem ze statusem i kluczowymi metadanymi.'}
+          </p>
+        </RoleBoundary>
 
         <div class="mt-4 flex flex-wrap justify-center gap-2">
           {hasFilters ? <ClearFiltersButton onClick={onClearFilters} /> : null}
-          <CreateListingButton text="Dodaj pierwsze ogłoszenie" onClick={onCreateListing} />
+          
+          <RoleBoundary requiredRole={UserRole.Landlord}>
+            <CreateListingButton text="Dodaj pierwsze ogłoszenie" onClick={onCreateListing} />
+          </RoleBoundary>
         </div>
       </div>
     </ListingsSurface>
