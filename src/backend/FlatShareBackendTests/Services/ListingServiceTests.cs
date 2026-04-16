@@ -51,8 +51,15 @@ namespace FlatShareBackendTests.Services
                 Area = 50,
                 Location = new Address { City = "Warsaw", District = "Mokotow", Street = "Test", AptNumber = "1" },
                 Status = Listing.State.ACTIVE,
-                Photos = new List<Guid>(),
-                UnavailableDates = new List<DateRange>()
+                Photos = [],
+                UnavailableDates = [],
+                Attributes = new ListingAttributes
+                {
+                    PetsAllowed = true,
+                    NonSmokingOnly = true,
+                    CloseToShops = false,
+                    Profile = "student"
+                }
             };
         }
 
@@ -68,7 +75,14 @@ namespace FlatShareBackendTests.Services
                 AvailableSince = DateOnly.FromDateTime(DateTime.Now),
                 OwnerContact = "987654321",
                 Area = 45,
-                Location = new Address { City = "Cracow", District = "Old Town", Street = "Main", AptNumber = "2" }
+                Location = new Address { City = "Cracow", District = "Old Town", Street = "Main", AptNumber = "2" },
+                Attributes = new ListingAttributes
+                {
+                    PetsAllowed = true,
+                    NonSmokingOnly = true,
+                    CloseToShops = false,
+                    Profile = "student"
+                }
             };
         }
 
