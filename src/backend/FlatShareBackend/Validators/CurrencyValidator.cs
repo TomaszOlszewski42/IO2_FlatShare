@@ -5,7 +5,7 @@ namespace FlatShareBackend.Validators;
 
 public class CurrencyValidator : IListingRuleValidator
 {
-    private readonly static string[] allowedCurrencies = ["PLN", "EUR"];
+    private readonly static string[] allowedCurrencies = ["PLN", "EUR"]; // TODO: jakiś enum
 
     public void Validate(Listing listing)
     {
