@@ -19,7 +19,7 @@ namespace FlatShareBackendTests.Controllers
         public UsersControllerTests()
         {
             _userServiceMock = new Mock<IUserService>();
-            _controller = new UsersController(_userServiceMock.Object);
+            _controller = new UsersController(_userServiceMock.Object, null!);
         }
 
         [Theory]

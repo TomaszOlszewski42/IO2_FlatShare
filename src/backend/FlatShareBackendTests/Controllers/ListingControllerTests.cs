@@ -56,7 +56,14 @@ namespace FlatShareBackendTests.Controllers
                 AvailableSince = DateOnly.FromDateTime(DateTime.Now),
                 OwnerContact = "123",
                 Area = 50,
-                Location = new Address { City = "Warsaw", District = "Wola", Street = "Prosta", AptNumber = "1" }
+                Location = new Address { City = "Warsaw", District = "Wola", Street = "Prosta", AptNumber = "1" },
+                Attributes = new ListingAttributes
+                {
+                    PetsAllowed = true,
+                    NonSmokingOnly = true,
+                    CloseToShops = false,
+                    Profile = "student"
+                }
             };
             var expectedGuid = Guid.NewGuid();
 
@@ -92,7 +99,14 @@ namespace FlatShareBackendTests.Controllers
                 OwnerContact = "Contact",
                 Area = 50,
                 Location = new Address { City = "C", District = "D", Street = "S", AptNumber = "A" },
-                Status = Listing.State.ACTIVE
+                Status = Listing.State.ACTIVE,
+                Attributes = new ListingAttributes
+                {
+                    PetsAllowed = true,
+                    NonSmokingOnly = true,
+                    CloseToShops = false,
+                    Profile = "student"
+                }
             });
 
             _listingServiceMock.Setup(s => s.Get(listingId, It.IsAny<Guid>())).ReturnsAsync(expectedDto);
