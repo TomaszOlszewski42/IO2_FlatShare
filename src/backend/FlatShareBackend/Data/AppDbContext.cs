@@ -28,6 +28,8 @@ namespace FlatShareBackend.Data
                     .OnDelete(DeleteBehavior.Cascade);
 
                 entity.OwnsOne(x => x.Location);
+                
+                entity.OwnsOne(x => x.Attributes);
 
                 entity.OwnsMany(x => x.UnavailableDates);
             });

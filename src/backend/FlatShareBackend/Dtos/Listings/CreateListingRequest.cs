@@ -1,4 +1,6 @@
-﻿namespace FlatShareBackend.Dtos.Listings;
+﻿using FlatShareBackend.Models;
+
+namespace FlatShareBackend.Dtos.Listings;
 
 public record CreateListingRequest
 {
@@ -11,6 +13,5 @@ public record CreateListingRequest
     public required decimal Area { get; init; }
     public required DateOnly AvailableSince { get; init; } // Strasznie dziwna nazwa, brzmi na potencjalny błąd
     public required Address Location { get; init; }
-    // następujące propertisy nie są potrzebne w tym sprincie
-    // public required some_type Attributes { get; init; }
+    public required ListingAttributes Attributes { get; init; }
 }

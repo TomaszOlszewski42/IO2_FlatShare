@@ -2,7 +2,6 @@
 
 namespace FlatShareBackend.Models;
 
-
 public class Listing
 {
     public enum State
@@ -27,9 +26,9 @@ public class Listing
     public required DateOnly AvailableSince { get; set; }
     public required Address Location { get; set; }
     public required State Status { get; set; }
+    public required ListingAttributes Attributes { get; set; }
     public List<DateRange> UnavailableDates { get; set; } = [];
     public List<Guid> Photos { get; set; } = [];
-    // TODO: missing attributes field
 
     public void EditFromRequest(EditListingRequest request)
     {
@@ -44,6 +43,7 @@ public class Listing
         Location = request.Location ?? Location;
         // TODO: Podejrzane: teraz da się tym zasdaniczo dodać datę mimo że jest do tego oddzielny endpoint
         UnavailableDates = request.UnavailableDates ?? UnavailableDates; 
+        Attributes = request.Attributes ?? Attributes;
     }
 
     public Listing DeepCopy()
@@ -62,7 +62,8 @@ public class Listing
             OwnerContact = OwnerContact,
             Area = Area,
             Location = addressCopy,
-            Status = Status
+            Status = Status,
+            Attributes = Attributes
         };
     }
 }

@@ -61,7 +61,8 @@ public class ListingService : IListingService
             OwnerContact = request.OwnerContact,
             Area = request.Area,
             Location = request.Location,
-            Status = Listing.State.AWAITING_REVIEW
+            Status = Listing.State.AWAITING_REVIEW,
+            Attributes = request.Attributes
         };
 
         _listingValidator.Validate(listing);
