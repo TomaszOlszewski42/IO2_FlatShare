@@ -12,6 +12,7 @@ namespace FlatShareBackend.Data
         public DbSet<User> Users => Set<User>();
         public DbSet<UserSession> Sessions => Set<UserSession>();
         public DbSet<Listing> Listings => Set<Listing>();
+        public DbSet<UserPreferences> UsersPreferences => Set<UserPreferences>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -32,6 +33,17 @@ namespace FlatShareBackend.Data
                 entity.OwnsOne(x => x.Attributes);
 
                 entity.OwnsMany(x => x.UnavailableDates);
+            });
+
+            modelBuilder.Entity<UserPreferences>(entity =>
+            {
+                entity.HasKey(up => up.OwnerId);
+
+                entity.HasOne(x => x.Owner)
+                    .WithOne()
+                    .HasForeignKey<UserPreferences>(x => x.OwnerId)
+                    .IsRequired(false)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<User>(entity =>
