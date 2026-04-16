@@ -13,7 +13,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Data;
 using System.Reflection.Metadata;
-using System.Reflection.Metadata;
 using System.Text;
 
 namespace FlatShareBackend

@@ -13,6 +13,5 @@ public record EditListingRequest
     public DateOnly? AvailableSince { get; init; } // Strasznie dziwna nazwa, brzmi na potencjalny błąd
     public Address? Location { get; init; }
     public List<DateRange>? UnavailableDates { get; init; }
-    // następujące propertisy nie są potrzebne w tym sprincie
-    // public required some_type Attributes { get; init; }
+    public ListingAttributes? Attributes { get; init; }
 }

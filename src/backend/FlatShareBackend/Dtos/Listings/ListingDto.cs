@@ -16,6 +16,7 @@ public class ListingDto
         Area = listing.Area;
         AvailableSince = listing.AvailableSince;
         Location = listing.Location;
+        Attributes = listing.Attributes;
     }
     public Guid Id { get; set; }
     public string Title { get; set; }
@@ -27,4 +28,5 @@ public class ListingDto
     public decimal Area { get; set; }
     public DateOnly AvailableSince { get; set; }
     public Address Location { get; set; }
+    public ListingAttributes Attributes { get; set; }
 }
