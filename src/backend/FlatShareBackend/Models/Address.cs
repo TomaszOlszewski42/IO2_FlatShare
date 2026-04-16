@@ -1,4 +1,4 @@
-﻿namespace FlatShareBackend.Dtos.Listings;
+﻿namespace FlatShareBackend.Models;
 
 public record Address
 {
