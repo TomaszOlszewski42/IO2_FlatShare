@@ -79,6 +79,9 @@ namespace FlatShareBackend
             builder.Services.AddTransient<IListingRuleValidator, PriceValidator>();
             // --------------------------------------------
 
+            builder.Services.AddTransient<IPreferencesService, PreferencesService>();
+            builder.Services.AddTransient<IPreferencesRepository, PreferencesRepositoryDB>();
+
             builder.Services.AddTransient<IFilesService, FileServiceBlob>();
 
             builder.Services.AddSingleton(serviceProvider =>
