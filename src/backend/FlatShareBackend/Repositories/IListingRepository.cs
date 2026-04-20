@@ -1,4 +1,5 @@
-﻿using FlatShareBackend.Dtos.Listings;
+﻿using FlatShareBackend.AgregationClasses;
+using FlatShareBackend.Dtos.Listings;
 using FlatShareBackend.Models;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -11,4 +12,5 @@ public interface IListingRepository
     public Task SaveChangesAsync();
     public Task<List<Listing>> QueryListings(string? City, string? District, string? Street, string? AptNumber, 
         Guid? OwnerId); // TODO: coś bardziej rozszerzalnego?
+    public Task<List<Listing>> QueryListing(PagingQueryArgs args);
 }
