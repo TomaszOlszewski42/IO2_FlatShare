@@ -1,8 +1,6 @@
-import type { ListingImage } from './listing-image'
 import type { ListingStatus } from './listing-status'
-import type { Unavailability } from './unavailability'
 
-export interface ListingLocation {
+export type ListingLocation = {
   city: string
   district?: string | null
   street?: string | null
@@ -12,13 +10,13 @@ export interface ListingLocation {
   postalCode?: string | null
 }
 
-export interface ListingAttributes {
+export type ListingAttributes = {
   petsAllowed?: boolean
   nonSmokingOnly?: boolean
   preferredTenantProfile?: string | null
 }
 
-export interface Listing {
+export type Listing = {
   id: string
   ownerId?: string
   title: string
@@ -41,8 +39,6 @@ export interface Listing {
   furnished?: boolean
   location: ListingLocation
   attributes?: ListingAttributes
-  images?: ListingImage[]
-  unavailability?: Unavailability[]
   createdAt?: string
   updatedAt?: string
 }
