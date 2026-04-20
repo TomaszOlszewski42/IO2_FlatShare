@@ -26,12 +26,14 @@ export function LoginPage(_: RoutableProps) {
 
     try {
       const session = await login({ email, password })
+
       persistAuthSession({
         token: session.token,
         sessionId: session.sessionId,
         type: session.type,
         roles: session.roles,
       })
+
       route('/listings')
     } catch (error) {
       handleError(error, 'Login failed. Check your credentials and try again.')
