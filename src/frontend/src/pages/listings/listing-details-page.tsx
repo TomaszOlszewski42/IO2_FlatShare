@@ -12,6 +12,7 @@ import { ListingLocationSection } from '../../components/listings/listing-locati
 import { ListingParametersSection } from '../../components/listings/listing-parameters-section'
 import { ListingSection } from '../../components/listings/listing-section'
 import { AppButton } from '../../components/ui/app-button'
+import { ListingUserAttributesSection } from '../../components/listings/listing-user-attributes-section'
 import { readAuthSession } from '../../services/auth-session'
 import { getListingById, getListingPhotoIds } from '../../services/listings-api'
 import type { Listing } from '../../types/listing'
@@ -102,8 +103,8 @@ export function ListingDetailsPage({ listingId }: ListingDetailsRouteProps) {
 
   const featureRows = [
     { label: 'Umeblowane', value: Boolean(listing.furnished) },
-    { label: 'Zwierzęta', value: Boolean(listing.allowPets) },
-    { label: 'Palenie', value: Boolean(listing.allowSmoking) },
+    { label: 'Zwierzęta w mieszkaniu', value: Boolean(listing.allowPets) },
+    { label: 'Palenie w mieszkaniu', value: Boolean(listing.allowSmoking) },
   ]
 
   return (
@@ -126,6 +127,7 @@ export function ListingDetailsPage({ listingId }: ListingDetailsRouteProps) {
       </div>
 
       <ListingGallery listingId={listing.id} photoIds={photoIds} title={listing.title} />
+      <ListingUserAttributesSection attributes={listing.attributes} />
 
       <ListingLocationSection location={listing.location} />
 
