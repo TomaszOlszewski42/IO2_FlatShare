@@ -1,6 +1,7 @@
 import { PasswordResetRequestPage } from './pages/password-reset-request-page'
 import { PasswordResetConfirmPage } from './pages/password-reset-confirm-page'
 import { NoBackendPage } from './pages/no-backend-page'
+import { TenantPreferencesPage } from './pages/tenant-preferences-page'
 import { AppShell } from './components/layout/app-shell'
 import { HomePage } from './pages/home-page'
 import { LoginPage } from './pages/login-page'
@@ -61,6 +62,7 @@ export function App() {
       <Router>
         <HomePage path="/" />
         <ProtectedRoute path="/listings" component={ListingsPage} />
+        <ProtectedRoute path="/preferences" component={TenantPreferencesPage} requiredRole={UserRole.Tenant} />
         <ProtectedRoute path="/listings/create" component={ListingCreatePage} requiredRole={UserRole.Landlord} />
         <ProtectedRoute path="/listings/:listingId/edit" component={ListingEditPage} requiredRole={UserRole.Landlord} />
         <ListingDetailsPage path="/listings/:listingId" />

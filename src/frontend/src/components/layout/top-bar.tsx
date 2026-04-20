@@ -1,29 +1,72 @@
+import { useEffect, useState } from 'preact/hooks'
+
 import { appConfig } from '../../config/app-config'
 import { CurrentUserBadge } from './current-user-badge'
 import { AuthControls } from './auth-controls'
 import { RoleBoundary } from '../auth/role-boundary'
 import { UserRole } from '../../types/user'
+import { getAuthChangedEventName, readAuthSession } from '../../services/auth-session'
+
+function isAuthenticated(): boolean {
+  return Boolean(readAuthSession())
+}
+
+function isTenant(): boolean {
+  const session = readAuthSession()
+
+  if (!session) {
+    return false
+  }
+
+  return session.roles.includes('TENANT')
+}
 
 export function TopBar() {
+  const [authenticated, setAuthenticated] = useState<boolean>(isAuthenticated)
+  const [tenant, setTenant] = useState<boolean>(isTenant)
+
+  useEffect(() => {
+    const handleChange = () => {
+      setAuthenticated(isAuthenticated())
+      setTenant(isTenant())
+    }
+
+    window.addEventListener('storage', handleChange)
+    window.addEventListener(getAuthChangedEventName(), handleChange)
+
+    return () => {
+      window.removeEventListener('storage', handleChange)
+      window.removeEventListener(getAuthChangedEventName(), handleChange)
+    }
+  }, [])
+
   return (
     <header class="border-b border-base-300/70 bg-base-100/85 shadow-sm backdrop-blur">
       <div class="navbar mx-auto w-full max-w-6xl px-4 md:px-6">
-        <div class="navbar-start">
+        <div class="navbar-start gap-6">
           <a class="link link-hover text-lg font-semibold tracking-tight no-underline" href="/">
             {appConfig.name}
           </a>
-          
-          <nav class="ml-8 hidden md:flex gap-4">
-            <a href="/listings" class="link link-hover text-sm font-medium">
-              Browse
+
+          <nav class="hidden items-center gap-4 md:flex">
+            <a class="link link-hover text-sm" href="/listings">
+              Browse listings
             </a>
+
             <RoleBoundary requiredRole={UserRole.Landlord}>
-              <a href="/listings/create" class="link link-hover text-sm font-medium">
-                Create Listing
+              <a class="link link-hover text-sm" href="/listings/create">
+                Create listing
               </a>
             </RoleBoundary>
+
+            {authenticated && tenant ? (
+              <a class="link link-hover text-sm" href="/preferences">
+                My Preferences
+              </a>
+            ) : null}
           </nav>
         </div>
+
         <div class="navbar-end gap-3">
           <CurrentUserBadge />
           <AuthControls />
