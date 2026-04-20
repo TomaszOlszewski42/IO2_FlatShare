@@ -3,11 +3,12 @@ import { formatDate } from '../../utils/format-date'
 import { formatLocation } from '../../utils/format-location'
 import { formatPrice } from '../../utils/format-price'
 import type { Listing } from '../../types/listing'
+import { useAuth } from '../../hooks/use-auth'
 import { AppButton } from '../ui/app-button'
 import { ListingFeatureBadges } from './listing-feature-badges'
 import { ListingMetaRow } from './listing-meta-row'
 import { ListingStatusBadge } from './listing-status-badge'
-import { useAuth } from '../../hooks/use-auth'
+import { ListingUserAttributesBadges } from './listing-user-attributes-badges'
 
 type ListingCardProps = {
   listing: Listing
@@ -45,6 +46,7 @@ export function ListingCard({ listing, onEdit, onViewDetails }: ListingCardProps
         </div>
 
         <ListingFeatureBadges features={featureBadges} />
+        <ListingUserAttributesBadges attributes={listing.attributes} />
 
         <div class="card-actions justify-end gap-2">
           {canEdit && (

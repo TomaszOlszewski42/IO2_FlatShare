@@ -17,16 +17,36 @@ type ListingDto = {
   description: string
   price: number
   currency: string
-  availableFrom: string
-  ownerContact: string
-  area: number
-  availableSince: string
+  status?: ListingStatus
+  availableFrom?: string | null
+  availableSince?: string | null
+  ownerContact?: string | null
+  contact?: string | null
+  contactEmail?: string | null
+  contactPhone?: string | null
+  phone?: string | null
+  area?: number | null
+  rooms?: number | null
+  bathrooms?: number | null
+  allowPets?: boolean
+  allowSmoking?: boolean
+  furnished?: boolean
   location: {
     city: string
-    district: string
-    street: string
-    aptNumber: string
+    district?: string | null
+    street?: string | null
+    houseNumber?: string | null
+    aptNumber?: string | null
+    buildingNumber?: string | null
+    postalCode?: string | null
   }
+  attributes?: {
+    petsAllowed?: boolean
+    nonSmokingOnly?: boolean
+    preferredTenantProfile?: string | null
+  }
+  createdAt?: string
+  updatedAt?: string
 }
 
 export type CreateListingResponse = {
@@ -83,6 +103,48 @@ function getAuthHeaders(token: string, type = 'Bearer'): Record<string, string> 
   }
 }
 
+function mapListingDtoToListing(item: ListingDto): Listing {
+  return {
+    id: item.id,
+    title: item.title,
+    description: item.description,
+    price: item.price,
+    currency: item.currency,
+    status: item.status,
+    availableFrom: item.availableFrom ?? null,
+    availableSince: item.availableSince ?? null,
+    ownerContact: item.ownerContact ?? null,
+    contact: item.contact ?? item.ownerContact ?? null,
+    contactEmail: item.contactEmail ?? null,
+    contactPhone: item.contactPhone ?? null,
+    phone: item.phone ?? item.contactPhone ?? null,
+    area: item.area ?? null,
+    rooms: item.rooms ?? null,
+    bathrooms: item.bathrooms ?? null,
+    allowPets: item.allowPets,
+    allowSmoking: item.allowSmoking,
+    furnished: item.furnished,
+    location: {
+      city: item.location.city,
+      district: item.location.district ?? null,
+      street: item.location.street ?? null,
+      houseNumber: item.location.houseNumber ?? null,
+      aptNumber: item.location.aptNumber ?? null,
+      buildingNumber: item.location.buildingNumber ?? item.location.aptNumber ?? null,
+      postalCode: item.location.postalCode ?? null,
+    },
+    attributes: item.attributes
+      ? {
+          petsAllowed: item.attributes.petsAllowed,
+          nonSmokingOnly: item.attributes.nonSmokingOnly,
+          preferredTenantProfile: item.attributes.preferredTenantProfile ?? null,
+        }
+      : undefined,
+    createdAt: item.createdAt,
+    updatedAt: item.updatedAt,
+  }
+}
+
 export async function getListings(
   token: string,
   query?: ListingListQuery,
@@ -93,25 +155,7 @@ export async function getListings(
     headers: getAuthHeaders(token, type),
   })
 
-  return items.map((item) => ({
-    id: item.id,
-    title: item.title,
-    description: item.description,
-    price: item.price,
-    currency: item.currency,
-    availableFrom: item.availableFrom,
-    availableSince: item.availableSince,
-    ownerContact: item.ownerContact,
-    contact: item.ownerContact,
-    area: item.area,
-    location: {
-      city: item.location.city,
-      district: item.location.district,
-      street: item.location.street,
-      aptNumber: item.location.aptNumber,
-      buildingNumber: item.location.aptNumber,
-    },
-  }))
+  return items.map(mapListingDtoToListing)
 }
 
 export async function getListingById(
@@ -124,25 +168,7 @@ export async function getListingById(
     headers: getAuthHeaders(token, type),
   })
 
-  return {
-    id: item.id,
-    title: item.title,
-    description: item.description,
-    price: item.price,
-    currency: item.currency,
-    availableFrom: item.availableFrom,
-    availableSince: item.availableSince,
-    ownerContact: item.ownerContact,
-    contact: item.ownerContact,
-    area: item.area,
-    location: {
-      city: item.location.city,
-      district: item.location.district,
-      street: item.location.street,
-      aptNumber: item.location.aptNumber,
-      buildingNumber: item.location.aptNumber,
-    },
-  }
+  return mapListingDtoToListing(item)
 }
 
 export async function getListingPhotoIds(
