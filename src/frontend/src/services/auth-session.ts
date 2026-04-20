@@ -73,24 +73,6 @@ function getUserIdFromToken(token: string): string | null {
   return readClaim(payload, ['sub', 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'])
 }
 
-function parseSessionRoles(rawRoles: string | null): string[] {
-  if (!rawRoles) {
-    return []
-  }
-
-  try {
-    const parsed = JSON.parse(rawRoles)
-
-    if (Array.isArray(parsed) && parsed.every((role) => typeof role === 'string')) {
-      return parsed
-    }
-  } catch {
-    return []
-  }
-
-  return []
-}
-
 export function getAuthSessionUserId(session: AuthSession): string | null {
   return session.userId || null
 }
@@ -103,13 +85,25 @@ function notifyAuthChanged() {
   window.dispatchEvent(new CustomEvent(AUTH_CHANGED_EVENT))
 }
 
+function normalizeRoles(value: unknown): string[] {
+  if (!Array.isArray(value)) {
+    return []
+  }
+
+  return value.filter((role): role is string => typeof role === 'string')
+}
+
+export function getAuthChangedEventName(): string {
+  return AUTH_CHANGED_EVENT
+}
+
 export function persistAuthSession({ token, sessionId, type, roles = [] }: PersistAuthSessionInput) {
   const userId = getUserIdFromToken(token)
 
   localStorage.setItem(SESSION_TOKEN_KEY, token)
   localStorage.setItem(SESSION_ID_KEY, sessionId)
   localStorage.setItem(SESSION_TYPE_KEY, type)
-  localStorage.setItem(SESSION_ROLES_KEY, JSON.stringify(roles))
+  localStorage.setItem(SESSION_ROLES_KEY, JSON.stringify(normalizeRoles(roles)))
 
   if (userId) {
     localStorage.setItem(SESSION_USER_ID_KEY, userId)
@@ -150,11 +144,21 @@ export function readAuthSession(): AuthSession | null {
     localStorage.setItem(SESSION_USER_ID_KEY, userId)
   }
 
+  let roles: string[] = []
+
+  if (rawRoles) {
+    try {
+      roles = normalizeRoles(JSON.parse(rawRoles))
+    } catch {
+      roles = []
+    }
+  }
+
   return {
     token,
     sessionId,
     type,
-    roles: parseSessionRoles(rawRoles),
+    roles,
     userId,
   }
 }
