@@ -84,6 +84,9 @@ namespace FlatShareBackend
 
             builder.Services.AddTransient<IFilesService, FileServiceBlob>();
 
+            builder.Services.AddTransient<IMatchesPagingService, MatchesPagingService>();
+            builder.Services.AddTransient<IMatchScoreCalculator, AlwaysOneMatchScoreCalculator>();
+
             builder.Services.AddSingleton(serviceProvider =>
             {
                 var options = serviceProvider.GetRequiredService<IOptions<BlobOptions>>().Value;
