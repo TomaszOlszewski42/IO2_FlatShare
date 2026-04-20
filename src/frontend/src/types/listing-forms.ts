@@ -1,24 +1,11 @@
-import type { ListingStatus } from './listing-status'
-
-export interface ListingFormValues {
-  title: string
-  description: string
-  price: number | ''
-  currency: string
-  availableFrom: string
-  contactEmail: string
-  contactPhone: string
+export type ListingLocationPayload = {
   city: string
-  district: string
-  street: string
-  houseNumber: string
-  petsAllowed: boolean
-  nonSmokingOnly: boolean
-  preferredTenantProfile: string
-  status?: ListingStatus
+  district?: string | null
+  street?: string | null
+  aptNumber?: string | null
 }
 
-export interface CreateListingPayload {
+export type CreateListingPayload = {
   title: string
   description: string
   price: number
@@ -27,12 +14,17 @@ export interface CreateListingPayload {
   ownerContact: string
   area: number
   availableSince: string
-  location: {
-    city: string
-    district: string
-    street: string
-    aptNumber: string
-  }
+  location: ListingLocationPayload
 }
 
-export interface UpdateListingPayload extends Partial<CreateListingPayload> {}
+export type UpdateListingPayload = Partial<CreateListingPayload>
+
+/**
+ * Frontend-only draft pod sprint 3.
+ * Tych pól na razie nie wysyłamy do backendu, dopóki API ich nie obsłuży.
+ */
+export type ListingOwnerAttributesDraft = {
+  petsAllowed: boolean
+  nonSmokingOnly: boolean
+  preferredTenantProfile: string
+}

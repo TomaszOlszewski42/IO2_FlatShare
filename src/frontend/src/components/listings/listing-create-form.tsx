@@ -9,6 +9,7 @@ import { ListingFormShell } from './listing-form-shell'
 import { ListingLocationFormSection } from './listing-location-form-section'
 import { ListingPricingSection } from './listing-pricing-section'
 import { ListingPublicationSection } from './listing-publication-section'
+import { ListingTenantRequirementsSection } from './listing-tenant-requirements-section'
 
 export type ListingFormData = {
   title: string
@@ -28,52 +29,98 @@ export type ListingFormData = {
   allowPets: boolean
   allowSmoking: boolean
   furnished: boolean
+  petsAllowed: boolean
+  nonSmokingOnly: boolean
+  preferredTenantProfile: string
   publicationStatus: 'draft' | 'active'
 }
 
 type ListingCreateFormProps = {
+  initialValues?: Partial<ListingFormData>
   onSubmit: (data: ListingFormData) => Promise<void>
+  onChange?: (data: ListingFormData) => void
   isSubmitting?: boolean
 }
 
-const initialFormData: ListingFormData = {
-  title: '',
-  description: '',
-  pricePerMonth: 0,
-  areaSqm: 0,
-  rooms: 1,
-  bathrooms: 1,
-  availableFrom: new Date().toISOString().split('T')[0],
-  city: '',
-  district: '',
-  street: '',
-  buildingNumber: '',
-  postalCode: '',
-  contact: '',
-  phone: '',
-  allowPets: false,
-  allowSmoking: false,
-  furnished: false,
-  publicationStatus: 'draft',
+export function createInitialListingFormData(): ListingFormData {
+  return {
+    title: '',
+    description: '',
+    pricePerMonth: 0,
+    areaSqm: 0,
+    rooms: 1,
+    bathrooms: 1,
+    availableFrom: new Date().toISOString().split('T')[0],
+    city: '',
+    district: '',
+    street: '',
+    buildingNumber: '',
+    postalCode: '',
+    contact: '',
+    phone: '',
+    allowPets: false,
+    allowSmoking: false,
+    furnished: false,
+    petsAllowed: false,
+    nonSmokingOnly: false,
+    preferredTenantProfile: '',
+    publicationStatus: 'draft',
+  }
 }
 
-export function ListingCreateForm({ onSubmit, isSubmitting = false }: ListingCreateFormProps) {
-  const [formData, setFormData] = useState<ListingFormData>(initialFormData)
+function mergeWithInitialValues(initialValues?: Partial<ListingFormData>): ListingFormData {
+  return {
+    ...createInitialListingFormData(),
+    ...(initialValues || {}),
+  }
+}
+
+export function ListingCreateForm({
+  initialValues,
+  onSubmit,
+  onChange,
+  isSubmitting = false,
+}: ListingCreateFormProps) {
+  const [formData, setFormData] = useState<ListingFormData>(() => mergeWithInitialValues(initialValues))
   const [errors, setErrors] = useState<Partial<Record<keyof ListingFormData, string>>>({})
 
   function updateField<K extends keyof ListingFormData>(field: K, value: ListingFormData[K]) {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }))
+    setFormData((prev) => {
+      const nextFormData = {
+        ...prev,
+        [field]: value,
+      }
+
+      onChange?.(nextFormData)
+      return nextFormData
+    })
 
     if (errors[field]) {
       setErrors((prev) => {
-        const newErrors = { ...prev }
-        delete newErrors[field]
-        return newErrors
+        const nextErrors = { ...prev }
+        delete nextErrors[field]
+        return nextErrors
       })
     }
+  }
+
+  function handleTenantRequirementsUpdate(field: 'petsAllowed' | 'nonSmokingOnly', value: boolean): void
+  function handleTenantRequirementsUpdate(field: 'preferredTenantProfile', value: string): void
+  function handleTenantRequirementsUpdate(
+    field: 'petsAllowed' | 'nonSmokingOnly' | 'preferredTenantProfile',
+    value: boolean | string,
+  ) {
+    if (field === 'preferredTenantProfile') {
+      updateField('preferredTenantProfile', value as string)
+      return
+    }
+
+    if (field === 'petsAllowed') {
+      updateField('petsAllowed', value as boolean)
+      return
+    }
+
+    updateField('nonSmokingOnly', value as boolean)
   }
 
   function validateForm(): boolean {
@@ -99,7 +146,7 @@ export function ListingCreateForm({ onSubmit, isSubmitting = false }: ListingCre
       return
     }
 
-    onSubmit(formData)
+    void onSubmit(formData)
   }
 
   const sections = [
@@ -107,6 +154,20 @@ export function ListingCreateForm({ onSubmit, isSubmitting = false }: ListingCre
     <ListingPricingSection formData={formData} errors={errors} onUpdate={updateField} />,
     <ListingLocationFormSection formData={formData} errors={errors} onUpdate={updateField} />,
     <ListingContactSection formData={formData} errors={errors} onUpdate={updateField} />,
+    <ListingTenantRequirementsSection
+      formData={{
+        petsAllowed: formData.petsAllowed,
+        nonSmokingOnly: formData.nonSmokingOnly,
+        preferredTenantProfile: formData.preferredTenantProfile,
+      }}
+      errors={{
+        petsAllowed: errors.petsAllowed,
+        nonSmokingOnly: errors.nonSmokingOnly,
+        preferredTenantProfile: errors.preferredTenantProfile,
+      }}
+      disabled={isSubmitting}
+      onUpdate={handleTenantRequirementsUpdate}
+    />,
     <ListingPublicationSection formData={formData} errors={errors} onUpdate={updateField} />,
   ]
 
@@ -125,12 +186,7 @@ export function ListingCreateForm({ onSubmit, isSubmitting = false }: ListingCre
         <AppButton type="submit" disabled={isSubmitting}>
           {isSubmitting ? 'Tworzenie...' : 'Utwórz ogłoszenie'}
         </AppButton>
-        <AppButton
-          type="button"
-          variant="outline"
-          disabled={isSubmitting}
-          onClick={() => window.history.back()}
-        >
+        <AppButton type="button" variant="outline" disabled={isSubmitting} onClick={() => window.history.back()}>
           Anuluj
         </AppButton>
       </div>

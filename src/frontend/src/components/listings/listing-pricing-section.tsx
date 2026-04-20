@@ -23,7 +23,8 @@ type ListingPricingSectionProps = {
       | 'availableFrom'
       | 'furnished'
       | 'allowPets'
-      | 'allowSmoking',
+      | 'allowSmoking'
+      ,
       string
     >
   >
