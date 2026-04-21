@@ -2,6 +2,7 @@ using FlatShareBackend.AgregationClasses;
 using FlatShareBackend.Dtos.Listings;
 using FlatShareBackend.Dtos.Matches;
 using FlatShareBackend.Exceptions;
+using FlatShareBackend.Models;
 using FlatShareBackend.Repositories;
 
 namespace FlatShareBackend.Services;
@@ -28,12 +29,12 @@ public class MatchesPagingService : IMatchesPagingService
         var preferences = await _preferencesRepository.Get(userId);
         var sorted = filteredListings.OrderBy(x => _matchScoreCalculator.Calculate(x, preferences));
         var listingsNum = sorted.Count();
-        var page = sorted.Chunk(args.Size).ElementAtOrDefault(args.Page) 
-            ?? throw new InvalidPageNumberException($"Page number {args.Page} is invalid for this search");
-        var asDtos = page.Select(x => new ListingDto(x));
+        var page = (sorted.Chunk(args.Size).ElementAtOrDefault(args.Page) 
+            ?? [])
+            .Select(x => new ListingDto(x));
         return new PagedListingsDtos
         {
-            Content = asDtos,
+            Content = page,
             Page = new SearchPage
             {
                 Size = args.Size,
