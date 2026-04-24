@@ -6,6 +6,7 @@ using FlatShareBackend.Options;
 using FlatShareBackend.Repositories;
 using FlatShareBackend.Services;
 using FlatShareBackend.Validators;
+using LinqKit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -33,7 +34,8 @@ namespace FlatShareBackend
             builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.SectionName));
 
             builder.Services.AddDbContext<AppDbContext>(options =>
-                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+                    .WithExpressionExpanding());
 
             var jwtOptions = builder.Configuration
                 .GetSection(JwtOptions.SectionName)
