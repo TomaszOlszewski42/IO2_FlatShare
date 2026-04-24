@@ -2,8 +2,8 @@ using FlatShareBackend.Dtos.Listings;
 
 namespace FlatShareBackend.Dtos.Matches;
 
-public class PagedListingsDtos
+public class PagedMatchedListingsDto
 {
-    public required IEnumerable<ListingDto> Content { get; set; }
+    public required IEnumerable<MatchedListingDto> Content { get; set; }
     public required SearchPage Page { get; set; }
 }

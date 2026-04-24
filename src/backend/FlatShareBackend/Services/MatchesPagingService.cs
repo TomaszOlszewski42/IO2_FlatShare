@@ -23,16 +23,19 @@ public class MatchesPagingService : IMatchesPagingService
         _matchScoreCalculator = calculator;
     }
 
-    public async Task<PagedListingsDtos> GetPage(PagingArgs args, Guid userId)
+    public async Task<PagedMatchedListingsDto> GetPage(PagingArgs args, Guid userId)
     {
-        var filteredListings = await _listingsRepository.QueryListing(new(args));
         var preferences = await _preferencesRepository.Get(userId);
-        var sorted = filteredListings.OrderBy(x => _matchScoreCalculator.Calculate(x, preferences));
-        var listingsNum = sorted.Count();
-        var page = (sorted.Chunk(args.Size).ElementAtOrDefault(args.Page) 
-            ?? [])
-            .Select(x => new ListingDto(x));
-        return new PagedListingsDtos
+        var filteredListings = (await _listingsRepository.QueryListing(new(args)))
+                                .Select(x => new MatchedListingDto 
+                                    {
+                                        Listing = new ListingDto(x),
+                                        MatchScore = _matchScoreCalculator.Calculate(x, preferences)
+                                    })
+                                .OrderBy(x => x.MatchScore);
+        var listingsNum = filteredListings.Count();
+        var page = filteredListings.Chunk(args.Size).ElementAtOrDefault(args.Page) ?? [];
+        return new PagedMatchedListingsDto
         {
             Content = page,
             Page = new SearchPage
