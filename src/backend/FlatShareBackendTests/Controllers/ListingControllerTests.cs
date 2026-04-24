@@ -76,8 +76,8 @@ namespace FlatShareBackendTests.Controllers
             var createdResult = Assert.IsType<CreatedResult>(result);
             Assert.Equal($"api/v1/listings/{expectedGuid}", createdResult.Location);
 
-            var valueType = createdResult.Value.GetType();
-            var listingIdProp = valueType.GetProperty("listingId").GetValue(createdResult.Value, null);
+            var valueType = createdResult.Value!.GetType();
+            var listingIdProp = valueType.GetProperty("listingId")!.GetValue(createdResult.Value, null);
             Assert.Equal(expectedGuid, listingIdProp);
         }
 
@@ -148,7 +148,7 @@ namespace FlatShareBackendTests.Controllers
         {
             // Arrange
             var listingId = Guid.NewGuid();
-            IActionResult result = null;
+            IActionResult result = null!;
 
             // Act
             switch (expectedState)
@@ -232,7 +232,7 @@ namespace FlatShareBackendTests.Controllers
             var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
             Assert.Equal(nameof(_controller.GetPhoto), createdAtActionResult.ActionName);
 
-            Assert.Equal(listingId, createdAtActionResult.RouteValues["listingId"]);
+            Assert.Equal(listingId, createdAtActionResult.RouteValues!["listingId"]);
             Assert.Equal(expectedPhotoId, createdAtActionResult.RouteValues["photoId"]);
         }
 
@@ -269,8 +269,8 @@ namespace FlatShareBackendTests.Controllers
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var valueType = okResult.Value.GetType();
-            var photosProp = valueType.GetProperty("photos").GetValue(okResult.Value, null) as IEnumerable<Guid>;
+            var valueType = okResult.Value!.GetType();
+            var photosProp = valueType.GetProperty("photos")!.GetValue(okResult.Value, null) as IEnumerable<Guid>;
 
             Assert.NotNull(photosProp);
             Assert.Equal(expectedPhotos, photosProp);

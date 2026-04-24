@@ -59,8 +59,8 @@ namespace FlatShareBackendTests.Controllers
             var apiErrorResponse = Assert.IsType<ApiErrorResponse>(badRequestResult.Value);
 
             Assert.Equal(400, apiErrorResponse.Status);
-            Assert.Single(apiErrorResponse.FieldErrors);
-            Assert.Equal("email", apiErrorResponse.FieldErrors.First().Field);
+            Assert.Single(apiErrorResponse.FieldErrors!);
+            Assert.Equal("email", apiErrorResponse.FieldErrors!.First().Field);
         }
     }
 }
