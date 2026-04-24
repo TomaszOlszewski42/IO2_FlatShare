@@ -10,39 +10,19 @@ namespace FlatShareBackend.Controllers;
 [Route("api/v1/matches")]
 public class MatchesController : ControllerBase
 {
-    private IMatchesPagingService _pagingService;
+    private readonly IMatchesPagingService _pagingService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public MatchesController(IMatchesPagingService pagingService)
+    public MatchesController(IMatchesPagingService pagingService, IHttpContextAccessor httpContextAccessor)
     {
         _pagingService = pagingService;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     [Authorize(Roles = "TENANT, ADMIN")]
-    public async Task<IActionResult> GetMatches(
-        [FromQuery] int page, [FromQuery] int size, [FromQuery] string? city, [FromQuery] string? district,
-        [FromQuery] decimal? minPrice, [FromQuery] decimal? maxPrice, [FromQuery] bool? petsAllowed, 
-        [FromQuery] bool? nonSmokingOnly, [FromQuery] bool? closeToShops, [FromQuery] string? profile, 
-        [FromQuery] decimal? minArea, [FromQuery] decimal? maxArea, [FromQuery] DateOnly? startDate,
-        IHttpContextAccessor accessor
-    )
+    public async Task<IActionResult> Get([FromQuery] PagingArgs request)
     {
-        var args = new PagingArgs
-        {
-            Page = page,
-            Size = size,
-            City = city,
-            District = district,
-            MinPrice = minPrice,
-            MaxPrice = maxPrice,
-            PetsAllowed = petsAllowed,
-            NonSmokingOnly = nonSmokingOnly,
-            CloseToShops = closeToShops,
-            Profile = profile,
-            MinArea = minArea,
-            MaxArea = maxArea,
-            StartDate = startDate
-        };
-        var userId = accessor.ParseUserID();
-        return Ok(await _pagingService.GetPage(args, userId));
+        var userId = _httpContextAccessor.ParseUserID();
+        return Ok(await _pagingService.GetPage(request, userId));
     }    
 }
