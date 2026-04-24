@@ -2,8 +2,8 @@ namespace FlatShareBackend.AgregationClasses;
 
 public class PagingArgs
 {
-    public int Page { get; set; } 
-    public int Size { get; set; }
+    public required int Page { get; set; } 
+    public required int Size { get; set; }
     public string? City { get; set; }
     public string? District { get; set; }
     public decimal? MinPrice { get; set; }
