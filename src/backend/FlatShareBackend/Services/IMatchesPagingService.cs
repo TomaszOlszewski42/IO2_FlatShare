@@ -6,5 +6,5 @@ namespace FlatShareBackend.Services;
 
 public interface IMatchesPagingService
 {
-    public Task<PagedListingsDtos> GetPage(PagingArgs args, Guid userId);
+    public Task<PagedMatchedListingsDto> GetPage(PagingArgs args, Guid userId);
 }
