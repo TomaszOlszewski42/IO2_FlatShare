@@ -65,7 +65,7 @@ namespace FlatShareBackendTests.Services
             // Arrange
             var request = new LoginRequest { Email = "wrong@test.com", Password = "Password123" };
             _userRepositoryMock.Setup(repo => repo.GetByEmailAsync("wrong@test.com", It.IsAny<CancellationToken>()))
-                .ReturnsAsync((User)null);
+                .ReturnsAsync((User)null!);
 
             // Act & Assert
             await Assert.ThrowsAsync<InvalidCredentialsException>(() => _authService.LoginAsync(request));
