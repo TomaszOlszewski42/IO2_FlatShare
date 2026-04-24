@@ -12,5 +12,5 @@ public interface IListingRepository
     public Task SaveChangesAsync();
     public Task<List<Listing>> QueryListings(string? City, string? District, string? Street, string? AptNumber, 
         Guid? OwnerId); // TODO: coś bardziej rozszerzalnego?
-    public Task<List<Listing>> QueryListing(PagingQueryArgs args);
+    public IQueryable<Listing> GetQuery(PagingQueryArgs args);
 }

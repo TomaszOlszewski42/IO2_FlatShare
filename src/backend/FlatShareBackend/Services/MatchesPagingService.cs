@@ -4,6 +4,8 @@ using FlatShareBackend.Dtos.Matches;
 using FlatShareBackend.Exceptions;
 using FlatShareBackend.Models;
 using FlatShareBackend.Repositories;
+using LinqKit;
+using Microsoft.EntityFrameworkCore;
 
 namespace FlatShareBackend.Services;
 
@@ -26,18 +28,30 @@ public class MatchesPagingService : IMatchesPagingService
     public async Task<PagedMatchedListingsDto> GetPage(PagingArgs args, Guid userId)
     {
         var preferences = await _preferencesRepository.Get(userId);
-        var filteredListings = (await _listingsRepository.QueryListing(new(args)))
-                                .Select(x => new MatchedListingDto 
-                                    {
-                                        Listing = new ListingDto(x),
-                                        MatchScore = _matchScoreCalculator.Calculate(x, preferences)
-                                    })
-                                .OrderBy(x => x.MatchScore);
-        var listingsNum = filteredListings.Count();
-        var page = filteredListings.Chunk(args.Size).ElementAtOrDefault(args.Page) ?? [];
+        var scoreExpr = _matchScoreCalculator.GetScoreExpression(preferences);
+        var query = _listingsRepository.GetQuery(new(args));
+        var listingsNum = await query.CountAsync();
+        var queriedListings = await query
+                    .Select(x => new
+                    {
+                        Listing = x,
+                        Score = scoreExpr.Invoke(x)
+                    })
+                    .OrderByDescending(x => x.Score)
+                    .Skip(args.Page * args.Size)
+                    .Take(args.Size)
+                    .ToListAsync();
+                    
+        var content = queriedListings
+                    .Select(x => new MatchedListingDto
+                    {
+                        Listing = new ListingDto(x.Listing),
+                        MatchScore = x.Score
+                    });
+
         return new PagedMatchedListingsDto
         {
-            Content = page,
+            Content = content,
             Page = new SearchPage
             {
                 Size = args.Size,

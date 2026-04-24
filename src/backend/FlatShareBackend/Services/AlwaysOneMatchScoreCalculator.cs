@@ -1,11 +1,13 @@
+using System.Linq.Expressions;
 using FlatShareBackend.Models;
 
 namespace FlatShareBackend.Services;
 
 public class AlwaysOneMatchScoreCalculator : IMatchScoreCalculator
 {
-    public float Calculate(Listing listing, UserPreferences preferences)
+
+    public Expression<Func<Listing, float>> GetScoreExpression(UserPreferences preferences)
     {
-        return 1.0f;
+        return x => 1.0f;
     }
 }
