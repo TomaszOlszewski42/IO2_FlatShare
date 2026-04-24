@@ -37,6 +37,20 @@ function mergeTenantPreferences(base: TenantPreferences, override?: TenantPrefer
   }
 }
 
+function formatDraftTimestamp(value: string | null): string | null {
+  if (!value) {
+    return null
+  }
+
+  const date = new Date(value)
+
+  if (Number.isNaN(date.getTime())) {
+    return null
+  }
+
+  return date.toLocaleString('pl-PL')
+}
+
 export function TenantPreferencesPage(_: RoutableProps) {
   const [preferences, setPreferences] = useState<TenantPreferences>(createEmptyTenantPreferences())
   const [previewPreferences, setPreviewPreferences] = useState<TenantPreferences>(createEmptyTenantPreferences())
@@ -44,7 +58,10 @@ export function TenantPreferencesPage(_: RoutableProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [saveMessage, setSaveMessage] = useState<string | null>(null)
+  const [draftMessage, setDraftMessage] = useState<string | null>(null)
   const [isAllowed, setIsAllowed] = useState<boolean>(() => canAccessTenantPreferences())
+  const [hasRecoveredDraft, setHasRecoveredDraft] = useState(false)
+  const [draftSavedAt, setDraftSavedAt] = useState<string | null>(null)
 
   const hasSkippedInitialDraftSave = useRef(false)
 
@@ -88,6 +105,19 @@ export function TenantPreferencesPage(_: RoutableProps) {
 
         setPreferences(mergedPreferences)
         setPreviewPreferences(mergedPreferences)
+        setHasRecoveredDraft(Boolean(savedDraft))
+        setDraftSavedAt(savedDraft?.updatedAt ?? null)
+
+        if (savedDraft?.updatedAt) {
+          const formattedTimestamp = formatDraftTimestamp(savedDraft.updatedAt)
+          setDraftMessage(
+            formattedTimestamp
+              ? `Przywrócono lokalny szkic zapisany ${formattedTimestamp}.`
+              : 'Przywrócono lokalny szkic preferencji.',
+          )
+        } else {
+          setDraftMessage(null)
+        }
       } catch (error) {
         console.error('Failed to load tenant preferences:', error)
 
@@ -100,12 +130,22 @@ export function TenantPreferencesPage(_: RoutableProps) {
 
           setPreferences(mergedPreferences)
           setPreviewPreferences(mergedPreferences)
+          setHasRecoveredDraft(true)
+          setDraftSavedAt(savedDraft.updatedAt)
+
+          const formattedTimestamp = formatDraftTimestamp(savedDraft.updatedAt)
+          setDraftMessage(
+            formattedTimestamp
+              ? `Nie udało się pobrać zapisanych preferencji. Przywrócono lokalny szkic z ${formattedTimestamp}.`
+              : 'Nie udało się pobrać zapisanych preferencji. Przywrócono lokalny szkic.',
+          )
           setErrorMessage(null)
         } else {
           const emptyPreferences = createEmptyTenantPreferences()
           setPreferences(emptyPreferences)
           setPreviewPreferences(emptyPreferences)
           setErrorMessage('Nie udało się wczytać preferencji. Możesz nadal uzupełnić formularz ręcznie.')
+          setDraftMessage(null)
         }
       } finally {
         if (isMounted) {
@@ -129,7 +169,16 @@ export function TenantPreferencesPage(_: RoutableProps) {
       return
     }
 
-    saveTenantPreferencesDraft(values)
+    const updatedAt = saveTenantPreferencesDraft(values)
+
+    if (updatedAt) {
+      setDraftSavedAt(updatedAt)
+
+      const formattedTimestamp = formatDraftTimestamp(updatedAt)
+      setDraftMessage(
+        formattedTimestamp ? `Lokalny szkic zapisano ${formattedTimestamp}.` : 'Lokalny szkic został zapisany.',
+      )
+    }
   }
 
   async function handleSubmit(values: TenantPreferences) {
@@ -143,6 +192,9 @@ export function TenantPreferencesPage(_: RoutableProps) {
       setPreviewPreferences(savedPreferences)
       setSaveMessage('Preferencje zostały zapisane.')
       clearTenantPreferencesDraft()
+      setHasRecoveredDraft(false)
+      setDraftSavedAt(null)
+      setDraftMessage(null)
     } catch (error) {
       console.error('Failed to save tenant preferences:', error)
       setErrorMessage('Nie udało się zapisać preferencji.')
@@ -165,6 +217,17 @@ export function TenantPreferencesPage(_: RoutableProps) {
           </p>
         </div>
 
+        <div class="alert alert-info mb-6 text-sm">
+          <span>
+            Na obecnym etapie developmentu te dane są zapisywane lokalnie w przeglądarce. Widok jest przygotowany pod
+            późniejsze podpięcie backendu.
+          </span>
+        </div>
+
+        {hasRecoveredDraft && draftMessage ? <div class="alert alert-warning mb-6 text-sm">{draftMessage}</div> : null}
+
+        {!hasRecoveredDraft && draftMessage ? <div class="alert alert-info mb-6 text-sm">{draftMessage}</div> : null}
+
         {errorMessage ? <div class="alert alert-error mb-6 text-sm">{errorMessage}</div> : null}
 
         {isLoading ? (
@@ -180,11 +243,11 @@ export function TenantPreferencesPage(_: RoutableProps) {
 
             <div class="card border border-base-300 bg-base-100 shadow-sm">
               <div class="card-body">
-                {/*
-                Debug only:
-                lokalny draft nadal działa w tle przez tenant-preferences-draft,
-                ale nie pokazujemy już komunikatów o szkicu użytkownikowi.
-                */}
+                {draftSavedAt ? (
+                  <div class="mb-2 text-xs text-base-content/60">
+                    Ostatni lokalny zapis: {formatDraftTimestamp(draftSavedAt) || 'przed chwilą'}
+                  </div>
+                ) : null}
 
                 <TenantPreferencesForm
                   initialValues={preferences}

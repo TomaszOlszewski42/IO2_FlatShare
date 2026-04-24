@@ -1,6 +1,9 @@
-import { apiRequest } from './api-client'
-import { readAuthSession } from './auth-session'
+// Serwis danych dla preferencji lokatora, pobiera i zapisuje dane w localStorage
+// Czyści i normalizuje dane, żeby frontend nie psuł się przy złym formacie
+
 import { createEmptyTenantPreferences, type TenantPreferences } from '../types/tenant-preferences'
+
+const TENANT_PREFERENCES_STORAGE_KEY = 'flatshare.tenant-preferences'
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null
@@ -49,36 +52,43 @@ function normalizeTenantPreferences(value: unknown): TenantPreferences {
   }
 }
 
-function getAuthHeaders(): Record<string, string> {
-  const session = readAuthSession()
+function readTenantPreferencesFromStorage(): TenantPreferences {
+  const rawValue = localStorage.getItem(TENANT_PREFERENCES_STORAGE_KEY)
 
-  if (!session) {
-    throw new Error('Brak aktywnej sesji użytkownika.')
+  if (!rawValue) {
+    return createEmptyTenantPreferences()
   }
 
-  return {
-    Authorization: `${session.type} ${session.token}`,
+  try {
+    return normalizeTenantPreferences(JSON.parse(rawValue))
+  } catch {
+    return createEmptyTenantPreferences()
   }
 }
 
+function writeTenantPreferencesToStorage(preferences: TenantPreferences) {
+  localStorage.setItem(TENANT_PREFERENCES_STORAGE_KEY, JSON.stringify(preferences))
+}
+
+/*
+TODO BACKEND:
+- GET /api/v1/users/me/preferences
+- odpowiedź zgodna z TenantPreferences
+*/
 export async function getTenantPreferences(): Promise<TenantPreferences> {
-  const response = await apiRequest<unknown>('/users/me/preferences', {
-    method: 'GET',
-    headers: getAuthHeaders(),
-  })
-
-  return normalizeTenantPreferences(response)
+  return readTenantPreferencesFromStorage()
 }
 
+/*
+TODO BACKEND:
+- PUT /api/v1/users/me/preferences
+- body zgodne z TenantPreferences
+- odpowiedź zgodna z TenantPreferences
+*/
 export async function updateTenantPreferences(preferences: TenantPreferences): Promise<TenantPreferences> {
   const normalizedPreferences = normalizeTenantPreferences(preferences)
 
-  await apiRequest<void>('/users/me/preferences', {
-    method: 'PUT',
-    body: normalizedPreferences,
-    headers: getAuthHeaders(),
-  })
+  writeTenantPreferencesToStorage(normalizedPreferences)
 
-  // Backend zwraca 204 No Content, więc po zapisie dociągamy aktualny stan.
-  return getTenantPreferences()
+  return normalizedPreferences
 }
