@@ -14,7 +14,7 @@ export function usePageErrorHandler() {
   }
 
   function handleError(error: unknown, fallbackMessage = 'Something went wrong. Please try again.') {
-    const mappedError = mapFormErrors(error)
+    const mappedError = mapFormErrors(error, fallbackMessage)
 
     setErrorMessage(mappedError.summary ?? fallbackMessage)
     setFieldErrors(mappedError.fieldErrors)
