@@ -7,10 +7,14 @@ import { SelectInput } from '../ui/select-input'
 import { TextInput } from '../ui/text-input'
 import type { TenantPreferences } from '../../types/tenant-preferences'
 
+type FieldErrors = Record<string, string[]>
+
 type TenantPreferencesFormProps = {
   initialValues: TenantPreferences
   isSubmitting?: boolean
+  fieldErrors?: FieldErrors
   onChange?: (values: TenantPreferences) => void
+  onReset?: () => void
   onSubmit: (values: TenantPreferences) => void | Promise<void>
   submitLabel?: string
   saveMessage?: string | null
@@ -21,6 +25,14 @@ type BooleanPreferenceValue = 'null' | 'true' | 'false'
 type FormErrors = {
   maxPrice?: string
 }
+
+const KNOWN_FIELD_NAMES = [
+  'maxPrice',
+  'currency',
+  'smokingAllowed',
+  'petsAllowed',
+  'preferredDistricts',
+]
 
 function toBooleanPreferenceValue(value: boolean | null): BooleanPreferenceValue {
   if (value === true) {
@@ -62,10 +74,51 @@ function parseDistricts(value: string): string[] {
   return Array.from(uniqueDistricts)
 }
 
+function normalizeFieldName(fieldName: string): string {
+  const withoutRootPrefix = fieldName.replace(/^\$\./, '')
+  const lastSegment = withoutRootPrefix.split('.').at(-1) ?? withoutRootPrefix
+
+  return lastSegment.replace(/\[\d+\]/g, '').toLowerCase()
+}
+
+function uniqueMessages(messages: string[]): string[] {
+  return Array.from(new Set(messages.filter((message) => message.trim().length > 0)))
+}
+
+function getExternalFieldErrors(fieldErrors: FieldErrors, fieldName: string): string[] {
+  const normalizedFieldName = normalizeFieldName(fieldName)
+  const result: string[] = []
+
+  for (const [serverFieldName, messages] of Object.entries(fieldErrors)) {
+    if (normalizeFieldName(serverFieldName) === normalizedFieldName) {
+      result.push(...messages)
+    }
+  }
+
+  return uniqueMessages(result)
+}
+
+function getUnboundFieldErrors(fieldErrors: FieldErrors): string[] {
+  const knownFieldNames = new Set(KNOWN_FIELD_NAMES.map(normalizeFieldName))
+  const result: string[] = []
+
+  for (const [serverFieldName, messages] of Object.entries(fieldErrors)) {
+    const normalizedServerFieldName = normalizeFieldName(serverFieldName)
+
+    if (!knownFieldNames.has(normalizedServerFieldName) && normalizedServerFieldName !== 'general') {
+      result.push(...messages)
+    }
+  }
+
+  return uniqueMessages(result)
+}
+
 export function TenantPreferencesForm({
   initialValues,
   isSubmitting = false,
+  fieldErrors = {},
   onChange,
+  onReset,
   onSubmit,
   submitLabel = 'Zapisz preferencje',
   saveMessage = null,
@@ -105,6 +158,8 @@ export function TenantPreferencesForm({
     onChange?.(normalizedValues)
   }, [normalizedValues, onChange])
 
+  const unboundFieldErrors = getUnboundFieldErrors(fieldErrors)
+
   function validateForm(values: TenantPreferences): FormErrors {
     const nextErrors: FormErrors = {}
 
@@ -113,6 +168,13 @@ export function TenantPreferencesForm({
     }
 
     return nextErrors
+  }
+
+  function getInputErrors(fieldName: string, localError?: string): string[] | undefined {
+    const externalErrors = getExternalFieldErrors(fieldErrors, fieldName)
+    const allErrors = uniqueMessages([...externalErrors, ...(localError ? [localError] : [])])
+
+    return allErrors.length > 0 ? allErrors : undefined
   }
 
   function handleSubmit(event: JSX.TargetedSubmitEvent<HTMLFormElement>) {
@@ -135,6 +197,7 @@ export function TenantPreferencesForm({
     setPetsAllowed('null')
     setPreferredDistricts('')
     setErrors({})
+    onReset?.()
   }
 
   return (
@@ -143,6 +206,19 @@ export function TenantPreferencesForm({
         Uzupełnij tylko te pola, które faktycznie mają wpływ na dopasowanie mieszkań. Puste pola będą traktowane jako
         brak preferencji.
       </div>
+
+      {unboundFieldErrors.length > 0 ? (
+        <div class="alert alert-error text-sm">
+          <div>
+            <p class="font-semibold">Niektóre pola wymagają poprawy:</p>
+            <ul class="mt-1 list-disc pl-5">
+              {unboundFieldErrors.map((message) => (
+                <li key={message}>{message}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      ) : null}
 
       <div class="grid gap-4 md:grid-cols-2">
         <NumberInput
@@ -153,7 +229,7 @@ export function TenantPreferencesForm({
           min={0}
           step={50}
           placeholder="np. 1500"
-          error={errors.maxPrice}
+          errors={getInputErrors('maxPrice', errors.maxPrice)}
           disabled={isSubmitting}
           onInput={(event) => {
             const value = (event.currentTarget as HTMLInputElement).value
@@ -166,6 +242,7 @@ export function TenantPreferencesForm({
           name="currency"
           label="Waluta"
           value={currency}
+          errors={getInputErrors('currency')}
           disabled={isSubmitting}
           onChange={(event) => {
             const target = event.currentTarget as HTMLSelectElement
@@ -181,6 +258,7 @@ export function TenantPreferencesForm({
           name="smokingAllowed"
           label="Palenie"
           value={smokingAllowed}
+          errors={getInputErrors('smokingAllowed')}
           disabled={isSubmitting}
           onChange={(event) => {
             const target = event.currentTarget as HTMLSelectElement
@@ -198,6 +276,7 @@ export function TenantPreferencesForm({
           name="petsAllowed"
           label="Zwierzęta"
           value={petsAllowed}
+          errors={getInputErrors('petsAllowed')}
           disabled={isSubmitting}
           onChange={(event) => {
             const target = event.currentTarget as HTMLSelectElement
@@ -217,6 +296,7 @@ export function TenantPreferencesForm({
         label="Preferowane dzielnice"
         value={preferredDistricts}
         placeholder="np. Mokotów, Ochota, Wola"
+        errors={getInputErrors('preferredDistricts')}
         disabled={isSubmitting}
         onInput={(event) => setPreferredDistricts((event.currentTarget as HTMLInputElement).value)}
       />

@@ -52,6 +52,19 @@ type SessionResponseLike = {
   roles?: string[]
 }
 
+function getApiErrorMessage(status: number, responseBody: unknown): string {
+  if (typeof responseBody === 'object' && responseBody !== null) {
+    const apiError = responseBody as Record<string, unknown>
+    const message = apiError.message ?? apiError.Message ?? apiError.error ?? apiError.Error
+
+    if (typeof message === 'string' && message.trim().length > 0) {
+      return message.trim()
+    }
+  }
+
+  return `Request failed with status ${status}`
+}
+
 export async function apiRequest<T>(
   path: string,
   options: RequestOptions = {},
@@ -111,7 +124,7 @@ export async function apiRequest<T>(
 
       clearAuthSession()
       redirectToLogin()
-      throw new ApiHttpError(401, 'Request failed with status 401', responseBody)
+      throw new ApiHttpError(401, getApiErrorMessage(401, responseBody), responseBody)
     }
 
     if (OUTAGE_STATUS_CODES.has(response.status)) {
@@ -119,13 +132,7 @@ export async function apiRequest<T>(
       throw new BackendUnavailableError('Backend service is temporarily unavailable.', null)
     }
 
-    const message =
-      typeof responseBody === 'object' &&
-      responseBody !== null &&
-      'message' in responseBody &&
-      typeof (responseBody as { message?: unknown }).message === 'string'
-        ? (responseBody as { message: string }).message
-        : `Request failed with status ${response.status}`
+    const message = getApiErrorMessage(response.status, responseBody)
 
     throw new ApiHttpError(response.status, message, responseBody)
   }

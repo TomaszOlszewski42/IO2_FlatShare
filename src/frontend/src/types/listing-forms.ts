@@ -5,6 +5,13 @@ export type ListingLocationPayload = {
   aptNumber?: string | null
 }
 
+export type ListingAttributesPayload = {
+  petsAllowed: boolean
+  nonSmokingOnly: boolean
+  closeToShops: boolean
+  profile: string
+}
+
 export type CreateListingPayload = {
   title: string
   description: string
@@ -15,13 +22,14 @@ export type CreateListingPayload = {
   area: number
   availableSince: string
   location: ListingLocationPayload
+  attributes: ListingAttributesPayload
 }
 
 export type UpdateListingPayload = Partial<CreateListingPayload>
 
 /**
- * Frontend-only draft pod sprint 3.
- * Tych pól na razie nie wysyłamy do backendu, dopóki API ich nie obsłuży.
+ * Frontendowy model formularza wymagań właściciela.
+ * Backend aktualnie przyjmuje te dane jako Listing.attributes.
  */
 export type ListingOwnerAttributesDraft = {
   petsAllowed: boolean

@@ -1,10 +1,11 @@
 import type { RoutableProps } from 'preact-router'
 import { route } from 'preact-router'
-import { useState, useEffect } from 'preact/hooks'
+import { useEffect, useState } from 'preact/hooks'
 
 import { ListingEditForm } from '../../components/listings/listing-edit-form'
 import type { ListingFormData } from '../../components/listings/listing-create-form'
 import { AppButton } from '../../components/ui/app-button'
+import { usePageErrorHandler } from '../../hooks/use-page-error-handler'
 import { readAuthSession } from '../../services/auth-session'
 import { getListingById, updateListing } from '../../services/listings-api'
 import type { UpdateListingPayload } from '../../types/listing-forms'
@@ -14,38 +15,87 @@ type ListingEditPageProps = RoutableProps & {
   listingId?: string
 }
 
+function trimToEmpty(value?: string | null): string {
+  return (value || '').trim()
+}
+
+function normalizeTenantProfile(value: string): string {
+  const normalizedValue = value.trim()
+
+  return normalizedValue.length > 0 ? normalizedValue : 'none'
+}
+
+function readPreferredTenantProfile(listing: Listing): string {
+  const attributes = listing.attributes as
+    | {
+        preferredTenantProfile?: string | null
+        profile?: string | null
+      }
+    | undefined
+
+  return attributes?.preferredTenantProfile ?? attributes?.profile ?? ''
+}
+
 export function ListingEditPage({ listingId }: ListingEditPageProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [initialData, setInitialData] = useState<ListingFormData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [loadError, setLoadError] = useState<string | null>(null)
+
+  const {
+    errorMessage,
+    fieldErrors,
+    clearErrors,
+    handleError,
+  } = usePageErrorHandler()
 
   useEffect(() => {
     if (!listingId) {
-      setError('Brak identyfikatora ogłoszenia')
+      setLoadError('Brak identyfikatora ogłoszenia.')
       setIsLoading(false)
       return
     }
 
-    const fetchListing = async () => {
+    const currentListingId = listingId
+    let isMounted = true
+
+    async function fetchListing() {
       const session = readAuthSession()
+
       if (!session) {
         route('/login')
         return
       }
 
       try {
-        const listing = await getListingById(listingId, session.token, session.type)
+        const listing = await getListingById(currentListingId, session.token, session.type)
+
+        if (!isMounted) {
+          return
+        }
+
         setInitialData(mapListingToFormData(listing))
-      } catch (err) {
-        console.error('Failed to fetch listing:', err)
-        setError('Nie udało się pobrać danych ogłoszenia')
+        setLoadError(null)
+      } catch (error) {
+        console.error('Failed to fetch listing:', error)
+
+        if (!isMounted) {
+          return
+        }
+
+        setLoadError('Nie udało się pobrać danych ogłoszenia.')
       } finally {
-        setIsLoading(false)
+        if (isMounted) {
+          setIsLoading(false)
+        }
       }
     }
 
-    fetchListing()
+    void fetchListing()
+
+    return () => {
+      isMounted = false
+    }
   }, [listingId])
 
   function mapListingToFormData(listing: Listing): ListingFormData {
@@ -60,7 +110,11 @@ export function ListingEditPage({ listingId }: ListingEditPageProps) {
       city: listing.location.city,
       district: listing.location.district ?? undefined,
       street: listing.location.street ?? undefined,
-      buildingNumber: listing.location.buildingNumber ?? listing.location.houseNumber ?? listing.location.aptNumber ?? undefined,
+      buildingNumber:
+        listing.location.buildingNumber ??
+        listing.location.houseNumber ??
+        listing.location.aptNumber ??
+        undefined,
       postalCode: listing.location.postalCode ?? '',
       contact: listing.contact ?? listing.ownerContact ?? '',
       phone: listing.phone ?? listing.contactPhone ?? '',
@@ -69,8 +123,8 @@ export function ListingEditPage({ listingId }: ListingEditPageProps) {
       furnished: Boolean(listing.furnished),
       petsAllowed: listing.attributes?.petsAllowed ?? false,
       nonSmokingOnly: listing.attributes?.nonSmokingOnly ?? false,
-      preferredTenantProfile: listing.attributes?.preferredTenantProfile ?? '',
-      publicationStatus: 'active', // Defaulting for edit
+      preferredTenantProfile: readPreferredTenantProfile(listing),
+      publicationStatus: 'active',
     }
   }
 
@@ -86,25 +140,45 @@ export function ListingEditPage({ listingId }: ListingEditPageProps) {
       availableSince: formData.availableFrom,
       location: {
         city: formData.city.trim(),
-        district: (formData.district || '').trim(),
-        street: (formData.street || '').trim(),
-        aptNumber: (formData.buildingNumber || '').trim(),
+        district: trimToEmpty(formData.district),
+        street: trimToEmpty(formData.street),
+        aptNumber: trimToEmpty(formData.buildingNumber),
+      },
+      attributes: {
+        petsAllowed: formData.petsAllowed,
+        nonSmokingOnly: formData.nonSmokingOnly,
+        closeToShops: false,
+        profile: normalizeTenantProfile(formData.preferredTenantProfile),
       },
     }
   }
 
   async function handleSubmit(formData: ListingFormData) {
     const session = readAuthSession()
-    if (!session || !listingId) return
+
+    if (!session) {
+      route('/login')
+      return
+    }
+
+    if (!listingId) {
+      setLoadError('Brak identyfikatora ogłoszenia.')
+      return
+    }
+
+    const currentListingId = listingId
 
     setIsSubmitting(true)
+    clearErrors()
+
     try {
       const payload = mapToUpdatePayload(formData)
-      await updateListing(listingId, payload, session.token, session.type)
-      route(`/listings/${listingId}`)
+
+      await updateListing(currentListingId, payload, session.token, session.type)
+      route(`/listings/${currentListingId}`)
     } catch (error) {
       console.error('Failed to update listing:', error)
-      setError('Nie udało się zapisać zmian')
+      handleError(error, 'Nie udało się zapisać zmian. Sprawdź błędy w formularzu.')
     } finally {
       setIsSubmitting(false)
     }
@@ -113,19 +187,39 @@ export function ListingEditPage({ listingId }: ListingEditPageProps) {
   if (isLoading) {
     return (
       <div class="flex w-full flex-1 items-center justify-center">
-        <span class="loading loading-spinner loading-lg text-primary"></span>
+        <span class="loading loading-spinner loading-lg text-primary" />
       </div>
     )
   }
 
-  if (error || !initialData || !listingId) {
+  if (loadError || !initialData || !listingId) {
     return (
-      <div class="flex w-full flex-1 flex-col items-center justify-center py-12 px-4">
+      <div class="flex w-full flex-1 flex-col items-center justify-center px-4 py-12">
         <div class="alert alert-error max-w-md">
-          <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-          <span>{error || 'Wystąpił nieoczekiwany błąd'}</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6 shrink-0 stroke-current"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <span>{loadError || 'Wystąpił nieoczekiwany błąd.'}</span>
         </div>
-        <AppButton className="mt-4" onClick={() => { route('/listings') }}>Powrót do ogłoszeń</AppButton>
+
+        <AppButton
+          className="mt-4"
+          onClick={() => {
+            route('/listings')
+          }}
+        >
+          Powrót do ogłoszeń
+        </AppButton>
       </div>
     )
   }
@@ -138,11 +232,14 @@ export function ListingEditPage({ listingId }: ListingEditPageProps) {
           <p class="text-base-content/70">Zaktualizuj szczegóły swojego mieszkania.</p>
         </div>
 
-        <ListingEditForm 
+        {errorMessage ? <div class="alert alert-error mb-6 text-sm">{errorMessage}</div> : null}
+
+        <ListingEditForm
           listingId={listingId}
-          initialData={initialData} 
-          onSubmit={handleSubmit} 
-          isSubmitting={isSubmitting} 
+          initialData={initialData}
+          fieldErrors={fieldErrors}
+          onSubmit={handleSubmit}
+          isSubmitting={isSubmitting}
         />
       </div>
     </div>
