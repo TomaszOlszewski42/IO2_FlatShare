@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'preact/hooks'
 
 import { TenantPreferencesForm } from '../components/preferences/tenant-preferences-form'
 import { TenantPreferencesSummary } from '../components/preferences/tenant-preferences-summary'
+import { usePageErrorHandler } from '../hooks/use-page-error-handler'
 import { readAuthSession } from '../services/auth-session'
 import {
   clearTenantPreferencesDraft,
@@ -42,9 +43,16 @@ export function TenantPreferencesPage(_: RoutableProps) {
   const [previewPreferences, setPreviewPreferences] = useState<TenantPreferences>(createEmptyTenantPreferences())
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [saveMessage, setSaveMessage] = useState<string | null>(null)
   const [isAllowed, setIsAllowed] = useState<boolean>(() => canAccessTenantPreferences())
+
+  const {
+    errorMessage,
+    fieldErrors,
+    clearErrors,
+    handleError,
+    setErrorMessage,
+  } = usePageErrorHandler()
 
   const hasSkippedInitialDraftSave = useRef(false)
 
@@ -73,7 +81,7 @@ export function TenantPreferencesPage(_: RoutableProps) {
 
     async function loadPreferences() {
       setIsLoading(true)
-      setErrorMessage(null)
+      clearErrors()
 
       const savedDraft = readTenantPreferencesDraft()
 
@@ -100,9 +108,10 @@ export function TenantPreferencesPage(_: RoutableProps) {
 
           setPreferences(mergedPreferences)
           setPreviewPreferences(mergedPreferences)
-          setErrorMessage(null)
+          clearErrors()
         } else {
           const emptyPreferences = createEmptyTenantPreferences()
+
           setPreferences(emptyPreferences)
           setPreviewPreferences(emptyPreferences)
           setErrorMessage('Nie udało się wczytać preferencji. Możesz nadal uzupełnić formularz ręcznie.')
@@ -132,20 +141,26 @@ export function TenantPreferencesPage(_: RoutableProps) {
     saveTenantPreferencesDraft(values)
   }
 
+  function handleFormReset() {
+    clearErrors()
+    setSaveMessage(null)
+  }
+
   async function handleSubmit(values: TenantPreferences) {
     setIsSubmitting(true)
-    setErrorMessage(null)
+    clearErrors()
     setSaveMessage(null)
 
     try {
       const savedPreferences = await updateTenantPreferences(values)
+
       setPreferences(savedPreferences)
       setPreviewPreferences(savedPreferences)
       setSaveMessage('Preferencje zostały zapisane.')
       clearTenantPreferencesDraft()
     } catch (error) {
       console.error('Failed to save tenant preferences:', error)
-      setErrorMessage('Nie udało się zapisać preferencji.')
+      handleError(error, 'Nie udało się zapisać preferencji. Sprawdź błędy w formularzu.')
     } finally {
       setIsSubmitting(false)
     }
@@ -180,17 +195,13 @@ export function TenantPreferencesPage(_: RoutableProps) {
 
             <div class="card border border-base-300 bg-base-100 shadow-sm">
               <div class="card-body">
-                {/*
-                Debug only:
-                lokalny draft nadal działa w tle przez tenant-preferences-draft,
-                ale nie pokazujemy już komunikatów o szkicu użytkownikowi.
-                */}
-
                 <TenantPreferencesForm
                   initialValues={preferences}
                   isSubmitting={isSubmitting}
+                  fieldErrors={fieldErrors}
                   saveMessage={saveMessage}
                   onChange={handleFormChange}
+                  onReset={handleFormReset}
                   onSubmit={handleSubmit}
                 />
               </div>
