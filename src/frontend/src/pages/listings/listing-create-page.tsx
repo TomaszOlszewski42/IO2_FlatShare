@@ -7,48 +7,40 @@ import {
   createInitialListingFormData,
   type ListingFormData,
 } from '../../components/listings/listing-create-form'
+import { usePageErrorHandler } from '../../hooks/use-page-error-handler'
 import { readAuthSession } from '../../services/auth-session'
 import {
   clearListingCreateDraft,
   readListingCreateDraft,
   saveListingCreateDraft,
 } from '../../services/listing-create-draft'
-import { ApiHttpError } from '../../services/api-client'
 import { createListing } from '../../services/listings-api'
 import type { CreateListingPayload } from '../../types/listing-forms'
 
-function trimToNull(value?: string): string | null {
-  const normalizedValue = (value || '').trim()
-  return normalizedValue.length > 0 ? normalizedValue : null
+function trimToEmpty(value?: string): string {
+  return (value || '').trim()
 }
 
-function getCreateListingErrorMessage(error: unknown): string {
-  if (error instanceof ApiHttpError) {
-    if (
-      typeof error.body === 'object' &&
-      error.body !== null &&
-      'message' in error.body &&
-      typeof (error.body as { message?: unknown }).message === 'string'
-    ) {
-      return (error.body as { message: string }).message
-    }
+function normalizeTenantProfile(value: string): string {
+  const normalizedValue = value.trim()
 
-    if (error.status === 400) {
-      return 'Backend odrzucił dane ogłoszenia. Sprawdź wymagane pola formularza.'
-    }
-  }
-
-  return 'Nie udało się utworzyć ogłoszenia. Spróbuj ponownie.'
+  return normalizedValue.length > 0 ? normalizedValue : 'none'
 }
 
 export function ListingCreatePage(_: RoutableProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [initialValues] = useState<ListingFormData>(() => ({
     ...createInitialListingFormData(),
     ...(readListingCreateDraft() || {}),
   }))
   const [hasRecoveredDraft] = useState<boolean>(() => Boolean(readListingCreateDraft()))
+
+  const {
+    errorMessage,
+    fieldErrors,
+    clearErrors,
+    handleError,
+  } = usePageErrorHandler()
 
   function mapToCreatePayload(formData: ListingFormData): CreateListingPayload {
     return {
@@ -62,9 +54,15 @@ export function ListingCreatePage(_: RoutableProps) {
       availableSince: formData.availableFrom,
       location: {
         city: formData.city.trim(),
-        district: trimToNull(formData.district),
-        street: trimToNull(formData.street),
-        aptNumber: trimToNull(formData.buildingNumber),
+        district: trimToEmpty(formData.district),
+        street: trimToEmpty(formData.street),
+        aptNumber: trimToEmpty(formData.buildingNumber),
+      },
+      attributes: {
+        petsAllowed: formData.petsAllowed,
+        nonSmokingOnly: formData.nonSmokingOnly,
+        closeToShops: false,
+        profile: normalizeTenantProfile(formData.preferredTenantProfile),
       },
     }
   }
@@ -83,24 +81,17 @@ export function ListingCreatePage(_: RoutableProps) {
     }
 
     setIsSubmitting(true)
-    setErrorMessage(null)
+    clearErrors()
 
     try {
       const payload = mapToCreatePayload(formData)
 
       await createListing(payload, session.token, session.type)
       clearListingCreateDraft()
-
-      /**
-       * Uwaga:
-       * publicationStatus nadal jest tylko stanem UI.
-       * Aktualny backend nie przyjmuje go w POST /listings.
-       * Owner attributes też zostają na razie tylko po stronie frontendu.
-       */
       route('/listings')
     } catch (error) {
       console.error('Failed to create listing:', error)
-      setErrorMessage(getCreateListingErrorMessage(error))
+      handleError(error, 'Nie udało się utworzyć ogłoszenia. Sprawdź błędy w formularzu.')
     } finally {
       setIsSubmitting(false)
     }
@@ -125,6 +116,7 @@ export function ListingCreatePage(_: RoutableProps) {
         <ListingCreateForm
           initialValues={initialValues}
           isSubmitting={isSubmitting}
+          fieldErrors={fieldErrors}
           onChange={saveListingCreateDraft}
           onSubmit={handleSubmit}
         />
