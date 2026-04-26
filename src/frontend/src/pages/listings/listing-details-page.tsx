@@ -13,9 +13,13 @@ import { ListingParametersSection } from '../../components/listings/listing-para
 import { ListingSection } from '../../components/listings/listing-section'
 import { AppButton } from '../../components/ui/app-button'
 import { ListingUserAttributesSection } from '../../components/listings/listing-user-attributes-section'
+import { ReportViolationDialog } from '../../components/reports/report-violation-dialog'
 import { readAuthSession } from '../../services/auth-session'
+import { useErrorHandler } from '../../services/error-handler-context'
 import { getListingById, getListingPhotoIds } from '../../services/listings-api'
+import { createViolationReport } from '../../services/reports-api'
 import type { Listing } from '../../types/listing'
+import type { CreateViolationReportPayload } from '../../types/violation-report'
 import { formatArea } from '../../utils/format-area'
 import { formatDate } from '../../utils/format-date'
 import { formatPrice } from '../../utils/format-price'
@@ -26,9 +30,12 @@ type ListingDetailsRouteProps = RoutableProps & {
 }
 
 export function ListingDetailsPage({ listingId }: ListingDetailsRouteProps) {
+  const { showToast } = useErrorHandler()
+
   const [isLoading, setIsLoading] = useState(true)
   const [listing, setListing] = useState<Listing | null>(null)
   const [photoIds, setPhotoIds] = useState<string[]>([])
+  const [isReportDialogOpen, setIsReportDialogOpen] = useState(false)
 
   useEffect(() => {
     if (!listingId) {
@@ -75,6 +82,19 @@ export function ListingDetailsPage({ listingId }: ListingDetailsRouteProps) {
     }
   }, [listingId])
 
+  async function handleCreateViolationReport(payload: CreateViolationReportPayload) {
+    const session = readAuthSession()
+
+    if (!session) {
+      route('/login')
+      throw new Error('Aby zgłosić naruszenie, zaloguj się ponownie.')
+    }
+
+    await createViolationReport(payload, session.token, session.type)
+
+    showToast('Zgłoszenie zostało wysłane do moderacji.', 'success')
+  }
+
   if (isLoading) {
     return <ListingDetailsSkeleton />
   }
@@ -116,6 +136,16 @@ export function ListingDetailsPage({ listingId }: ListingDetailsRouteProps) {
         onArchive={() => {
           // Placeholder for API action.
         }}
+        onReportViolation={() => setIsReportDialogOpen(true)}
+      />
+
+      <ReportViolationDialog
+        isOpen={isReportDialogOpen}
+        targetId={listing.id}
+        targetType="LISTING"
+        targetLabel={listing.title}
+        onClose={() => setIsReportDialogOpen(false)}
+        onSubmit={handleCreateViolationReport}
       />
 
       <div class="grid gap-4 lg:grid-cols-2">
