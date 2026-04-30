@@ -1,4 +1,5 @@
-﻿using FlatShareBackend.Controllers;
+﻿using FlatShareBackend.AgregationClasses;
+using FlatShareBackend.Controllers;
 using FlatShareBackend.Dtos.Listings;
 using FlatShareBackend.Models;
 using FlatShareBackend.Services;
@@ -62,7 +63,7 @@ namespace FlatShareBackendTests.Controllers
                     PetsAllowed = true,
                     NonSmokingOnly = true,
                     CloseToShops = false,
-                    Profile = "student"
+                    Profile = UserProfile.Student
                 }
             };
             var expectedGuid = Guid.NewGuid();
@@ -105,7 +106,7 @@ namespace FlatShareBackendTests.Controllers
                     PetsAllowed = true,
                     NonSmokingOnly = true,
                     CloseToShops = false,
-                    Profile = "student"
+                    Profile = UserProfile.Student
                 }
             });
 

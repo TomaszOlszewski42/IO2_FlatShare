@@ -1,4 +1,5 @@
-﻿using FlatShareBackend.Models;
+﻿using FlatShareBackend.AgregationClasses;
+using FlatShareBackend.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace FlatShareBackend.Data
@@ -60,6 +61,13 @@ namespace FlatShareBackend.Data
                     .HasForeignKey(x => x.UserId)
                     .OnDelete(DeleteBehavior.Cascade);
             });
+        }
+
+        protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+        {
+            configurationBuilder
+                .Properties<UserProfile>()
+                .HaveConversion<string>();
         }
     }
 }
