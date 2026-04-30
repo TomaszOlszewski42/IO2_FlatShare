@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Security.Claims;
-using FlatShareBackend.AgregationClasses;
+using FlatShareBackend.Application.Dtos.Matches;
+using FlatShareBackend.Application.Services.MatchesPaging;
 using FlatShareBackend.Controllers;
 using FlatShareBackend.Dtos.Matches;
-using FlatShareBackend.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;

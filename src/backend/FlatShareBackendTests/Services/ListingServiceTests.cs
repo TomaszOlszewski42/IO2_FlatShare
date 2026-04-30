@@ -1,9 +1,13 @@
 ﻿using FlatShareBackend.AgregationClasses;
+using FlatShareBackend.Application.Dtos.Listings;
+using FlatShareBackend.Application.Services;
+using FlatShareBackend.Application.Services.FilesManagment;
+using FlatShareBackend.Application.Services.Listings;
+using FlatShareBackend.Domain.Exceptions;
+using FlatShareBackend.Domain.Models;
 using FlatShareBackend.Dtos.Listings;
-using FlatShareBackend.Exceptions;
+using FlatShareBackend.Infrastructure.Repositories;
 using FlatShareBackend.Models;
-using FlatShareBackend.Repositories;
-using FlatShareBackend.Services;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using System;

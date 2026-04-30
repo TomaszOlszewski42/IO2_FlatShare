@@ -1,8 +1,8 @@
-﻿using FlatShareBackend.Dtos.Users;
-using FlatShareBackend.Exceptions;
-using FlatShareBackend.Models;
-using FlatShareBackend.Repositories;
-using FlatShareBackend.Services;
+﻿using FlatShareBackend.Application.Services.Users;
+using FlatShareBackend.Domain.Exceptions;
+using FlatShareBackend.Domain.Models;
+using FlatShareBackend.Dtos.Users;
+using FlatShareBackend.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Moq;
 using System;

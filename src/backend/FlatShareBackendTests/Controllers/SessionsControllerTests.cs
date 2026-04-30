@@ -1,7 +1,7 @@
-﻿using FlatShareBackend.Controllers;
+﻿using FlatShareBackend.Application.Services.Auth;
+using FlatShareBackend.Controllers;
 using FlatShareBackend.Dtos.Auth;
 using FlatShareBackend.Exceptions;
-using FlatShareBackend.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using System;
