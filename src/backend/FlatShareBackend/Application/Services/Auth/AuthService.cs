@@ -71,7 +71,7 @@ namespace FlatShareBackend.Application.Services.Auth
 
             if (session is null)
             {
-                throw new InvalidSessionException("Session does not exist.");
+                throw new InvalidCredentialsException("Session does not exist.");
             }
 
             if (session.UserId != authenticatedUserId)

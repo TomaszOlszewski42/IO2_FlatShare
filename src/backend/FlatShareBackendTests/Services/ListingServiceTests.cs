@@ -1,21 +1,12 @@
-﻿using FlatShareBackend.AgregationClasses;
-using FlatShareBackend.Application.Dtos.Listings;
+﻿using FlatShareBackend.Application.Dtos.Listings;
 using FlatShareBackend.Application.Services;
 using FlatShareBackend.Application.Services.FilesManagment;
 using FlatShareBackend.Application.Services.Listings;
 using FlatShareBackend.Domain.Exceptions;
 using FlatShareBackend.Domain.Models;
-using FlatShareBackend.Dtos.Listings;
 using FlatShareBackend.Infrastructure.Repositories.Listings;
-using FlatShareBackend.Models;
 using Microsoft.AspNetCore.Http;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace FlatShareBackendTests.Services
 {
@@ -49,7 +40,7 @@ namespace FlatShareBackendTests.Services
                 Title = "Test Title",
                 Description = "Test Description",
                 Price = 1000,
-                Currency = "PLN",
+                Currency = Currency.PLN,
                 AvailableFrom = DateOnly.FromDateTime(DateTime.Now),
                 AvailableSince = DateOnly.FromDateTime(DateTime.Now),
                 OwnerContact = "123456789",
@@ -75,7 +66,7 @@ namespace FlatShareBackendTests.Services
                 Title = "New Listing",
                 Description = "New Description",
                 Price = 1200,
-                Currency = "PLN",
+                Currency = Currency.PLN,
                 AvailableFrom = DateOnly.FromDateTime(DateTime.Now),
                 AvailableSince = DateOnly.FromDateTime(DateTime.Now),
                 OwnerContact = "987654321",

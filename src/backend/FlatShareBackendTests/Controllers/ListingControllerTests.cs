@@ -1,18 +1,11 @@
-﻿using FlatShareBackend.AgregationClasses;
+﻿using FlatShareBackend.API.Controllers;
 using FlatShareBackend.Application.Dtos.Listings;
 using FlatShareBackend.Application.Services.Listings;
-using FlatShareBackend.Controllers;
 using FlatShareBackend.Domain.Models;
-using FlatShareBackend.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace FlatShareBackendTests.Controllers
 {
@@ -53,7 +46,7 @@ namespace FlatShareBackendTests.Controllers
                 Title = "Test Title",
                 Description = "Desc",
                 Price = 1000,
-                Currency = "PLN",
+                Currency = Currency.PLN,
                 AvailableFrom = DateOnly.FromDateTime(DateTime.Now),
                 AvailableSince = DateOnly.FromDateTime(DateTime.Now),
                 OwnerContact = "123",
@@ -95,7 +88,7 @@ namespace FlatShareBackendTests.Controllers
                 Title = "Test",
                 Description = "Desc",
                 Price = 100,
-                Currency = "PLN",
+                Currency = Currency.PLN,
                 AvailableFrom = new DateOnly(),
                 AvailableSince = new DateOnly(),
                 OwnerContact = "Contact",

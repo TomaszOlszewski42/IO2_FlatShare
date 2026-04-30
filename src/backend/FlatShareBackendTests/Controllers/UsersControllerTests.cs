@@ -1,13 +1,10 @@
-﻿using FlatShareBackend.Application.Dtos.Common;
+﻿using FlatShareBackend.API.Controllers;
+using FlatShareBackend.Application.Dtos.Common;
+using FlatShareBackend.Application.Dtos.Users;
 using FlatShareBackend.Application.Services.Users;
-using FlatShareBackend.Controllers;
-using FlatShareBackend.Dtos.Users;
-using FlatShareBackend.Exceptions;
+using FlatShareBackend.Domain.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FlatShareBackendTests.Controllers
 {

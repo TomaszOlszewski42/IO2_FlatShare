@@ -5,7 +5,7 @@ using FlatShareBackend.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FlatShareBackend.Controllers;
+namespace FlatShareBackend.API.Controllers;
 
 
 [ApiController]
