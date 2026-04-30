@@ -1,4 +1,5 @@
-﻿using FlatShareBackend.Dtos.Listings;
+﻿using FlatShareBackend.AgregationClasses;
+using FlatShareBackend.Dtos.Listings;
 using FlatShareBackend.Exceptions;
 using FlatShareBackend.Models;
 using FlatShareBackend.Repositories;
@@ -61,7 +62,7 @@ namespace FlatShareBackendTests.Services
                     PetsAllowed = true,
                     NonSmokingOnly = true,
                     CloseToShops = false,
-                    Profile = "student"
+                    Profile = UserProfile.Student
                 }
             };
         }
@@ -84,7 +85,7 @@ namespace FlatShareBackendTests.Services
                     PetsAllowed = true,
                     NonSmokingOnly = true,
                     CloseToShops = false,
-                    Profile = "student"
+                    Profile = UserProfile.Student
                 }
             };
         }
