@@ -1,5 +1,4 @@
 ﻿using FlatShareBackend.Domain.Models;
-using FlatShareBackend.Models;
 
 namespace FlatShareBackend.Application.Services.Auth
 {

@@ -1,4 +1,4 @@
-﻿using FlatShareBackend.Models;
+﻿using FlatShareBackend.Domain.Models;
 
 namespace FlatShareBackend.Infrastructure.Repositories.Sessions
 {

@@ -1,6 +1,4 @@
-﻿using FlatShareBackend.AgregationClasses;
-using FlatShareBackend.Domain.Models;
-using FlatShareBackend.Models;
+﻿using FlatShareBackend.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace FlatShareBackend.Infrastructure.Data
@@ -68,6 +66,10 @@ namespace FlatShareBackend.Infrastructure.Data
         {
             configurationBuilder
                 .Properties<UserProfile>()
+                .HaveConversion<string>();
+            
+            configurationBuilder
+                .Properties<Currency>()
                 .HaveConversion<string>();
         }
     }

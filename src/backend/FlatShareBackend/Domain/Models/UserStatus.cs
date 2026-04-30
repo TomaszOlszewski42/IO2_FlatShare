@@ -1,4 +1,4 @@
-﻿namespace FlatShareBackend.Models
+﻿namespace FlatShareBackend.Domain.Models
 {
     public enum UserStatus
     {

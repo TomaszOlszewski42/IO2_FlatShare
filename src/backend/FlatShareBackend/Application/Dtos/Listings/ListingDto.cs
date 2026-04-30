@@ -22,7 +22,7 @@ public class ListingDto
     public string Title { get; set; }
     public string Description { get; set; }
     public decimal Price { get; set; }
-    public string Currency { get; set; }
+    public Currency Currency { get; set; }
     public DateOnly AvailableFrom { get; set; }
     public string OwnerContact { get; set; }
     public decimal Area { get; set; }

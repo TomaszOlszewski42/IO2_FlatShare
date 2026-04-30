@@ -86,7 +86,6 @@ namespace FlatShareBackend
 
             // Validation rules that will be used by IListingValidator
             builder.Services.AddTransient<IListingRuleValidator, AreaValidator>();
-            builder.Services.AddTransient<IListingRuleValidator, CurrencyValidator>();
             builder.Services.AddTransient<IListingRuleValidator, OwnerContactValidator>();
             builder.Services.AddTransient<IListingRuleValidator, PriceValidator>();
             // --------------------------------------------

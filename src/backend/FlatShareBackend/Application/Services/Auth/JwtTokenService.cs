@@ -2,7 +2,6 @@
 using System.Security.Claims;
 using System.Text;
 using FlatShareBackend.Domain.Models;
-using FlatShareBackend.Models;
 using FlatShareBackend.Options;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;

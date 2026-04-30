@@ -5,10 +5,12 @@ using FlatShareBackend.Application.Converters;
 
 namespace FlatShareBackend.Domain.Models;
 
-[JsonConverter(typeof(JsonEnumMemberConverter<UserProfile>))]
+[JsonConverter(typeof(JsonEnumMemberConverter<Currency>))]
 [TypeConverter(typeof(StringEnumCoverter))]
-public enum UserProfile
+public enum Currency
 {
-    [EnumMember(Value = "student")]
-    Student
+    [EnumMember(Value = "PLN")]
+    PLN,
+    [EnumMember(Value = "EUR")]
+    EUR
 }

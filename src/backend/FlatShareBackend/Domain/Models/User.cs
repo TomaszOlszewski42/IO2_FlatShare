@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using FlatShareBackend.Models;
 
 namespace FlatShareBackend.Domain.Models
 {

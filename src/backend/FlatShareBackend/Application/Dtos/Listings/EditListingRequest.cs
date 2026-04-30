@@ -6,7 +6,7 @@ public record EditListingRequest
     public string? Title { get; init; }
     public string? Description { get; init; }
     public decimal? Price { get; init; }
-    public string? Currency { get; init; }
+    public Currency? Currency { get; init; }
     public DateOnly? AvailableFrom { get; init; }
     public string? OwnerContact { get; init; }
     public decimal? Area { get; init; }

@@ -1,5 +1,5 @@
-﻿using FlatShareBackend.Infrastructure.Data;
-using FlatShareBackend.Models;
+﻿using FlatShareBackend.Domain.Models;
+using FlatShareBackend.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace FlatShareBackend.Infrastructure.Repositories.Sessions

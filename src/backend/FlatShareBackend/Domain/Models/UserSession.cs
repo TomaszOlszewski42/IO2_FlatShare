@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using FlatShareBackend.Domain.Models;
 
-namespace FlatShareBackend.Models
+namespace FlatShareBackend.Domain.Models
 {
     public class UserSession
     {

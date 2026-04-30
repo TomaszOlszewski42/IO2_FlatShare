@@ -7,7 +7,7 @@ public record CreateListingRequest
     public required string Title { get; init; }
     public required string Description { get; init; }
     public required decimal Price { get; init; }
-    public required string Currency { get; init; }
+    public required Currency Currency { get; init; }
     public required DateOnly AvailableFrom { get; init; }
     public required string OwnerContact { get; init; }
     public required decimal Area { get; init; }

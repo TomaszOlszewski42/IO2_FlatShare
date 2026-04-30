@@ -1,5 +1,3 @@
-using System.ComponentModel;
-
 namespace FlatShareBackend.Domain.Models;
 
 public record DateRange

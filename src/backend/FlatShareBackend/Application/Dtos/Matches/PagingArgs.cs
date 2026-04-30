@@ -1,4 +1,4 @@
-using FlatShareBackend.AgregationClasses;
+using FlatShareBackend.Domain.Models;
 
 namespace FlatShareBackend.Application.Dtos.Matches;
 

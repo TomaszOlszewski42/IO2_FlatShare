@@ -19,7 +19,7 @@ public class Listing
     public required string Title { get; set; }
     public required string Description { get; set; }
     public required decimal Price { get; set; }
-    public required string Currency { get; set; }
+    public required Currency Currency { get; set; }
     public required DateOnly AvailableFrom { get; set; }
     public required string OwnerContact { get; set; }
     public required decimal Area { get; set; }
