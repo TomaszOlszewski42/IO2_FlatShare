@@ -1,5 +1,5 @@
 using FlatShareBackend.Application.Dtos.Users;
-using FlatShareBackend.Infrastructure.Repositories;
+using FlatShareBackend.Infrastructure.Repositories.Preferences;
 
 namespace FlatShareBackend.Application.Services.Preferences;
 

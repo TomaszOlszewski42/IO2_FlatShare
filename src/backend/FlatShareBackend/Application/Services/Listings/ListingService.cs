@@ -2,7 +2,7 @@
 using FlatShareBackend.Application.Services.FilesManagment;
 using FlatShareBackend.Domain.Exceptions;
 using FlatShareBackend.Domain.Models;
-using FlatShareBackend.Infrastructure.Repositories;
+using FlatShareBackend.Infrastructure.Repositories.Listings;
 
 namespace FlatShareBackend.Application.Services.Listings;
 

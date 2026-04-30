@@ -1,6 +1,6 @@
 ﻿using FlatShareBackend.Domain.Models;
 
-namespace FlatShareBackend.Infrastructure.Repositories
+namespace FlatShareBackend.Infrastructure.Repositories.Users
 {
     public interface IUserRepository
     {

@@ -2,7 +2,8 @@
 using FlatShareBackend.Domain.Exceptions;
 using FlatShareBackend.Domain.Models;
 using FlatShareBackend.Dtos.Auth;
-using FlatShareBackend.Infrastructure.Repositories;
+using FlatShareBackend.Infrastructure.Repositories.Sessions;
+using FlatShareBackend.Infrastructure.Repositories.Users;
 using FlatShareBackend.Models;
 using Microsoft.AspNetCore.Identity;
 using Moq;

@@ -5,7 +5,7 @@ using FlatShareBackend.Infrastructure.Data;
 using FlatShareBackend.Infrastructure.Extensions;
 using FlatShareBackend.Domain.Exceptions;
 
-namespace FlatShareBackend.Infrastructure.Repositories;
+namespace FlatShareBackend.Infrastructure.Repositories.Listings;
 
 public class ListingRepositoryDB : IListingRepository
 {

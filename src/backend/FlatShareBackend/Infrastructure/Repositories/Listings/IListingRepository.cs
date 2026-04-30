@@ -1,7 +1,7 @@
 ﻿using FlatShareBackend.Application.Dtos.Matches;
 using FlatShareBackend.Domain.Models;
 
-namespace FlatShareBackend.Infrastructure.Repositories;
+namespace FlatShareBackend.Infrastructure.Repositories.Listings;
 
 public interface IListingRepository
 {

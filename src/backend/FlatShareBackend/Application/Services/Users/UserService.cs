@@ -1,7 +1,7 @@
 ﻿using FlatShareBackend.Application.Dtos.Users;
 using FlatShareBackend.Domain.Exceptions;
 using FlatShareBackend.Domain.Models;
-using FlatShareBackend.Infrastructure.Repositories;
+using FlatShareBackend.Infrastructure.Repositories.Users;
 using FlatShareBackend.Models;
 using Microsoft.AspNetCore.Identity;
 
