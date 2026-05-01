@@ -10,13 +10,15 @@ public class ListingService : IListingService
 {
     private readonly IListingRepository _repository;
     private readonly IListingValidator _listingValidator;
+    private readonly IUserRepository _userRepository;
     public readonly IFilesService _fileService;
 
-    public ListingService(IListingRepository repository, IListingValidator listingValidator, IFilesService fileService)
+    public ListingService(IListingRepository repository, IListingValidator listingValidator, IFilesService fileService, IUserRepository userRepository)
     {
         _repository = repository;
         _listingValidator = listingValidator;
         _fileService = fileService;
+        _userRepository = userRepository;
     }
 
     public async Task AddUnvailability(Guid listingId, Guid requestingUser, DateRange dates)
@@ -28,6 +30,16 @@ public class ListingService : IListingService
 
         var listing = await _repository.Get(listingId)
             ?? throw new ArgumentException("No listing with this id");
+
+        if (listing.OwnerId != requestingUser)
+        {
+            var user = await _userRepository.GetByIdAsync(requestingUser);
+            if (user?.Role != UserRole.Admin)
+            {
+                throw new UnauthorizedDatabaseOperation("Unauthorized listing operation");
+            }
+        }
+
         listing.UnavailableDates.Add(dates);
         await _repository.SaveChangesAsync();
     }
@@ -38,7 +50,11 @@ public class ListingService : IListingService
 
         if (listing.OwnerId != requestingUser)
         {
-            throw new UnauthorizedDatabaseOperation("Unauthorized listing operation");
+            var user = await _userRepository.GetByIdAsync(requestingUser);
+            if (user?.Role != UserRole.Admin)
+            {
+                throw new UnauthorizedDatabaseOperation("Unauthorized listing operation");
+            }
         }
 
         listing.Status = state;
@@ -77,7 +93,11 @@ public class ListingService : IListingService
 
         if (listing.OwnerId != requestingUser)
         {
-            throw new UnauthorizedDatabaseOperation("Unauthorized listing operation");
+            var user = await _userRepository.GetByIdAsync(requestingUser);
+            if (user?.Role != UserRole.Admin)
+            {
+                throw new UnauthorizedDatabaseOperation("Unauthorized listing operation");
+            }
         }
 
         // TODO: rozważyć czy jest to rozsądne rozwiązanie w ogólności
@@ -106,9 +126,13 @@ public class ListingService : IListingService
     {
         var listing = await _repository.Get(listingId);
         
-        if (requestingUser != listing.OwnerId) // TODO: probably should allow admin
+        if (requestingUser != listing.OwnerId)
         {
-            throw new UnauthorizedDatabaseOperation("Missing permission to delete this photo");
+            var user = await _userRepository.GetByIdAsync(requestingUser);
+            if (user?.Role != UserRole.Admin)
+            {
+                throw new UnauthorizedDatabaseOperation("Missing permission to upload photo");
+            }
         }
 
         var fileStream = formFile.OpenReadStream();
@@ -139,9 +163,13 @@ public class ListingService : IListingService
     {
         var listing = await _repository.Get(listingId);
 
-        if (requestingUser != listing.OwnerId) // TODO: probably should allow admin
+        if (requestingUser != listing.OwnerId)
         {
-            throw new UnauthorizedDatabaseOperation("Missing permission to delete this photo");
+            var user = await _userRepository.GetByIdAsync(requestingUser);
+            if (user?.Role != UserRole.Admin)
+            {
+                throw new UnauthorizedDatabaseOperation("Missing permission to delete this photo");
+            }
         }
 
         listing.Photos.Remove(photoId);
