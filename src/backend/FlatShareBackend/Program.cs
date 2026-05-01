@@ -71,6 +71,8 @@ namespace FlatShareBackend
             builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
             builder.Services.AddScoped<IListingRepository, ListingRepositoryDB>();
             builder.Services.AddScoped<IListingService, ListingService>();
+            builder.Services.AddScoped<IViolationReportRepository, ViolationReportRepository>();
+            builder.Services.AddScoped<IModerationService, ModerationService>();
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddScoped<IListingValidator, ListingValidator>();
 
