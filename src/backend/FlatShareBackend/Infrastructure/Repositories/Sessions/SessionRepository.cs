@@ -2,7 +2,7 @@
 using FlatShareBackend.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace FlatShareBackend.Infrastructure.Repositories
+namespace FlatShareBackend.Infrastructure.Repositories.Sessions
 {
     public class SessionRepository : ISessionRepository
     {

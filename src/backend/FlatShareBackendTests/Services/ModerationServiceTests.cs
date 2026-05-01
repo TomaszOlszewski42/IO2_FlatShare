@@ -12,6 +12,8 @@ using Xunit;
 using FlatShareBackend.Infrastructure.Repositories;
 using FlatShareBackend.Domain.Models;
 using FlatShareBackend.Application.Services.Auth;
+using FlatShareBackend.Infrastructure.Repositories.Users;
+using FlatShareBackend.Infrastructure.Repositories.Listings;
 
 namespace FlatShareBackendTests.Services
 {

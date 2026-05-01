@@ -1,6 +1,7 @@
 using FlatShareBackend.Application.Dtos.Matches;
 using FlatShareBackend.Application.Services.Matching;
-using FlatShareBackend.Infrastructure.Repositories;
+using FlatShareBackend.Infrastructure.Repositories.Listings;
+using FlatShareBackend.Infrastructure.Repositories.Preferences;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
 
