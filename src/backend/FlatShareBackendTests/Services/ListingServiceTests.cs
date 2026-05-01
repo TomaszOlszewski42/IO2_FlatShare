@@ -19,6 +19,7 @@ namespace FlatShareBackendTests.Services
         private readonly Mock<IListingRepository> _listingRepositoryMock;
         private readonly Mock<IListingValidator> _listingValidatorMock;
         private readonly Mock<IFilesService> _filesServiceMock;
+        private readonly Mock<IUserRepository> _userRepositoryMock;
         private readonly ListingService _listingService;
 
         public ListingServiceTests()
@@ -26,11 +27,13 @@ namespace FlatShareBackendTests.Services
             _listingRepositoryMock = new Mock<IListingRepository>();
             _listingValidatorMock = new Mock<IListingValidator>();
             _filesServiceMock = new Mock<IFilesService>();
+            _userRepositoryMock = new Mock<IUserRepository>();
 
             _listingService = new ListingService(
                 _listingRepositoryMock.Object,
                 _listingValidatorMock.Object,
-                _filesServiceMock.Object);
+                _filesServiceMock.Object,
+                _userRepositoryMock.Object);
         }
 
         #region Helpers
@@ -326,6 +329,74 @@ namespace FlatShareBackendTests.Services
             // Act & Assert
             await Assert.ThrowsAsync<UnauthorizedDatabaseOperation>(() =>
                 _listingService.DeletePhoto(listing.Id, photoId, notOwnerId));
+        }
+
+        #endregion
+
+        #region Admin Permission Tests
+
+        [Fact]
+        public async Task ChangeState_ShouldSucceed_WhenUserIsAdminButNotOwner()
+        {
+            // Arrange
+            var ownerId = Guid.NewGuid();
+            var adminId = Guid.NewGuid();
+            var listing = CreateDummyListing(ownerId);
+            var newState = Listing.State.ACTIVE;
+            var adminUser = new User { Id = adminId, Role = UserRole.Admin };
+
+            _listingRepositoryMock.Setup(r => r.Get(listing.Id)).ReturnsAsync(listing);
+            _userRepositoryMock.Setup(r => r.GetByIdAsync(adminId, It.IsAny<CancellationToken>())).ReturnsAsync(adminUser);
+
+            // Act
+            await _listingService.ChangeState(listing.Id, adminId, newState);
+
+            // Assert
+            Assert.Equal(newState, listing.Status);
+            _listingRepositoryMock.Verify(r => r.SaveChangesAsync(), Times.Once);
+        }
+
+        [Fact]
+        public async Task DeletePhoto_ShouldSucceed_WhenUserIsAdminButNotOwner()
+        {
+            // Arrange
+            var ownerId = Guid.NewGuid();
+            var adminId = Guid.NewGuid();
+            var listing = CreateDummyListing(ownerId);
+            var photoId = Guid.NewGuid();
+            listing.Photos.Add(photoId);
+            var adminUser = new User { Id = adminId, Role = UserRole.Admin };
+
+            _listingRepositoryMock.Setup(r => r.Get(listing.Id)).ReturnsAsync(listing);
+            _userRepositoryMock.Setup(r => r.GetByIdAsync(adminId, It.IsAny<CancellationToken>())).ReturnsAsync(adminUser);
+
+            // Act
+            await _listingService.DeletePhoto(listing.Id, photoId, adminId);
+
+            // Assert
+            Assert.DoesNotContain(photoId, listing.Photos);
+            _listingRepositoryMock.Verify(r => r.SaveChangesAsync(), Times.Once);
+        }
+
+        [Fact]
+        public async Task Edit_ShouldSucceed_WhenUserIsAdminButNotOwner()
+        {
+            // Arrange
+            var ownerId = Guid.NewGuid();
+            var adminId = Guid.NewGuid();
+            var listing = CreateDummyListing(ownerId);
+            var editRequest = new EditListingRequest { Title = "Admin Edit" };
+            var adminUser = new User { Id = adminId, Role = UserRole.Admin };
+
+            _listingRepositoryMock.Setup(r => r.Get(listing.Id)).ReturnsAsync(listing);
+            _userRepositoryMock.Setup(r => r.GetByIdAsync(adminId, It.IsAny<CancellationToken>())).ReturnsAsync(adminUser);
+
+            // Act
+            await _listingService.Edit(listing.Id, adminId, editRequest);
+
+            // Assert
+            Assert.Equal("Admin Edit", listing.Title);
+            _listingRepositoryMock.Verify(r => r.SaveChangesAsync(), Times.Once);
         }
 
         #endregion
