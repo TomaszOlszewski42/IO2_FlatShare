@@ -67,4 +67,17 @@ public class ListingRepositoryDB : IListingRepository
     {
         await _dbContext.SaveChangesAsync();
     }
+
+    public async Task UpdateAsync(Listing listing, CancellationToken cancellationToken = default)
+    {
+        _dbContext.Listings.Update(listing);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<List<Listing>> GetByOwnerIdAsync(Guid ownerId, CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Listings
+            .Where(x => x.OwnerId == ownerId)
+            .ToListAsync(cancellationToken);
+    }
 }

@@ -13,10 +13,28 @@ namespace FlatShareBackend.Data
         public DbSet<UserSession> Sessions => Set<UserSession>();
         public DbSet<Listing> Listings => Set<Listing>();
         public DbSet<UserPreferences> UsersPreferences => Set<UserPreferences>();
+        public DbSet<ViolationReport> ViolationReports => Set<ViolationReport>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<ViolationReport>(entity =>
+            {
+                entity.HasKey(x => x.Id);
+                entity.Property(x => x.TargetType).HasConversion<string>();
+                entity.Property(x => x.Status).HasConversion<string>();
+
+                entity.HasOne(x => x.Reporter)
+                    .WithMany()
+                    .HasForeignKey(x => x.ReporterId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(x => x.HandledBy)
+                    .WithMany()
+                    .HasForeignKey(x => x.HandledById)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
 
             modelBuilder.Entity<Listing>(entity =>
             {
