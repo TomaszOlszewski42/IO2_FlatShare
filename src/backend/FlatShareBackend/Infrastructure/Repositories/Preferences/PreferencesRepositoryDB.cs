@@ -2,7 +2,7 @@ using FlatShareBackend.Domain.Models;
 using FlatShareBackend.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace FlatShareBackend.Infrastructure.Repositories;
+namespace FlatShareBackend.Infrastructure.Repositories.Preferences;
 
 public class PreferencesRepositoryDB : IPreferencesRepository
 {

@@ -2,7 +2,7 @@
 using FlatShareBackend.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace FlatShareBackend.Infrastructure.Repositories
+namespace FlatShareBackend.Infrastructure.Repositories.Users
 {
     public class UserRepository : IUserRepository
     {

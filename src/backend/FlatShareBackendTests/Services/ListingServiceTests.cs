@@ -5,16 +5,11 @@ using FlatShareBackend.Application.Services.FilesManagment;
 using FlatShareBackend.Application.Services.Listings;
 using FlatShareBackend.Domain.Exceptions;
 using FlatShareBackend.Domain.Models;
-using FlatShareBackend.Infrastructure.Repositories;
+using FlatShareBackend.Infrastructure.Repositories.Listings;
+using FlatShareBackend.Infrastructure.Repositories.Users;
 using FlatShareBackend.Models;
 using Microsoft.AspNetCore.Http;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace FlatShareBackendTests.Services
 {
