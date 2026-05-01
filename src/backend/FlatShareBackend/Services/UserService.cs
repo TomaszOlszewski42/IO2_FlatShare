@@ -61,7 +61,8 @@ namespace FlatShareBackend.Services
             {
                 "LANDLORD" => UserRole.Landlord,
                 "TENANT" => UserRole.Tenant,
-                _ => throw new InvalidRoleException("Role must be either LANDLORD or TENANT.")
+                "ADMIN" => UserRole.Admin,
+                _ => throw new InvalidRoleException("Role must be either LANDLORD, TENANT, or ADMIN.")
             };
         }
 
