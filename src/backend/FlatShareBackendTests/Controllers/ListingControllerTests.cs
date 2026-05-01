@@ -1,8 +1,9 @@
 ﻿using FlatShareBackend.AgregationClasses;
+using FlatShareBackend.Application.Dtos.Listings;
+using FlatShareBackend.Application.Services.Listings;
 using FlatShareBackend.Controllers;
-using FlatShareBackend.Dtos.Listings;
+using FlatShareBackend.Domain.Models;
 using FlatShareBackend.Models;
-using FlatShareBackend.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;

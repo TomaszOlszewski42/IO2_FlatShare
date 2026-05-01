@@ -1,7 +1,6 @@
 using FlatShareBackend.AgregationClasses;
 using FlatShareBackend.Dtos.Reports;
 using FlatShareBackend.Models;
-using FlatShareBackend.Repositories;
 using FlatShareBackend.Services;
 using FlatShareBackend.Exceptions;
 using Moq;
@@ -10,6 +9,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
+using FlatShareBackend.Infrastructure.Repositories;
+using FlatShareBackend.Domain.Models;
+using FlatShareBackend.Application.Services.Auth;
 
 namespace FlatShareBackendTests.Services
 {
@@ -69,7 +71,7 @@ namespace FlatShareBackendTests.Services
             var user = new User { Id = userId, Email = "test@user.com", Status = UserStatus.Active };
             var listings = new List<Listing>
             {
-                new Listing { 
+                new() { 
                     Id = Guid.NewGuid(), 
                     OwnerId = userId, 
                     Title = "L1", 
@@ -82,9 +84,9 @@ namespace FlatShareBackendTests.Services
                     Area = 1, 
                     Location = new Address { City = "Warsaw", District = "Mokotów", Street = "Street", AptNumber = "1" }, 
                     Status = Listing.State.ACTIVE, 
-                    Attributes = new ListingAttributes { PetsAllowed = true, NonSmokingOnly = true, CloseToShops = false, Profile = "student" } 
+                    Attributes = new ListingAttributes { PetsAllowed = true, NonSmokingOnly = true, CloseToShops = false, Profile = UserProfile.Student } 
                 },
-                new Listing { 
+                new() { 
                     Id = Guid.NewGuid(), 
                     OwnerId = userId, 
                     Title = "L2", 
@@ -97,7 +99,7 @@ namespace FlatShareBackendTests.Services
                     Area = 1, 
                     Location = new Address { City = "Warsaw", District = "Mokotów", Street = "Street", AptNumber = "2" }, 
                     Status = Listing.State.ACTIVE, 
-                    Attributes = new ListingAttributes { PetsAllowed = true, NonSmokingOnly = true, CloseToShops = false, Profile = "student" } 
+                    Attributes = new ListingAttributes { PetsAllowed = true, NonSmokingOnly = true, CloseToShops = false, Profile = UserProfile.Student } 
                 }
             };
 
