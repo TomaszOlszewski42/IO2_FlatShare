@@ -10,7 +10,8 @@ public class Listing
         HIDDEN,
         ARCHIVED,
         AWAITING_REVIEW,
-        AWAITING_FIXES
+        AWAITING_FIXES,
+        HIDDEN_BY_MODERATION
     }
 
     public required Guid Id { get; set; }
