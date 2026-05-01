@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using FlatShareBackend.Models;
+using FlatShareBackend.Domain.Models;
 
 namespace FlatShareBackend.Dtos.Reports;
 

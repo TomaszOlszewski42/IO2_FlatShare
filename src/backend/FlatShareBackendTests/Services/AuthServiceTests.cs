@@ -1,13 +1,11 @@
-﻿using FlatShareBackend.Dtos.Auth;
-using FlatShareBackend.Exceptions;
+﻿using FlatShareBackend.Application.Dtos.Auth;
+using FlatShareBackend.Application.Services.Auth;
+using FlatShareBackend.Domain.Exceptions;
+using FlatShareBackend.Domain.Models;
+using FlatShareBackend.Infrastructure.Repositories;
 using FlatShareBackend.Models;
-using FlatShareBackend.Repositories;
-using FlatShareBackend.Services;
 using Microsoft.AspNetCore.Identity;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FlatShareBackendTests.Services
 {
