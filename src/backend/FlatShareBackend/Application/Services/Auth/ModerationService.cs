@@ -6,6 +6,8 @@ using FlatShareBackend.Infrastructure.Repositories;
 using FlatShareBackend.Application.Dtos.Matches;
 using FlatShareBackend.Domain.Models;
 using FlatShareBackend.Services;
+using FlatShareBackend.Infrastructure.Repositories.Users;
+using FlatShareBackend.Infrastructure.Repositories.Listings;
 
 namespace FlatShareBackend.Application.Services.Auth;
 

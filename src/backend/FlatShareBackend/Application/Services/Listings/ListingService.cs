@@ -2,9 +2,9 @@
 using FlatShareBackend.Application.Services.FilesManagment;
 using FlatShareBackend.Domain.Exceptions;
 using FlatShareBackend.Domain.Models;
-using FlatShareBackend.Infrastructure.Repositories;
+using FlatShareBackend.Infrastructure.Repositories.Listings;
+using FlatShareBackend.Infrastructure.Repositories.Users;
 using FlatShareBackend.Models;
-
 namespace FlatShareBackend.Application.Services.Listings;
 
 public class ListingService : IListingService
