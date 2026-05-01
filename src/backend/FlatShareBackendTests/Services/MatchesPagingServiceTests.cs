@@ -1,10 +1,13 @@
 using AutoFixture;
-using FlatShareBackend.AgregationClasses;
-using FlatShareBackend.Models;
-using FlatShareBackend.Repositories;
 using FlatShareBackend.Services;
 using Moq;
 using MockQueryable;
+using FlatShareBackend.Application.Dtos.Matches;
+using FlatShareBackend.Application.Services;
+using FlatShareBackend.Domain.Models;
+using FlatShareBackend.Infrastructure.Repositories;
+using FlatShareBackend.Application.Services.Matching;
+using FlatShareBackend.Application.Services.MatchesPaging;
 
 namespace FlatShareBackendTests.Services;
 
