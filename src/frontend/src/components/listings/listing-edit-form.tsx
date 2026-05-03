@@ -238,12 +238,12 @@ export function ListingEditForm({
     const newErrors: ListingFormErrors = {}
 
     if (!formData.title.trim()) newErrors.title = 'Title is required'
-    if (!formData.description.trim()) newErrors.description = 'Description jest wymagany'
+    if (!formData.description.trim()) newErrors.description = 'Description is required'
     if (formData.pricePerMonth <= 0) newErrors.pricePerMonth = 'Price must be greater than 0'
     if (formData.areaSqm <= 0) newErrors.areaSqm = 'Area must be greater than 0'
     if (formData.rooms < 1) newErrors.rooms = 'At least 1 room'
     if (formData.bathrooms < 1) newErrors.bathrooms = 'At least 1 bathroom'
-    if (!formData.city.trim()) newErrors.city = 'City/Gmina jest wymagane'
+    if (!formData.city.trim()) newErrors.city = 'City/Gmina is required'
     if (!formData.contact.trim()) newErrors.contact = 'Contact information is required'
 
     setErrors(newErrors)

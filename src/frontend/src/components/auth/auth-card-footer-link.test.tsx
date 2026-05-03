@@ -22,7 +22,7 @@ describe('AuthCardFooterLink', () => {
     act(() => {
       render(
         <AuthCardFooterLink
-          prompt="No masz konta?"
+          prompt="No account?"
           actionLabel="Sign up"
           href="/register"
         />,
@@ -30,7 +30,7 @@ describe('AuthCardFooterLink', () => {
       )
     })
 
-    expect(container.textContent).toContain('No masz konta?')
+    expect(container.textContent).toContain('No account?')
     expect(container.textContent).toContain('Sign up')
   })
 
@@ -65,7 +65,7 @@ describe('AuthCardFooterLink', () => {
     act(() => {
       render(
         <AuthCardFooterLink
-          prompt="No masz konta?"
+          prompt="No account?"
           actionLabel="Sign up"
           href="/register"
         />,
