@@ -4,7 +4,7 @@ import { RoleBoundary } from '../components/auth/role-boundary'
 import { UserRole } from '../types/user'
 
 export function HomePage(_: RoutableProps) {
-  const { isLandlord, isTenant, isAuthenticated } = useAuth()
+  const { isLandlord, isAuthenticated } = useAuth()
 
   return (
     <div class="flex flex-col w-full min-h-screen -mt-4">
