@@ -5,44 +5,50 @@ namespace FlatShareBackend.Application.Services.Matching;
 
 public class DefaultMatchScoreCalculator : IMatchScoreCalculator
 {
-    // Ustalone wagi do dopasowań:
-    private const float PriceWeight = 0.4f;
-    private const float LocationWeight = 0.3f;
-    private const float PetsWeight = 0.15f;
-    private const float SmokingWeight = 0.15f;
-
     public Expression<Func<Listing, float>> GetScoreExpression(UserPreferences preferences)
     {
-        // Wyciągamy zmienne przed predykat, żeby Expression Tree dla Entity Frameworka 
-        // nie miało problemów z tłumaczeniem metod takich jak np. `.HasValue` 
-        // na zapytanie bazodanowe.
+        // Wagi poszczególnych cech (suma = 1.0f)
+        const float priceWeight = 0.4f;
+        const float districtWeight = 0.2f;
+        const float petsWeight = 0.2f;
+        const float smokingWeight = 0.2f;
+
+        var hasMaxPrice = preferences.MaxPrice.HasValue;
+        var maxPrice = preferences.MaxPrice ?? decimal.MaxValue;
         
-        bool hasMaxPrice = preferences.MaxPrice.HasValue;
-        decimal maxPrice = preferences.MaxPrice ?? 0m;
+        var hasCurrency = !string.IsNullOrEmpty(preferences.Currency);
+        var prefCurrency = preferences.Currency ?? string.Empty;
 
-        bool hasPetsPreference = preferences.PetsAllowed.HasValue;
-        bool petsAllowedPref = preferences.PetsAllowed ?? false;
+        // Jeśli lokator ma/chce mieć zwierzę, szukamy mieszkań, które na to pozwalają
+        var needsPets = preferences.PetsAllowed == true;
 
-        bool hasSmokingPreference = preferences.SmokingAllowed.HasValue;
-        // W ogłoszeniach (Listing) trzymamy "NonSmokingOnly", u użytkownika trzymamy "SmokingAllowed"
-        // Więc jeśli palenie jest DOZWOLONE ze strony użytkownika (true), 
-        // nie powinno to być mieszkanie przeznaczone tylko dla niepalących.
-        bool nonSmokingPref = hasSmokingPreference && !preferences.SmokingAllowed!.Value;
+        // Jeśli lokator pali, musi unikać mieszkań z "NonSmokingOnly"
+        var smokes = preferences.SmokingAllowed == true;
 
-        var districts = preferences.PreferredDistricts ?? new List<string>();
-        bool hasDistrictPreference = districts.Count > 0;
+        var preferredDistricts = preferences.PreferredDistricts ?? new List<string>();
+        var hasDistricts = preferredDistricts.Any();
 
-        return listing =>
-            // Dopasowanie ceny (cena ogłoszenia musi być mniejsza lub równa maksymalnej na jaką pozwala lokator)
-            (!hasMaxPrice || listing.Price <= maxPrice ? PriceWeight : 0.0f) +
-
-            // Dopasowanie dzielnicy (dzielnica ogłoszenia musi być na liście preferowanych)
-            (!hasDistrictPreference || districts.Contains(listing.Location.District) ? LocationWeight : 0.0f) +
-
-            // Dopasowanie podejścia do zwierząt
-            (!hasPetsPreference || listing.Attributes.PetsAllowed == petsAllowedPref ? PetsWeight : 0.0f) +
-
-            // Dopasowanie podejścia do palenia
-            (!hasSmokingPreference || listing.Attributes.NonSmokingOnly == nonSmokingPref ? SmokingWeight : 0.0f);
+        return listing => 
+            // 1. Ocena ceny (i waluty)
+            (
+                (!hasMaxPrice || listing.Price <= maxPrice) && 
+                (!hasCurrency || listing.Currency == prefCurrency) 
+                ? priceWeight : 0.0f
+            ) +
+            // 2. Ocena lokalizacji (Dzielnica)
+            (
+                (!hasDistricts || preferredDistricts.Contains(listing.Location.District))
+                ? districtWeight : 0.0f
+            ) +
+            // 3. Ocena zwierząt
+            (
+                (!needsPets || listing.Attributes.PetsAllowed)
+                ? petsWeight : 0.0f
+            ) +
+            // 4. Ocena palenia
+            (
+                (!smokes || !listing.Attributes.NonSmokingOnly)
+                ? smokingWeight : 0.0f
+            );
     }
 }
