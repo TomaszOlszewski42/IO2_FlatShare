@@ -19,7 +19,7 @@ describe('DateInput', () => {
         <DateInput
           id="availableFrom"
           name="availableFrom"
-          label="Dostępne od"
+          label="Available from"
           value="2025-03-01"
           onInput={handleInput}
         />,
@@ -30,7 +30,7 @@ describe('DateInput', () => {
     const legend = container.querySelector('legend')
     const input = container.querySelector('input') as HTMLInputElement
 
-    expect(legend?.textContent).toBe('Dostępne od')
+    expect(legend?.textContent).toBe('Available from')
     expect(input).not.toBeNull()
     expect(input.id).toBe('availableFrom')
     expect(input.name).toBe('availableFrom')
@@ -50,7 +50,7 @@ describe('DateInput', () => {
         <DateInput
           id="availableFrom"
           name="availableFrom"
-          label="Dostępne od"
+          label="Available from"
           value="2025-03-01"
           min="2025-01-01"
           max="2025-12-31"
@@ -76,7 +76,7 @@ describe('DateInput', () => {
         <DateInput
           id="availableTo"
           name="availableTo"
-          label="Dostępne do"
+          label="Available until"
           value="2025-06-01"
           required
           disabled
@@ -102,7 +102,7 @@ describe('DateInput', () => {
         <DateInput
           id="availableFrom"
           name="availableFrom"
-          label="Dostępne od"
+          label="Available from"
           value=""
           onInput={handleInput}
         />,
@@ -130,9 +130,9 @@ describe('DateInput', () => {
         <DateInput
           id="availableFrom"
           name="availableFrom"
-          label="Dostępne od"
+          label="Available from"
           value=""
-          error="Data dostępności jest wymagana"
+          error="Availability date is required"
           onInput={handleInput}
         />,
         container,
@@ -145,7 +145,7 @@ describe('DateInput', () => {
     expect(input.classList.contains('input-error')).toBe(true)
     expect(input.getAttribute('aria-invalid')).toBe('true')
     expect(input.getAttribute('aria-describedby')).toBe('availableFrom-error')
-    expect(error?.textContent).toBe('Data dostępności jest wymagana')
+    expect(error?.textContent).toBe('Availability date is required')
   })
 
   it('renders multiple validation errors', () => {
@@ -158,9 +158,9 @@ describe('DateInput', () => {
         <DateInput
           id="availableFrom"
           name="availableFrom"
-          label="Dostępne od"
+          label="Available from"
           value=""
-          errors={['Data jest wymagana', 'Data nie może być z przeszłości']}
+          errors={['Data jest wymagana', 'Date cannot be in the past']}
           onInput={handleInput}
         />,
         container,
@@ -171,6 +171,6 @@ describe('DateInput', () => {
 
     expect(errors.length).toBe(2)
     expect(errors[0]?.textContent).toBe('Data jest wymagana')
-    expect(errors[1]?.textContent).toBe('Data nie może być z przeszłości')
+    expect(errors[1]?.textContent).toBe('Date cannot be in the past')
   })
 })

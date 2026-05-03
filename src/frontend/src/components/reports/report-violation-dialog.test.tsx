@@ -61,7 +61,7 @@ describe('ReportViolationDialog', () => {
         <ReportViolationDialog
           isOpen
           targetId="listing-1"
-          targetLabel="Jasny pokój blisko centrum"
+          targetLabel="Bright room near the center"
           onClose={vi.fn()}
           onSubmit={vi.fn()}
         />,
@@ -75,12 +75,12 @@ describe('ReportViolationDialog', () => {
 
     expect(dialog).not.toBeNull()
     expect(dialog?.getAttribute('aria-modal')).toBe('true')
-    expect(container.textContent).toContain('Zgłoś naruszenie')
-    expect(container.textContent).toContain('Dotyczy:')
-    expect(container.textContent).toContain('Jasny pokój blisko centrum')
+    expect(container.textContent).toContain('Report violation')
+    expect(container.textContent).toContain('Applies to:')
+    expect(container.textContent).toContain('Bright room near the center')
     expect(reasonSelect).not.toBeNull()
     expect(detailsTextarea).not.toBeNull()
-    expect(container.textContent).toContain('Podejrzenie oszustwa')
+    expect(container.textContent).toContain('Suspected fraud')
   })
 
   it('shows validation error and blocks submit when reason is missing', async () => {
@@ -110,7 +110,7 @@ describe('ReportViolationDialog', () => {
 
     expect(handleSubmit).not.toHaveBeenCalled()
     expect(handleClose).not.toHaveBeenCalled()
-    expect(container.textContent).toContain('Wybierz powód zgłoszenia.')
+    expect(container.textContent).toContain('Choose report reason.')
   })
 
   it('submits trimmed payload and closes dialog on success', async () => {
@@ -140,7 +140,7 @@ describe('ReportViolationDialog', () => {
       reasonSelect.value = 'Spam'
       reasonSelect.dispatchEvent(new Event('change', { bubbles: true }))
 
-      detailsTextarea.value = '  Powtarzające się ogłoszenie.  '
+      detailsTextarea.value = '  Repeated listing.  '
       detailsTextarea.dispatchEvent(new Event('input', { bubbles: true }))
     })
 
@@ -158,7 +158,7 @@ describe('ReportViolationDialog', () => {
       type: 'LISTING',
       targetId: 'listing-1',
       reason: 'Spam',
-      details: 'Powtarzające się ogłoszenie.',
+      details: 'Repeated listing.',
     })
   })
 
@@ -185,7 +185,7 @@ describe('ReportViolationDialog', () => {
     const form = container.querySelector('form') as HTMLFormElement
 
     act(() => {
-      reasonSelect.value = 'Inny powód'
+      reasonSelect.value = 'Other reason'
       reasonSelect.dispatchEvent(new Event('change', { bubbles: true }))
     })
 
@@ -201,7 +201,7 @@ describe('ReportViolationDialog', () => {
     expect(handleSubmit).toHaveBeenCalledWith({
       type: 'USER',
       targetId: 'user-1',
-      reason: 'Inny powód',
+      reason: 'Other reason',
       details: null,
     })
   })
@@ -241,11 +241,11 @@ describe('ReportViolationDialog', () => {
     })
 
     expect(handleSubmit).not.toHaveBeenCalled()
-    expect(container.textContent).toContain('Opis może mieć maksymalnie 1000 znaków.')
+    expect(container.textContent).toContain('Description can be a maximum of 1000 characters.')
   })
 
   it('renders submit error when submit handler rejects', async () => {
-    const handleSubmit = vi.fn().mockRejectedValue(new Error('Nie można wysłać zgłoszenia.'))
+    const handleSubmit = vi.fn().mockRejectedValue(new Error('Cannot send the report.'))
     const handleClose = vi.fn()
     const container = document.createElement('div')
     document.body.appendChild(container)
@@ -276,7 +276,7 @@ describe('ReportViolationDialog', () => {
     })
 
     await waitForAssertion(() => {
-      expect(container.textContent).toContain('Nie można wysłać zgłoszenia.')
+      expect(container.textContent).toContain('Cannot send the report.')
     })
 
     expect(handleClose).not.toHaveBeenCalled()
@@ -300,7 +300,7 @@ describe('ReportViolationDialog', () => {
     })
 
     const cancelButton = Array.from(container.querySelectorAll('button')).find(
-      (button) => button.textContent === 'Anuluj',
+      (button) => button.textContent === 'Cancel',
     ) as HTMLButtonElement
 
     act(() => {

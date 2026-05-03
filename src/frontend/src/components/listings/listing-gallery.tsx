@@ -25,7 +25,7 @@ export function ListingGallery({ listingId, photoIds, title }: ListingGalleryPro
 
   return (
     <>
-      <ListingSection title="Galeria">
+      <ListingSection title="Gallery">
         <div class="space-y-3">
           <button
             type="button"
@@ -35,12 +35,12 @@ export function ListingGallery({ listingId, photoIds, title }: ListingGalleryPro
             <ListingBackendPhoto
               listingId={listingId}
               photoId={selectedPhotoId}
-              alt={`Zdjecie ${selectedIndex + 1} dla ogloszenia ${title}`}
+              alt={`Photo ${selectedIndex + 1} for the ${title} listing`}
               className="h-72 w-full object-cover md:h-96"
               loadingClassName="skeleton h-72 w-full md:h-96"
               errorClassName="flex h-72 w-full items-center justify-center bg-base-200 text-sm text-base-content/60 md:h-96"
             />
-            <span class="absolute bottom-2 right-2 badge badge-neutral badge-sm">Kliknij, aby powiekszyc</span>
+            <span class="absolute bottom-2 right-2 badge badge-neutral badge-sm">Click to enlarge</span>
           </button>
 
           <div class="grid grid-cols-4 gap-2 md:grid-cols-6">
@@ -50,12 +50,12 @@ export function ListingGallery({ listingId, photoIds, title }: ListingGalleryPro
                 type="button"
                 onClick={() => setSelectedIndex(index)}
                 class={`aspect-square overflow-hidden rounded-box border transition ${index === selectedIndex ? 'border-primary shadow-sm' : 'border-base-300 opacity-80 hover:opacity-100'}`}
-                aria-label={`Wybierz zdjecie ${index + 1}`}
+                aria-label={`Select photo ${index + 1}`}
               >
                 <ListingBackendPhoto
                   listingId={listingId}
                   photoId={photoId}
-                  alt={`Miniatura ${index + 1} dla ogloszenia ${title}`}
+                  alt={`Thumbnail ${index + 1} for the ${title} listing`}
                   className="h-full w-full object-cover"
                   loadingClassName="skeleton h-full w-full"
                   errorClassName="flex h-full w-full items-center justify-center bg-base-200 text-xs text-base-content/60"
@@ -72,7 +72,7 @@ export function ListingGallery({ listingId, photoIds, title }: ListingGalleryPro
             <ListingBackendPhoto
               listingId={listingId}
               photoId={selectedPhotoId}
-              alt={`Podglad zdjecia ${selectedIndex + 1} dla ogloszenia ${title}`}
+              alt={`Preview of photo ${selectedIndex + 1} for the ${title} listing`}
               className="max-h-[80vh] w-full rounded-box object-contain"
               loadingClassName="skeleton h-[60vh] w-full rounded-box"
               errorClassName="flex h-[60vh] w-full items-center justify-center rounded-box bg-base-200 text-sm text-base-content/60"
@@ -80,12 +80,12 @@ export function ListingGallery({ listingId, photoIds, title }: ListingGalleryPro
 
             <div class="modal-action mt-3">
               <button type="button" class="btn btn-ghost" onClick={() => setIsModalOpen(false)}>
-                Zamknij
+                Close
               </button>
             </div>
         </div>
           <form method="dialog" class="modal-backdrop" onSubmit={() => setIsModalOpen(false)}>
-            <button aria-label="Zamknij podglad">close</button>
+            <button aria-label="Close preview">close</button>
           </form>
         </dialog>
       ) : null}

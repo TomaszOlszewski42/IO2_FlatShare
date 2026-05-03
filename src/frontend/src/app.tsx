@@ -25,7 +25,7 @@ export function App() {
 
     void refreshSessionOnAppLoad().then((state) => {
       if (hadSession && state === 'invalid') {
-        route('/login')
+        route('/')
       }
 
       if (hadSession && state === 'backend-unavailable') {

@@ -50,7 +50,7 @@ export function TopBar() {
 
           <nav class="hidden items-center gap-4 md:flex">
             <a class="link link-hover text-sm" href="/listings">
-              Ogłoszenia
+              Listings
             </a>
 
             <RoleBoundary requiredRole={UserRole.Landlord}>
@@ -61,7 +61,7 @@ export function TopBar() {
 
             {authenticated && tenant ? (
               <a class="link link-hover text-sm" href="/preferences">
-                Preferencje
+                Preferences
               </a>
             ) : null}
           </nav>

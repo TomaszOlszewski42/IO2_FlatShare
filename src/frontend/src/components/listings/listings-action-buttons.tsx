@@ -11,7 +11,7 @@ type ClearFiltersButtonProps = {
   className?: string
 }
 
-export function CreateListingButton({ text = 'Dodaj ogłoszenie', onClick, className = '' }: CreateListingButtonProps) {
+export function CreateListingButton({ text = 'Add listing', onClick, className = '' }: CreateListingButtonProps) {
   return (
     <AppButton className={className} onClick={onClick}>
       {text}
@@ -22,7 +22,7 @@ export function CreateListingButton({ text = 'Dodaj ogłoszenie', onClick, class
 export function ClearFiltersButton({ onClick, className = '' }: ClearFiltersButtonProps) {
   return (
     <AppButton variant="outline" className={className} onClick={onClick}>
-      Wyczyść filtry
+      Clear filters
     </AppButton>
   )
 }

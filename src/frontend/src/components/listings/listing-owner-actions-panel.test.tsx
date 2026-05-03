@@ -109,9 +109,9 @@ describe('ListingOwnerActionsPanel', () => {
       )
     })
 
-    expect(container.textContent).toContain('Zarządzanie ogłoszeniem')
-    expect(container.textContent).toContain('Zarządzaj widocznością i cyklem życia tego ogłoszenia.')
-    expect(container.textContent).toContain('Aktualny status:')
+    expect(container.textContent).toContain('Listing management')
+    expect(container.textContent).toContain('Manage the visibility and life cycle of this listing.')
+    expect(container.textContent).toContain('Current status:')
     expect(container.textContent).toContain('ACTIVE')
   })
 
@@ -130,7 +130,7 @@ describe('ListingOwnerActionsPanel', () => {
     })
 
     const editButton = Array.from(container.querySelectorAll('button')).find(
-      (button) => button.textContent === 'Edytuj',
+      (button) => button.textContent === 'Edit',
     ) as HTMLButtonElement
 
     act(() => {
@@ -222,7 +222,7 @@ describe('ListingOwnerActionsPanel', () => {
     })
 
     const editButton = Array.from(container.querySelectorAll('button')).find(
-      (button) => button.textContent === 'Edytuj',
+      (button) => button.textContent === 'Edit',
     ) as HTMLButtonElement
     const hideButton = container.querySelector('[data-testid="hide-listing-button"]') as HTMLButtonElement
     const archiveButton = container.querySelector('[data-testid="archive-listing-button"]') as HTMLButtonElement

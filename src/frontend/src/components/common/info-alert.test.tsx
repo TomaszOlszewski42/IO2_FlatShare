@@ -14,7 +14,7 @@ describe('InfoAlert', () => {
     document.body.appendChild(container)
 
     act(() => {
-      render(<InfoAlert>To jest ważna informacja.</InfoAlert>, container)
+      render(<InfoAlert>This is important information.</InfoAlert>, container)
     })
 
     const alert = container.querySelector('.alert')
@@ -22,7 +22,7 @@ describe('InfoAlert', () => {
     expect(alert).not.toBeNull()
     expect(alert?.classList.contains('alert-info')).toBe(true)
     expect(alert?.classList.contains('text-sm')).toBe(true)
-    expect(container.textContent).toContain('To jest ważna informacja.')
+    expect(container.textContent).toContain('This is important information.')
   })
 
   it('renders info icon', () => {
@@ -49,7 +49,7 @@ describe('InfoAlert', () => {
     act(() => {
       render(
         <InfoAlert>
-          <strong>Uwaga:</strong> sprawdź dane przed wysłaniem.
+          <strong>Uwaga:</strong> check the data before sending.
         </InfoAlert>,
         container,
       )
@@ -59,6 +59,6 @@ describe('InfoAlert', () => {
 
     expect(strong).not.toBeNull()
     expect(strong?.textContent).toBe('Uwaga:')
-    expect(container.textContent).toContain('sprawdź dane przed wysłaniem.')
+    expect(container.textContent).toContain('check the data before sending.')
   })
 })

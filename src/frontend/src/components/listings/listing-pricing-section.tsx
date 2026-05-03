@@ -38,14 +38,14 @@ export function ListingPricingSection({
 }: ListingPricingSectionProps) {
   return (
     <ListingFormSection
-      title="Cena i szczegóły"
-      description="Informacje o cenie i charakterystyce mieszkania."
+      title="Price and details"
+      description="Information about the price and characteristics of the apartment."
     >
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
         <NumberInput
           id="pricePerMonth"
           name="pricePerMonth"
-          label="Cena za miesiąc (PLN)"
+          label="Price per month (PLN)"
           placeholder="3000"
           min={0}
           step={0.01}
@@ -61,7 +61,7 @@ export function ListingPricingSection({
         <NumberInput
           id="areaSqm"
           name="areaSqm"
-          label="Powierzchnia (m²)"
+          label="Area (m²)"
           placeholder="50"
           min={0}
           step={0.01}
@@ -79,7 +79,7 @@ export function ListingPricingSection({
         <NumberInput
           id="rooms"
           name="rooms"
-          label="Liczba pokoi"
+          label="Number of rooms"
           min={1}
           step={1}
           required
@@ -94,7 +94,7 @@ export function ListingPricingSection({
         <NumberInput
           id="bathrooms"
           name="bathrooms"
-          label="Liczba łazienek"
+          label="Number of bathrooms"
           min={1}
           step={1}
           required
@@ -110,7 +110,7 @@ export function ListingPricingSection({
       <DateInput
         id="availableFrom"
         name="availableFrom"
-        label="Dostępne od"
+        label="Available from"
         required
         value={formData.availableFrom}
         error={errors.availableFrom}
@@ -123,13 +123,13 @@ export function ListingPricingSection({
       <div class="divider" />
 
       <div class="space-y-3">
-        <h3 class="font-semibold">Cechy mieszkania</h3>
+        <h3 class="font-semibold">Apartment features</h3>
 
         <div class="flex flex-col gap-3">
           <CheckboxInput
             id="furnished"
             name="furnished"
-            label="Umeblowane"
+            label="Furnished"
             checked={formData.furnished}
             error={errors.furnished}
             onChange={(e) => {
@@ -141,7 +141,7 @@ export function ListingPricingSection({
           <CheckboxInput
             id="allowPets"
             name="allowPets"
-            label="Zwierzęta dozwolone"
+            label="Pets allowed"
             checked={formData.allowPets}
             error={errors.allowPets}
             onChange={(e) => {
@@ -153,7 +153,7 @@ export function ListingPricingSection({
           <CheckboxInput
             id="allowSmoking"
             name="allowSmoking"
-            label="Palenie dozwolone"
+            label="Smoking allowed"
             checked={formData.allowSmoking}
             error={errors.allowSmoking}
             onChange={(e) => {

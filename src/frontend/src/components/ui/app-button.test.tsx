@@ -14,13 +14,13 @@ describe('AppButton', () => {
     document.body.appendChild(container)
 
     act(() => {
-      render(<AppButton>Zapisz</AppButton>, container)
+      render(<AppButton>Save</AppButton>, container)
     })
 
     const button = container.querySelector('button')
 
     expect(button).not.toBeNull()
-    expect(button?.textContent).toBe('Zapisz')
+    expect(button?.textContent).toBe('Save')
     expect(button?.getAttribute('type')).toBe('button')
     expect(button?.classList.contains('btn')).toBe(true)
     expect(button?.classList.contains('btn-primary')).toBe(true)
@@ -33,8 +33,8 @@ describe('AppButton', () => {
     document.body.appendChild(ghostContainer)
 
     act(() => {
-      render(<AppButton variant="outline">Anuluj</AppButton>, outlineContainer)
-      render(<AppButton variant="ghost">Pomiń</AppButton>, ghostContainer)
+      render(<AppButton variant="outline">Cancel</AppButton>, outlineContainer)
+      render(<AppButton variant="ghost">Skip</AppButton>, ghostContainer)
     })
 
     const outlineButton = outlineContainer.querySelector('button')
@@ -51,7 +51,7 @@ describe('AppButton', () => {
     act(() => {
       render(
         <AppButton type="submit" className="w-full">
-          Wyślij
+          Send
         </AppButton>,
         container,
       )
@@ -114,7 +114,7 @@ describe('AppButton', () => {
     document.body.appendChild(container)
 
     act(() => {
-      render(<AppButton disabled>Nieaktywne</AppButton>, container)
+      render(<AppButton disabled>Noaktywne</AppButton>, container)
     })
 
     const button = container.querySelector('button') as HTMLButtonElement

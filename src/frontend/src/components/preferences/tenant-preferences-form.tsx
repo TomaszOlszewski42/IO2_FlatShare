@@ -120,7 +120,7 @@ export function TenantPreferencesForm({
   onChange,
   onReset,
   onSubmit,
-  submitLabel = 'Zapisz preferencje',
+  submitLabel = 'Save preferences',
   saveMessage = null,
 }: TenantPreferencesFormProps) {
   const [maxPrice, setMaxPrice] = useState<number | ''>(initialValues.maxPrice ?? '')
@@ -164,7 +164,7 @@ export function TenantPreferencesForm({
     const nextErrors: FormErrors = {}
 
     if (values.maxPrice !== null && (!Number.isFinite(values.maxPrice) || values.maxPrice < 0)) {
-      nextErrors.maxPrice = 'Maksymalna cena musi być liczbą większą lub równą 0.'
+      nextErrors.maxPrice = 'Maximum price must be a number greater than or equal to 0.'
     }
 
     return nextErrors
@@ -203,14 +203,14 @@ export function TenantPreferencesForm({
   return (
     <form class="flex flex-col gap-6" onSubmit={handleSubmit}>
       <div class="rounded-box bg-base-200/40 p-4 text-sm text-base-content/80">
-        Uzupełnij tylko te pola, które faktycznie mają wpływ na dopasowanie mieszkań. Puste pola będą traktowane jako
-        brak preferencji.
+        Fill in only the fields that actually affect matching apartments. Empty fields will be treated as
+        no preference.
       </div>
 
       {unboundFieldErrors.length > 0 ? (
         <div class="alert alert-error text-sm">
           <div>
-            <p class="font-semibold">Niektóre pola wymagają poprawy:</p>
+            <p class="font-semibold">Some fields require correction:</p>
             <ul class="mt-1 list-disc pl-5">
               {unboundFieldErrors.map((message) => (
                 <li key={message}>{message}</li>
@@ -224,7 +224,7 @@ export function TenantPreferencesForm({
         <NumberInput
           id="tenant-preferences-max-price"
           name="maxPrice"
-          label="Maksymalny budżet miesięczny"
+          label="Maximum monthly budget"
           value={maxPrice}
           min={0}
           step={50}
@@ -240,7 +240,7 @@ export function TenantPreferencesForm({
         <SelectInput
           id="tenant-preferences-currency"
           name="currency"
-          label="Waluta"
+          label="Currency"
           value={currency}
           errors={getInputErrors('currency')}
           disabled={isSubmitting}
@@ -256,7 +256,7 @@ export function TenantPreferencesForm({
         <SelectInput
           id="tenant-preferences-smoking"
           name="smokingAllowed"
-          label="Palenie"
+          label="Smoking"
           value={smokingAllowed}
           errors={getInputErrors('smokingAllowed')}
           disabled={isSubmitting}
@@ -265,16 +265,16 @@ export function TenantPreferencesForm({
             setSmokingAllowed(target.value as BooleanPreferenceValue)
           }}
           options={[
-            { value: 'null', label: 'Bez preferencji' },
-            { value: 'true', label: 'Dozwolone' },
-            { value: 'false', label: 'Niedozwolone' },
+            { value: 'null', label: 'No preference' },
+            { value: 'true', label: 'Allowed' },
+            { value: 'false', label: 'Not allowed' },
           ]}
         />
 
         <SelectInput
           id="tenant-preferences-pets"
           name="petsAllowed"
-          label="Zwierzęta"
+          label="Pets"
           value={petsAllowed}
           errors={getInputErrors('petsAllowed')}
           disabled={isSubmitting}
@@ -283,9 +283,9 @@ export function TenantPreferencesForm({
             setPetsAllowed(target.value as BooleanPreferenceValue)
           }}
           options={[
-            { value: 'null', label: 'Bez preferencji' },
-            { value: 'true', label: 'Dozwolone' },
-            { value: 'false', label: 'Niedozwolone' },
+            { value: 'null', label: 'No preference' },
+            { value: 'true', label: 'Allowed' },
+            { value: 'false', label: 'Not allowed' },
           ]}
         />
       </div>
@@ -293,23 +293,23 @@ export function TenantPreferencesForm({
       <TextInput
         id="tenant-preferences-districts"
         name="preferredDistricts"
-        label="Preferowane dzielnice"
+        label="Preferred districts"
         value={preferredDistricts}
-        placeholder="np. Mokotów, Ochota, Wola"
+        placeholder="e.g. Mokotow, Ochota, Wola"
         errors={getInputErrors('preferredDistricts')}
         disabled={isSubmitting}
         onInput={(event) => setPreferredDistricts((event.currentTarget as HTMLInputElement).value)}
       />
 
       <div class="text-sm text-base-content/70">
-        Wpisz dzielnice po przecinku. Duplikaty zostaną automatycznie usunięte przy zapisie.
+        Enter districts separated by commas. Duplicates will be automatically removed upon saving.
       </div>
 
       {saveMessage ? <div class="alert alert-success text-sm">{saveMessage}</div> : null}
 
       <div class="flex flex-wrap justify-end gap-3">
         <AppButton type="button" variant="outline" disabled={isSubmitting} onClick={handleReset}>
-          Wyczyść formularz
+          Clear form
         </AppButton>
 
         <AppButton type="submit" loading={isSubmitting}>

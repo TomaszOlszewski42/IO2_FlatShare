@@ -21,7 +21,7 @@ describe('CreateListingButton', () => {
     const button = container.querySelector('button')
 
     expect(button).not.toBeNull()
-    expect(button?.textContent).toBe('Dodaj ogłoszenie')
+    expect(button?.textContent).toBe('Add listing')
     expect(button?.classList.contains('btn')).toBe(true)
     expect(button?.classList.contains('btn-primary')).toBe(true)
   })
@@ -34,7 +34,7 @@ describe('CreateListingButton', () => {
     act(() => {
       render(
         <CreateListingButton
-          text="Dodaj pierwsze ogłoszenie"
+          text="Add your first listing"
           className="w-full"
           onClick={handleClick}
         />,
@@ -44,7 +44,7 @@ describe('CreateListingButton', () => {
 
     const button = container.querySelector('button')
 
-    expect(button?.textContent).toBe('Dodaj pierwsze ogłoszenie')
+    expect(button?.textContent).toBe('Add your first listing')
     expect(button?.classList.contains('w-full')).toBe(true)
   })
 
@@ -84,7 +84,7 @@ describe('ClearFiltersButton', () => {
     const button = container.querySelector('button')
 
     expect(button).not.toBeNull()
-    expect(button?.textContent).toBe('Wyczyść filtry')
+    expect(button?.textContent).toBe('Clear filters')
     expect(button?.classList.contains('btn')).toBe(true)
     expect(button?.classList.contains('btn-outline')).toBe(true)
   })

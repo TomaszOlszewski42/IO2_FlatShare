@@ -15,8 +15,8 @@ describe('ListingSection', () => {
 
     act(() => {
       render(
-        <ListingSection title="Opis mieszkania">
-          <p>Jasny pokój blisko centrum.</p>
+        <ListingSection title="Apartment description">
+          <p>Bright room near the center.</p>
         </ListingSection>,
         container,
       )
@@ -26,12 +26,12 @@ describe('ListingSection', () => {
     const paragraph = container.querySelector('p')
 
     expect(heading).not.toBeNull()
-    expect(heading?.textContent).toBe('Opis mieszkania')
+    expect(heading?.textContent).toBe('Apartment description')
     expect(heading?.classList.contains('card-title')).toBe(true)
     expect(heading?.classList.contains('text-lg')).toBe(true)
 
     expect(paragraph).not.toBeNull()
-    expect(paragraph?.textContent).toBe('Jasny pokój blisko centrum.')
+    expect(paragraph?.textContent).toBe('Bright room near the center.')
   })
 
   it('renders content inside card body', () => {
@@ -40,8 +40,8 @@ describe('ListingSection', () => {
 
     act(() => {
       render(
-        <ListingSection title="Parametry">
-          <span>2 pokoje</span>
+        <ListingSection title="Parameters">
+          <span>2 rooms</span>
         </ListingSection>,
         container,
       )
@@ -51,8 +51,8 @@ describe('ListingSection', () => {
 
     expect(body).not.toBeNull()
     expect(body?.classList.contains('gap-3')).toBe(true)
-    expect(body?.textContent).toContain('Parametry')
-    expect(body?.textContent).toContain('2 pokoje')
+    expect(body?.textContent).toContain('Parameters')
+    expect(body?.textContent).toContain('2 rooms')
   })
 
   it('passes custom class name to surface wrapper', () => {
@@ -61,8 +61,8 @@ describe('ListingSection', () => {
 
     act(() => {
       render(
-        <ListingSection title="Kontakt" className="mt-6">
-          <p>Telefon kontaktowy</p>
+        <ListingSection title="Contact" className="mt-6">
+          <p>Contact phone number</p>
         </ListingSection>,
         container,
       )
@@ -81,8 +81,8 @@ describe('ListingSection', () => {
 
     act(() => {
       render(
-        <ListingSection title="Brak danych" dashed>
-          <p>Uzupełnij dane później.</p>
+        <ListingSection title="No data" dashed>
+          <p>Fill in the data later.</p>
         </ListingSection>,
         container,
       )
@@ -100,8 +100,8 @@ describe('ListingSection', () => {
 
     act(() => {
       render(
-        <ListingSection title="Informacje" translucent>
-          <p>Dodatkowe informacje.</p>
+        <ListingSection title="Information" translucent>
+          <p>Additional information.</p>
         </ListingSection>,
         container,
       )

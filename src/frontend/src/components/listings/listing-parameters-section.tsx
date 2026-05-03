@@ -11,7 +11,7 @@ type ListingParametersSectionProps = {
 
 export function ListingParametersSection({ rows }: ListingParametersSectionProps) {
   return (
-    <ListingSection title="Parametry">
+    <ListingSection title="Parameters">
       <div class="rounded-box border border-base-300/70 bg-base-100 px-4">
         {rows.map((row) => (
           <ListingMetaRow key={row.label} label={row.label} value={row.value} icon={row.icon} />

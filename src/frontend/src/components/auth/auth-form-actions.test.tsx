@@ -22,8 +22,8 @@ describe('AuthFormActions', () => {
     act(() => {
       render(
         <AuthFormActions
-          idleLabel="Wyślij"
-          loadingLabel="Wysyłanie..."
+          idleLabel="Send"
+          loadingLabel="Sending..."
         />,
         container,
       )
@@ -32,7 +32,7 @@ describe('AuthFormActions', () => {
     const submitButton = container.querySelector('button[type="submit"]') as HTMLButtonElement
 
     expect(submitButton).not.toBeNull()
-    expect(submitButton.textContent).toBe('Wyślij')
+    expect(submitButton.textContent).toBe('Send')
     expect(submitButton.disabled).toBe(false)
     expect(submitButton.classList.contains('btn')).toBe(true)
     expect(submitButton.classList.contains('btn-primary')).toBe(true)
@@ -46,8 +46,8 @@ describe('AuthFormActions', () => {
       render(
         <AuthFormActions
           isSubmitting
-          idleLabel="Wyślij"
-          loadingLabel="Wysyłanie..."
+          idleLabel="Send"
+          loadingLabel="Sending..."
         />,
         container,
       )
@@ -55,7 +55,7 @@ describe('AuthFormActions', () => {
 
     const submitButton = container.querySelector('button[type="submit"]') as HTMLButtonElement
 
-    expect(submitButton.textContent).toBe('Wysyłanie...')
+    expect(submitButton.textContent).toBe('Sending...')
     expect(submitButton.disabled).toBe(true)
   })
 
@@ -66,8 +66,8 @@ describe('AuthFormActions', () => {
     act(() => {
       render(
         <AuthFormActions
-          idleLabel="Zapisz"
-          loadingLabel="Zapisywanie..."
+          idleLabel="Save"
+          loadingLabel="Saving..."
         />,
         container,
       )
@@ -89,8 +89,8 @@ describe('AuthFormActions', () => {
     act(() => {
       render(
         <AuthFormActions
-          idleLabel="Zapisz"
-          loadingLabel="Zapisywanie..."
+          idleLabel="Save"
+          loadingLabel="Saving..."
         />,
         container,
       )

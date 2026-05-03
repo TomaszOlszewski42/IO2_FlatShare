@@ -37,7 +37,7 @@ function getErrorMessage(error: unknown): string {
     return error.message
   }
 
-  return 'Nie udało się wysłać zgłoszenia. Spróbuj ponownie później.'
+  return 'Failed to send report. Try again later.'
 }
 
 export function ReportViolationDialog({
@@ -72,11 +72,11 @@ export function ReportViolationDialog({
     const nextErrors: FormErrors = {}
 
     if (!reason.trim()) {
-      nextErrors.reason = 'Wybierz powód zgłoszenia.'
+      nextErrors.reason = 'Choose report reason.'
     }
 
     if (details.length > detailsMaxLength) {
-      nextErrors.details = `Opis może mieć maksymalnie ${detailsMaxLength} znaków.`
+      nextErrors.details = `Description can be a maximum of ${detailsMaxLength} characters.`
     }
 
     return nextErrors
@@ -131,17 +131,17 @@ export function ReportViolationDialog({
       <div class="w-full max-w-lg rounded-2xl border border-base-300 bg-base-100 p-6 shadow-xl">
         <div class="space-y-2">
           <h2 id="report-violation-dialog-title" class="text-xl font-semibold">
-            Zgłoś naruszenie
+            Report violation
           </h2>
 
           <p class="text-sm text-base-content/70">
-            Zgłoszenie zostanie przekazane do moderacji. Opisz problem możliwie konkretnie, aby
-            administrator mógł szybciej ocenić sytuację.
+            The report will be forwarded to moderation. Describe the problem as specifically as possible so that the
+            administrator can assess the situation more quickly.
           </p>
 
           {targetLabel ? (
             <p class="rounded-box bg-base-200/60 px-3 py-2 text-sm text-base-content/80">
-              Dotyczy: <span class="font-medium">{targetLabel}</span>
+              Applies to: <span class="font-medium">{targetLabel}</span>
             </p>
           ) : null}
         </div>
@@ -152,10 +152,10 @@ export function ReportViolationDialog({
           <SelectInput
             id="report-violation-reason"
             name="reason"
-            label="Powód zgłoszenia"
+            label="Report reason"
             value={reason}
             options={reasonOptions}
-            placeholder="Wybierz powód"
+            placeholder="Choose reason"
             required
             disabled={isSubmitting}
             error={errors.reason}
@@ -169,10 +169,10 @@ export function ReportViolationDialog({
           <TextArea
             id="report-violation-details"
             name="details"
-            label="Szczegóły"
+            label="Details"
             value={details}
             rows={5}
-            placeholder="Dodaj opis sytuacji, linki, fragment treści albo inne informacje pomocne dla moderacji."
+            placeholder="Add a description of the situation, links, content fragments, or other information helpful for moderation."
             disabled={isSubmitting}
             error={errors.details}
             onInput={(event) => {
@@ -183,7 +183,7 @@ export function ReportViolationDialog({
           />
 
           <div class="flex items-center justify-between gap-3 text-sm text-base-content/60">
-            <span>Opis jest opcjonalny.</span>
+            <span>Description jest opcjonalny.</span>
             <span>
               {details.length}/{detailsMaxLength}
             </span>
@@ -191,11 +191,11 @@ export function ReportViolationDialog({
 
           <div class="mt-2 flex justify-end gap-3">
             <AppButton type="button" variant="ghost" disabled={isSubmitting} onClick={onClose}>
-              Anuluj
+              Cancel
             </AppButton>
 
             <AppButton type="submit" loading={isSubmitting}>
-              Wyślij zgłoszenie
+              Send report
             </AppButton>
           </div>
         </form>

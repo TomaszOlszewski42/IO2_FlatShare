@@ -48,11 +48,11 @@ describe('ListingsToolbar', () => {
       )
     })
 
-    expect(container.textContent).toContain('Twoje ogłoszenia')
-    expect(container.textContent).toContain('Zarządzaj publikacją i widocznością ofert.')
+    expect(container.textContent).toContain('Your listings')
+    expect(container.textContent).toContain('Manage publication and visibility of offers.')
 
     const createButton = Array.from(container.querySelectorAll('button')).find(
-      (button) => button.textContent === 'Dodaj ogłoszenie',
+      (button) => button.textContent === 'Add listing',
     )
 
     expect(createButton).not.toBeUndefined()
@@ -90,7 +90,7 @@ describe('ListingsToolbar', () => {
 
     expect(container.textContent).toContain('Available Listings')
     expect(container.textContent).toContain('Browse and find your next flat.')
-    expect(container.textContent).not.toContain('Dodaj ogłoszenie')
+    expect(container.textContent).not.toContain('Add listing')
   })
 
   it('renders total and active counters', () => {
@@ -103,7 +103,7 @@ describe('ListingsToolbar', () => {
     act(() => {
       render(
         <ListingsToolbar
-          query="warszawa"
+          query="warsaw"
           selectedStatus="ACTIVE"
           totalCount={12}
           activeCount={7}
@@ -115,8 +115,8 @@ describe('ListingsToolbar', () => {
       )
     })
 
-    expect(container.textContent).toContain('Wszystkie: 12')
-    expect(container.textContent).toContain('Aktywne: 7')
+    expect(container.textContent).toContain('Total: 12')
+    expect(container.textContent).toContain('Active: 7')
   })
 
   it('renders query input with provided value and calls onQueryChange after input', () => {
@@ -129,7 +129,7 @@ describe('ListingsToolbar', () => {
     act(() => {
       render(
         <ListingsToolbar
-          query="kraków"
+          query="krakow"
           selectedStatus="ALL"
           totalCount={0}
           activeCount={0}
@@ -144,16 +144,16 @@ describe('ListingsToolbar', () => {
     const input = container.querySelector('#listings-query') as HTMLInputElement
 
     expect(input).not.toBeNull()
-    expect(input.value).toBe('kraków')
-    expect(input.placeholder).toBe('Tytuł, miasto, dzielnica')
+    expect(input.value).toBe('krakow')
+    expect(input.placeholder).toBe('Title, city, district')
 
     act(() => {
-      input.value = 'warszawa'
+      input.value = 'warsaw'
       input.dispatchEvent(new Event('input', { bubbles: true }))
     })
 
     expect(handleQueryChange).toHaveBeenCalledTimes(1)
-    expect(handleQueryChange).toHaveBeenCalledWith('warszawa')
+    expect(handleQueryChange).toHaveBeenCalledWith('warsaw')
   })
 
   it('renders status select with options and calls onStatusChange after change', () => {
@@ -184,7 +184,7 @@ describe('ListingsToolbar', () => {
     expect(select).not.toBeNull()
     expect(select.value).toBe('ALL')
     expect(options.length).toBeGreaterThan(1)
-    expect(options[0]?.textContent).toBe('Wszystkie statusy')
+    expect(options[0]?.textContent).toBe('All statuses')
 
     act(() => {
       select.value = 'ACTIVE'

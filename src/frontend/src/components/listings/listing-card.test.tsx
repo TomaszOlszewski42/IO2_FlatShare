@@ -13,8 +13,8 @@ vi.mock('../../hooks/use-auth', () => ({
 const baseListing: Listing = {
   id: 'listing-1',
   ownerId: 'owner-1',
-  title: 'Jasny pokój blisko centrum',
-  description: 'Przytulny pokój w dobrze skomunikowanej lokalizacji.',
+  title: 'Bright room near the center',
+  description: 'Cozy room in a well-connected location.',
   price: 1500,
   currency: 'PLN',
   status: 'ACTIVE',
@@ -25,9 +25,9 @@ const baseListing: Listing = {
   allowPets: false,
   allowSmoking: false,
   location: {
-    city: 'Warszawa',
-    district: 'Mokotów',
-    street: 'Puławska',
+    city: 'Warsaw',
+    district: 'Mokotow',
+    street: 'Pulawska',
     buildingNumber: '10',
     postalCode: '00-001',
   },
@@ -77,16 +77,16 @@ describe('ListingCard', () => {
       render(<ListingCard listing={baseListing} />, container)
     })
 
-    expect(container.textContent).toContain('Jasny pokój blisko centrum')
-    expect(container.textContent).toContain('Warszawa')
-    expect(container.textContent).toContain('Mokotów')
-    expect(container.textContent).toContain('Cena')
-    expect(container.textContent).toContain('/ mies.')
-    expect(container.textContent).toContain('Powierzchnia')
+    expect(container.textContent).toContain('Bright room near the center')
+    expect(container.textContent).toContain('Warsaw')
+    expect(container.textContent).toContain('Mokotow')
+    expect(container.textContent).toContain('Price')
+    expect(container.textContent).toContain('/ month')
+    expect(container.textContent).toContain('Area')
     expect(container.textContent).toContain('18 m2')
-    expect(container.textContent).toContain('Liczba pokoi')
+    expect(container.textContent).toContain('Number of rooms')
     expect(container.textContent).toContain('2')
-    expect(container.textContent).toContain('Aktywne')
+    expect(container.textContent).toContain('Active')
   })
 
   it('renders listing feature and tenant requirement badges', () => {
@@ -99,11 +99,11 @@ describe('ListingCard', () => {
       render(<ListingCard listing={baseListing} />, container)
     })
 
-    expect(container.textContent).toContain('Umeblowane')
-    expect(container.textContent).toContain('Zwierzęta')
-    expect(container.textContent).toContain('Palenie')
-    expect(container.textContent).toContain('Bez zwierząt')
-    expect(container.textContent).toContain('Tylko niepalący')
+    expect(container.textContent).toContain('Furnished')
+    expect(container.textContent).toContain('Pets')
+    expect(container.textContent).toContain('Smoking')
+    expect(container.textContent).toContain('No pets')
+    expect(container.textContent).toContain('Non-smokers only')
     expect(container.textContent).toContain('Student')
   })
 
@@ -119,7 +119,7 @@ describe('ListingCard', () => {
     })
 
     const detailsButton = Array.from(container.querySelectorAll('button')).find(
-      (button) => button.textContent === 'Szczegóły',
+      (button) => button.textContent === 'Details',
     ) as HTMLButtonElement
 
     act(() => {
@@ -142,7 +142,7 @@ describe('ListingCard', () => {
     })
 
     const editButton = Array.from(container.querySelectorAll('button')).find(
-      (button) => button.textContent === 'Edytuj',
+      (button) => button.textContent === 'Edit',
     ) as HTMLButtonElement
 
     expect(editButton).not.toBeUndefined()
@@ -165,7 +165,7 @@ describe('ListingCard', () => {
       render(<ListingCard listing={baseListing} />, container)
     })
 
-    expect(container.textContent).not.toContain('Edytuj')
+    expect(container.textContent).not.toContain('Edit')
   })
 
   it('hides edit action for tenant even if ownerId matches', () => {
@@ -178,6 +178,6 @@ describe('ListingCard', () => {
       render(<ListingCard listing={baseListing} />, container)
     })
 
-    expect(container.textContent).not.toContain('Edytuj')
+    expect(container.textContent).not.toContain('Edit')
   })
 })

@@ -77,7 +77,7 @@ describe('ListingBackendPhoto', () => {
         <ListingBackendPhoto
           listingId="listing-1"
           photoId="photo-1"
-          alt="Zdjęcie pokoju"
+          alt="Room photo"
           loadingClassName="custom-loading"
         />,
         container,
@@ -101,7 +101,7 @@ describe('ListingBackendPhoto', () => {
         <ListingBackendPhoto
           listingId="listing-1"
           photoId="photo-1"
-          alt="Zdjęcie pokoju"
+          alt="Room photo"
           errorClassName="custom-error"
         />,
         container,
@@ -112,7 +112,7 @@ describe('ListingBackendPhoto', () => {
       const error = container.querySelector('.custom-error')
 
       expect(error).not.toBeNull()
-      expect(error?.textContent).toBe('Nie udalo sie zaladowac zdjecia')
+      expect(error?.textContent).toBe('No udalo sie zaladowac zdjecia')
     })
 
     expect(fetchMock).not.toHaveBeenCalled()
@@ -142,7 +142,7 @@ describe('ListingBackendPhoto', () => {
         <ListingBackendPhoto
           listingId="listing-1"
           photoId="photo-1"
-          alt="Zdjęcie pokoju"
+          alt="Room photo"
           className="photo-class"
         />,
         container,
@@ -170,7 +170,7 @@ describe('ListingBackendPhoto', () => {
 
     expect(image).not.toBeNull()
     expect(image.src).toBe('blob:listing-photo')
-    expect(image.alt).toBe('Zdjęcie pokoju')
+    expect(image.alt).toBe('Room photo')
     expect(image.getAttribute('loading')).toBe('lazy')
     expect(image.classList.contains('photo-class')).toBe(true)
   })
@@ -197,7 +197,7 @@ describe('ListingBackendPhoto', () => {
         <ListingBackendPhoto
           listingId="listing-1"
           photoId="missing-photo"
-          alt="Zdjęcie pokoju"
+          alt="Room photo"
           errorClassName="custom-error"
         />,
         container,
@@ -208,7 +208,7 @@ describe('ListingBackendPhoto', () => {
       const error = container.querySelector('.custom-error')
 
       expect(error).not.toBeNull()
-      expect(error?.textContent).toBe('Nie udalo sie zaladowac zdjecia')
+      expect(error?.textContent).toBe('No udalo sie zaladowac zdjecia')
     })
 
     expect(container.querySelector('img')).toBeNull()
