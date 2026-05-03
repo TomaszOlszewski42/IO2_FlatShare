@@ -22,9 +22,9 @@ export function ListingCard({ listing, onEdit, onViewDetails }: ListingCardProps
   const canEdit = isLandlord && isOwner
 
   const featureBadges = [
-    { label: 'Umeblowane', value: Boolean(listing.furnished) },
-    { label: 'Zwierzęta', value: Boolean(listing.allowPets) },
-    { label: 'Palenie', value: Boolean(listing.allowSmoking) },
+    { label: 'Furnished', value: Boolean(listing.furnished) },
+    { label: 'Pets', value: Boolean(listing.allowPets) },
+    { label: 'Smoking', value: Boolean(listing.allowSmoking) },
   ]
 
   return (
@@ -39,10 +39,10 @@ export function ListingCard({ listing, onEdit, onViewDetails }: ListingCardProps
         </div>
 
         <div class="rounded-box border border-base-300/70 bg-base-100 px-4">
-          <ListingMetaRow label="Cena" value={`${formatPrice(listing.price)} / mies.`} icon={listing.currency} />
-          <ListingMetaRow label="Powierzchnia" value={listing.area ? formatArea(listing.area) : '-'} icon="m2" />
-          <ListingMetaRow label="Liczba pokoi" value={listing.rooms ? String(listing.rooms) : '-'} />
-          <ListingMetaRow label="Dostępne od" value={listing.availableFrom ? formatDate(listing.availableFrom) : '-'} />
+          <ListingMetaRow label="Price" value={`${formatPrice(listing.price)} / month`} icon={listing.currency} />
+          <ListingMetaRow label="Area" value={listing.area ? formatArea(listing.area) : '-'} icon="m2" />
+          <ListingMetaRow label="Number of rooms" value={listing.rooms ? String(listing.rooms) : '-'} />
+          <ListingMetaRow label="Available from" value={listing.availableFrom ? formatDate(listing.availableFrom) : '-'} />
         </div>
 
         <ListingFeatureBadges features={featureBadges} />
@@ -51,11 +51,11 @@ export function ListingCard({ listing, onEdit, onViewDetails }: ListingCardProps
         <div class="card-actions justify-end gap-2">
           {canEdit && (
             <AppButton variant="ghost" className="btn-sm" onClick={() => onEdit?.(listing.id)}>
-              Edytuj
+              Edit
             </AppButton>
           )}
           <AppButton variant="outline" className="btn-sm" onClick={() => onViewDetails?.(listing.id)}>
-            Szczegóły
+            Details
           </AppButton>
         </div>
       </div>

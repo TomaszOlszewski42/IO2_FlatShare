@@ -37,7 +37,7 @@ describe('ListingGallery', () => {
     document.body.appendChild(container)
 
     act(() => {
-      render(<ListingGallery listingId="listing-1" photoIds={[]} title="Pokój" />, container)
+      render(<ListingGallery listingId="listing-1" photoIds={[]} title="Room" />, container)
     })
 
     expect(container.textContent).toBe('')
@@ -53,19 +53,19 @@ describe('ListingGallery', () => {
         <ListingGallery
           listingId="listing-1"
           photoIds={['photo-1', 'photo-2', 'photo-3']}
-          title="Jasny pokój"
+          title="Bright room"
         />,
         container,
       )
     })
 
     const photos = container.querySelectorAll('[data-testid="backend-photo"]')
-    const thumbnailButtons = container.querySelectorAll('button[aria-label^="Wybierz zdjecie"]')
+    const thumbnailButtons = container.querySelectorAll('button[aria-label^="Select photo"]')
 
-    expect(container.textContent).toContain('Galeria')
+    expect(container.textContent).toContain('Gallery')
     expect(photos.length).toBe(4)
     expect(photos[0]?.getAttribute('data-photo-id')).toBe('photo-1')
-    expect(photos[0]?.getAttribute('alt')).toBe('Zdjecie 1 dla ogloszenia Jasny pokój')
+    expect(photos[0]?.getAttribute('alt')).toBe('Photo 1 for the Bright room listing')
     expect(thumbnailButtons.length).toBe(3)
   })
 
@@ -78,14 +78,14 @@ describe('ListingGallery', () => {
         <ListingGallery
           listingId="listing-1"
           photoIds={['photo-1', 'photo-2']}
-          title="Jasny pokój"
+          title="Bright room"
         />,
         container,
       )
     })
 
     const secondThumbnail = container.querySelector(
-      'button[aria-label="Wybierz zdjecie 2"]',
+      'button[aria-label="Select photo 2"]',
     ) as HTMLButtonElement
 
     act(() => {
@@ -95,7 +95,7 @@ describe('ListingGallery', () => {
     const photos = container.querySelectorAll('[data-testid="backend-photo"]')
 
     expect(photos[0]?.getAttribute('data-photo-id')).toBe('photo-2')
-    expect(photos[0]?.getAttribute('alt')).toBe('Zdjecie 2 dla ogloszenia Jasny pokój')
+    expect(photos[0]?.getAttribute('alt')).toBe('Photo 2 for the Bright room listing')
   })
 
   it('opens and closes photo preview modal', () => {
@@ -107,7 +107,7 @@ describe('ListingGallery', () => {
         <ListingGallery
           listingId="listing-1"
           photoIds={['photo-1']}
-          title="Jasny pokój"
+          title="Bright room"
         />,
         container,
       )
@@ -123,16 +123,16 @@ describe('ListingGallery', () => {
 
     expect(dialog).not.toBeNull()
     expect(dialog?.classList.contains('modal-open')).toBe(true)
-    expect(container.textContent).toContain('Zamknij')
+    expect(container.textContent).toContain('Close')
 
     const previewPhoto = Array.from(container.querySelectorAll('[data-testid="backend-photo"]')).find(
-      (photo) => photo.getAttribute('alt') === 'Podglad zdjecia 1 dla ogloszenia Jasny pokój',
+      (photo) => photo.getAttribute('alt') === 'Preview of photo 1 for the Bright room listing',
     )
 
     expect(previewPhoto).not.toBeUndefined()
 
     const closeButton = Array.from(container.querySelectorAll('button')).find(
-      (button) => button.textContent === 'Zamknij',
+      (button) => button.textContent === 'Close',
     ) as HTMLButtonElement
 
     act(() => {

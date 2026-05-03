@@ -22,16 +22,16 @@ describe('AuthCardFooterLink', () => {
     act(() => {
       render(
         <AuthCardFooterLink
-          prompt="Nie masz konta?"
-          actionLabel="Zarejestruj się"
+          prompt="No masz konta?"
+          actionLabel="Sign up"
           href="/register"
         />,
         container,
       )
     })
 
-    expect(container.textContent).toContain('Nie masz konta?')
-    expect(container.textContent).toContain('Zarejestruj się')
+    expect(container.textContent).toContain('No masz konta?')
+    expect(container.textContent).toContain('Sign up')
   })
 
   it('renders action as button with link styling', () => {
@@ -41,8 +41,8 @@ describe('AuthCardFooterLink', () => {
     act(() => {
       render(
         <AuthCardFooterLink
-          prompt="Masz już konto?"
-          actionLabel="Zaloguj się"
+          prompt="Already have an account?"
+          actionLabel="Log in"
           href="/login"
         />,
         container,
@@ -55,7 +55,7 @@ describe('AuthCardFooterLink', () => {
     expect(button?.getAttribute('type')).toBe('button')
     expect(button?.classList.contains('link')).toBe(true)
     expect(button?.classList.contains('link-primary')).toBe(true)
-    expect(button?.textContent).toBe('Zaloguj się')
+    expect(button?.textContent).toBe('Log in')
   })
 
   it('routes to provided href after clicking action button', () => {
@@ -65,8 +65,8 @@ describe('AuthCardFooterLink', () => {
     act(() => {
       render(
         <AuthCardFooterLink
-          prompt="Nie masz konta?"
-          actionLabel="Zarejestruj się"
+          prompt="No masz konta?"
+          actionLabel="Sign up"
           href="/register"
         />,
         container,

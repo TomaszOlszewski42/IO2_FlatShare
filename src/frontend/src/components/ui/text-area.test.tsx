@@ -19,9 +19,9 @@ describe('TextArea', () => {
         <TextArea
           id="description"
           name="description"
-          label="Opis"
-          value="Jasny pokój blisko centrum"
-          placeholder="Opisz mieszkanie"
+          label="Description"
+          value="Bright room near the center"
+          placeholder="Describe the apartment"
           onInput={handleInput}
         />,
         container,
@@ -31,12 +31,12 @@ describe('TextArea', () => {
     const legend = container.querySelector('legend')
     const textarea = container.querySelector('textarea') as HTMLTextAreaElement
 
-    expect(legend?.textContent).toBe('Opis')
+    expect(legend?.textContent).toBe('Description')
     expect(textarea).not.toBeNull()
     expect(textarea.id).toBe('description')
     expect(textarea.name).toBe('description')
-    expect(textarea.value).toBe('Jasny pokój blisko centrum')
-    expect(textarea.placeholder).toBe('Opisz mieszkanie')
+    expect(textarea.value).toBe('Bright room near the center')
+    expect(textarea.placeholder).toBe('Describe the apartment')
     expect(textarea.rows).toBe(4)
     expect(textarea.classList.contains('textarea')).toBe(true)
     expect(textarea.classList.contains('textarea-bordered')).toBe(true)
@@ -52,7 +52,7 @@ describe('TextArea', () => {
         <TextArea
           id="description"
           name="description"
-          label="Opis"
+          label="Description"
           value=""
           rows={8}
           onInput={handleInput}
@@ -76,7 +76,7 @@ describe('TextArea', () => {
         <TextArea
           id="description"
           name="description"
-          label="Opis"
+          label="Description"
           value=""
           required
           disabled
@@ -102,7 +102,7 @@ describe('TextArea', () => {
         <TextArea
           id="description"
           name="description"
-          label="Opis"
+          label="Description"
           value=""
           onInput={handleInput}
         />,
@@ -130,9 +130,9 @@ describe('TextArea', () => {
         <TextArea
           id="description"
           name="description"
-          label="Opis"
+          label="Description"
           value=""
-          error="Opis jest wymagany"
+          error="Description jest wymagany"
           onInput={handleInput}
         />,
         container,
@@ -145,7 +145,7 @@ describe('TextArea', () => {
     expect(textarea.classList.contains('textarea-error')).toBe(true)
     expect(textarea.getAttribute('aria-invalid')).toBe('true')
     expect(textarea.getAttribute('aria-describedby')).toBe('description-error')
-    expect(error?.textContent).toBe('Opis jest wymagany')
+    expect(error?.textContent).toBe('Description jest wymagany')
   })
 
   it('renders multiple validation errors', () => {
@@ -158,9 +158,9 @@ describe('TextArea', () => {
         <TextArea
           id="description"
           name="description"
-          label="Opis"
+          label="Description"
           value=""
-          errors={['Opis jest wymagany', 'Opis jest za krótki']}
+          errors={['Description jest wymagany', 'Description is too short']}
           onInput={handleInput}
         />,
         container,
@@ -170,7 +170,7 @@ describe('TextArea', () => {
     const errors = container.querySelectorAll('.text-error')
 
     expect(errors.length).toBe(2)
-    expect(errors[0]?.textContent).toBe('Opis jest wymagany')
-    expect(errors[1]?.textContent).toBe('Opis jest za krótki')
+    expect(errors[0]?.textContent).toBe('Description jest wymagany')
+    expect(errors[1]?.textContent).toBe('Description is too short')
   })
 })

@@ -26,16 +26,16 @@ export function ListingTenantRequirementsSection({
   return (
     <div class="space-y-6 card-body">
       <div>
-        <h2 class="text-xl font-semibold">Wymagania wobec lokatora</h2>
+        <h2 class="text-xl font-semibold">Tenant requirements</h2>
         <p class="text-sm text-base-content/65">
-          Określ, jaki profil lokatora jest dla Ciebie najbardziej odpowiedni.
+          Specify what tenant profile is most suitable for you.
         </p>
       </div>
 
       <div class="alert alert-info text-sm">
         <span>
-          Ta sekcja opisuje preferencje właściciela wobec lokatora. To nie to samo co cechy mieszkania, które ustawiasz
-          wyżej.
+          This section describes the landlord's preferences towards the tenant. This is not the same as the apartment features you set
+          above.
         </span>
       </div>
 
@@ -43,7 +43,7 @@ export function ListingTenantRequirementsSection({
         <CheckboxInput
           id="tenant-requirements-pets-allowed"
           name="petsAllowed"
-          label="Akceptuję lokatora ze zwierzęciem"
+          label="I accept tenants with pets"
           checked={formData.petsAllowed}
           disabled={disabled}
           error={errors.petsAllowed}
@@ -56,7 +56,7 @@ export function ListingTenantRequirementsSection({
         <CheckboxInput
           id="tenant-requirements-non-smoking-only"
           name="nonSmokingOnly"
-          label="Szukam osoby niepalącej"
+          label="Looking for a non-smoker"
           checked={formData.nonSmokingOnly}
           disabled={disabled}
           error={errors.nonSmokingOnly}
@@ -70,24 +70,24 @@ export function ListingTenantRequirementsSection({
       <SelectInput
         id="tenant-requirements-profile"
         name="preferredTenantProfile"
-        label="Preferowany profil lokatora"
+        label="Preferred tenant profile"
         value={formData.preferredTenantProfile}
         error={errors.preferredTenantProfile}
         disabled={disabled}
-        placeholder="Brak preferencji"
+        placeholder="No preferences"
         onChange={(event) => {
           const value = (event.currentTarget as HTMLSelectElement).value
           onUpdate('preferredTenantProfile', value)
         }}
         options={[
           { value: 'student', label: 'Student' },
-          { value: 'working', label: 'Osoba pracująca' },
+          { value: 'working', label: 'Working person' },
         ]}
       />
 
       {/* TODO BACKEND:
-          Wpiąć te pola do Listing.attributes lub równoważnego kontraktu po stronie API.
-          Frontend zakłada obecnie:
+          Connect these fields to Listing.attributes or an equivalent contract on the API side.
+          Frontend currently assumes:
           - petsAllowed: boolean
           - nonSmokingOnly: boolean
           - preferredTenantProfile: string | null

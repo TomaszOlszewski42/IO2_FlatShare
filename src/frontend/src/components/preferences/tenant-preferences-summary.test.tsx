@@ -26,8 +26,8 @@ describe('TenantPreferencesSummary', () => {
       render(<TenantPreferencesSummary preferences={preferences} />, container)
     })
 
-    expect(container.textContent).toContain('Aktualne preferencje')
-    expect(container.textContent).toContain('Nie ustawiono jeszcze żadnych preferencji lokatora.')
+    expect(container.textContent).toContain('Current preferences')
+    expect(container.textContent).toContain('No tenant preferences have been set yet.')
   })
 
   it('renders configured preferences summary', () => {
@@ -36,7 +36,7 @@ describe('TenantPreferencesSummary', () => {
       currency: 'PLN',
       smokingAllowed: false,
       petsAllowed: true,
-      preferredDistricts: ['Mokotów', 'Wola'],
+      preferredDistricts: ['Mokotow', 'Wola'],
     }
 
     const container = document.createElement('div')
@@ -48,14 +48,14 @@ describe('TenantPreferencesSummary', () => {
 
     const text = container.textContent?.replace(/\u00a0/g, ' ') ?? ''
 
-    expect(text).toContain('Maksymalny budżet')
-    expect(text).toMatch(/1\s*500\s*zł/)
-    expect(text).toContain('Palenie')
-    expect(text).toContain('Nie')
-    expect(text).toContain('Zwierzęta')
-    expect(text).toContain('Tak')
-    expect(text).toContain('Preferowane dzielnice')
-    expect(text).toContain('Mokotów, Wola')
+    expect(text).toContain('Maximum budget')
+    expect(text).toMatch(/PLN\s*1[,\s]500/)
+    expect(text).toContain('Smoking')
+    expect(text).toContain('No')
+    expect(text).toContain('Pets')
+    expect(text).toContain('Yes')
+    expect(text).toContain('Preferred districts')
+    expect(text).toContain('Mokotow, Wola')
   })
 
   it('renders no preference labels for nullable boolean values', () => {
@@ -74,7 +74,7 @@ describe('TenantPreferencesSummary', () => {
       render(<TenantPreferencesSummary preferences={preferences} />, container)
     })
 
-    expect(container.textContent).toContain('Bez preferencji')
-    expect(container.textContent).toContain('Nie określono')
+    expect(container.textContent).toContain('No preference')
+    expect(container.textContent).toContain('Not specified')
   })
 })

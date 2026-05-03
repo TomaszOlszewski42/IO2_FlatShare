@@ -19,9 +19,9 @@ describe('TextInput', () => {
         <TextInput
           id="title"
           name="title"
-          label="Tytuł"
-          value="Przytulny pokój"
-          placeholder="Podaj tytuł"
+          label="Title"
+          value="Cozy room"
+          placeholder="Enter title"
           onInput={handleInput}
         />,
         container,
@@ -31,13 +31,13 @@ describe('TextInput', () => {
     const legend = container.querySelector('legend')
     const input = container.querySelector('input') as HTMLInputElement
 
-    expect(legend?.textContent).toBe('Tytuł')
+    expect(legend?.textContent).toBe('Title')
     expect(input).not.toBeNull()
     expect(input.id).toBe('title')
     expect(input.name).toBe('title')
     expect(input.type).toBe('text')
-    expect(input.value).toBe('Przytulny pokój')
-    expect(input.placeholder).toBe('Podaj tytuł')
+    expect(input.value).toBe('Cozy room')
+    expect(input.placeholder).toBe('Enter title')
     expect(input.classList.contains('input')).toBe(true)
     expect(input.classList.contains('input-bordered')).toBe(true)
   })
@@ -78,7 +78,7 @@ describe('TextInput', () => {
         <TextInput
           id="password"
           name="password"
-          label="Hasło"
+          label="Password"
           type="password"
           value=""
           required
@@ -106,7 +106,7 @@ describe('TextInput', () => {
         <TextInput
           id="city"
           name="city"
-          label="Miasto"
+          label="City"
           value=""
           onInput={handleInput}
         />,
@@ -117,7 +117,7 @@ describe('TextInput', () => {
     const input = container.querySelector('input') as HTMLInputElement
 
     act(() => {
-      input.value = 'Warszawa'
+      input.value = 'Warsaw'
       input.dispatchEvent(new Event('input', { bubbles: true }))
     })
 
@@ -134,9 +134,9 @@ describe('TextInput', () => {
         <TextInput
           id="title"
           name="title"
-          label="Tytuł"
+          label="Title"
           value=""
-          error="Tytuł jest wymagany"
+          error="Title is required"
           onInput={handleInput}
         />,
         container,
@@ -149,7 +149,7 @@ describe('TextInput', () => {
     expect(input.classList.contains('input-error')).toBe(true)
     expect(input.getAttribute('aria-invalid')).toBe('true')
     expect(input.getAttribute('aria-describedby')).toBe('title-error')
-    expect(error?.textContent).toBe('Tytuł jest wymagany')
+    expect(error?.textContent).toBe('Title is required')
   })
 
   it('renders multiple validation errors', () => {
@@ -162,9 +162,9 @@ describe('TextInput', () => {
         <TextInput
           id="title"
           name="title"
-          label="Tytuł"
+          label="Title"
           value=""
-          errors={['Tytuł jest wymagany', 'Tytuł jest za krótki']}
+          errors={['Title is required', 'Title is too short']}
           onInput={handleInput}
         />,
         container,
@@ -174,7 +174,7 @@ describe('TextInput', () => {
     const errors = container.querySelectorAll('.text-error')
 
     expect(errors.length).toBe(2)
-    expect(errors[0]?.textContent).toBe('Tytuł jest wymagany')
-    expect(errors[1]?.textContent).toBe('Tytuł jest za krótki')
+    expect(errors[0]?.textContent).toBe('Title is required')
+    expect(errors[1]?.textContent).toBe('Title is too short')
   })
 })

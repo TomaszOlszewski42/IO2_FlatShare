@@ -17,9 +17,9 @@ describe('ListingFeatureBadges', () => {
       render(
         <ListingFeatureBadges
           features={[
-            { label: 'Umeblowane', value: true },
-            { label: 'Zwierzęta', value: false },
-            { label: 'Palenie', value: true },
+            { label: 'Furnished', value: true },
+            { label: 'Pets', value: false },
+            { label: 'Smoking', value: true },
           ]}
         />,
         container,
@@ -29,9 +29,9 @@ describe('ListingFeatureBadges', () => {
     const badges = container.querySelectorAll('.badge')
 
     expect(badges.length).toBe(3)
-    expect(container.textContent).toContain('Umeblowane')
-    expect(container.textContent).toContain('Zwierzęta')
-    expect(container.textContent).toContain('Palenie')
+    expect(container.textContent).toContain('Furnished')
+    expect(container.textContent).toContain('Pets')
+    expect(container.textContent).toContain('Smoking')
   })
 
   it('renders positive feature with success mark', () => {
@@ -39,7 +39,7 @@ describe('ListingFeatureBadges', () => {
     document.body.appendChild(container)
 
     act(() => {
-      render(<ListingFeatureBadges features={[{ label: 'Umeblowane', value: true }]} />, container)
+      render(<ListingFeatureBadges features={[{ label: 'Furnished', value: true }]} />, container)
     })
 
     const mark = container.querySelector('.text-success')
@@ -54,7 +54,7 @@ describe('ListingFeatureBadges', () => {
     document.body.appendChild(container)
 
     act(() => {
-      render(<ListingFeatureBadges features={[{ label: 'Zwierzęta', value: false }]} />, container)
+      render(<ListingFeatureBadges features={[{ label: 'Pets', value: false }]} />, container)
     })
 
     const mark = container.querySelector('.text-error')

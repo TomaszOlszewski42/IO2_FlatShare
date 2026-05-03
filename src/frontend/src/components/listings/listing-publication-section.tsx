@@ -18,9 +18,9 @@ export function ListingPublicationSection({
   return (
     <ListingFormSection
       title="Publikacja"
-      description="Decyduj, czy ogłoszenie będzie dostępne dla lokatorów."
+      description="Decide if the listing will be available to tenants."
     >
-      <FormField id="publicationStatus" label="Status ogłoszenia" error={errors.publicationStatus}>
+      <FormField id="publicationStatus" label="Listing status" error={errors.publicationStatus}>
         <div class="flex flex-col gap-3">
           <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-base-300 p-4 transition hover:bg-base-200">
             <input
@@ -35,9 +35,9 @@ export function ListingPublicationSection({
               }}
             />
             <div class="flex-1">
-              <p class="font-semibold">Zapisz jako szkic</p>
+              <p class="font-semibold">Save as draft</p>
               <p class="text-sm text-base-content/70">
-                Ogłoszenie nie będzie widoczne dla innych. Możesz go edytować i opublikować później.
+                The listing will not be visible to others. You can edit and publish it later.
               </p>
             </div>
           </label>
@@ -57,7 +57,7 @@ export function ListingPublicationSection({
             <div class="flex-1">
               <p class="font-semibold">Opublikuj natychmiast</p>
               <p class="text-sm text-base-content/70">
-                Ogłoszenie będzie dostępne dla lokatorów od razu po utworzeniu.
+                The listing will be available to tenants immediately after creation.
               </p>
             </div>
           </label>
@@ -66,7 +66,7 @@ export function ListingPublicationSection({
 
       <InfoAlert>
         <span>
-          Zawsze możesz zmienić status ogłoszenia później - opublikować szkic lub ukryć aktywne ogłoszenie.
+          You can always change the listing status later - publish a draft or hide an active listing.
         </span>
       </InfoAlert>
     </ListingFormSection>

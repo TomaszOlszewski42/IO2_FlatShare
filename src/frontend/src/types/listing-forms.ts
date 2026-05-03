@@ -28,8 +28,8 @@ export type CreateListingPayload = {
 export type UpdateListingPayload = Partial<CreateListingPayload>
 
 /**
- * Frontendowy model formularza wymagań właściciela.
- * Backend aktualnie przyjmuje te dane jako Listing.attributes.
+ * Frontend model for the owner's requirements form.
+ * Backend currently accepts this data as Listing.attributes.
  */
 export type ListingOwnerAttributesDraft = {
   petsAllowed: boolean

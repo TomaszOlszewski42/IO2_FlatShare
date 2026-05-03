@@ -91,7 +91,7 @@ export function ListingCreatePage(_: RoutableProps) {
       route('/listings')
     } catch (error) {
       console.error('Failed to create listing:', error)
-      handleError(error, 'Nie udało się utworzyć ogłoszenia. Sprawdź błędy w formularzu.')
+      handleError(error, 'Failed to create listing. Check form errors.')
     } finally {
       setIsSubmitting(false)
     }
@@ -101,13 +101,13 @@ export function ListingCreatePage(_: RoutableProps) {
     <div class="flex w-full flex-1 flex-col py-6">
       <div class="container mx-auto max-w-3xl px-4">
         <div class="mb-6">
-          <h1 class="mb-2 text-3xl font-bold">Tworzenie ogłoszenia</h1>
-          <p class="text-base-content/70">Podziel się szczegółami swojego mieszkania z potencjalnymi lokatorami.</p>
+          <h1 class="mb-2 text-3xl font-bold">Create listing</h1>
+          <p class="text-base-content/70">Share the details of your apartment with potential tenants.</p>
         </div>
 
         {hasRecoveredDraft ? (
           <div class="alert alert-info mb-6 text-sm">
-            <span>Przywrócono lokalny szkic formularza z poprzedniej sesji.</span>
+            <span>Local form draft from the previous session restored.</span>
           </div>
         ) : null}
 

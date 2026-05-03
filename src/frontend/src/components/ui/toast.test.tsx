@@ -20,7 +20,7 @@ describe('Toast', () => {
           toast={{
             id: 'toast-1',
             type: 'error',
-            message: 'Nie udało się zapisać danych',
+            message: 'Failed to save data',
           }}
           onRemove={handleRemove}
         />,
@@ -34,7 +34,7 @@ describe('Toast', () => {
     expect(alert?.classList.contains('alert')).toBe(true)
     expect(alert?.classList.contains('alert-soft')).toBe(true)
     expect(alert?.classList.contains('alert-error')).toBe(true)
-    expect(alert?.textContent).toContain('Nie udało się zapisać danych')
+    expect(alert?.textContent).toContain('Failed to save data')
   })
 
   it('renders success toast with success styling', () => {
@@ -48,7 +48,7 @@ describe('Toast', () => {
           toast={{
             id: 'toast-2',
             type: 'success',
-            message: 'Dane zostały zapisane',
+            message: 'Data has been saved',
           }}
           onRemove={handleRemove}
         />,
@@ -59,7 +59,7 @@ describe('Toast', () => {
     const alert = container.querySelector('[role="alert"]')
 
     expect(alert?.classList.contains('alert-success')).toBe(true)
-    expect(alert?.textContent).toContain('Dane zostały zapisane')
+    expect(alert?.textContent).toContain('Data has been saved')
   })
 
   it('renders warning toast with warning styling', () => {
@@ -73,7 +73,7 @@ describe('Toast', () => {
           toast={{
             id: 'toast-3',
             type: 'warning',
-            message: 'Sprawdź dane formularza',
+            message: 'Check form data',
           }}
           onRemove={handleRemove}
         />,
@@ -84,7 +84,7 @@ describe('Toast', () => {
     const alert = container.querySelector('[role="alert"]')
 
     expect(alert?.classList.contains('alert-warning')).toBe(true)
-    expect(alert?.textContent).toContain('Sprawdź dane formularza')
+    expect(alert?.textContent).toContain('Check form data')
   })
 
   it('renders info toast with info styling', () => {
@@ -98,7 +98,7 @@ describe('Toast', () => {
           toast={{
             id: 'toast-4',
             type: 'info',
-            message: 'Trwa ładowanie danych',
+            message: 'Loading data',
           }}
           onRemove={handleRemove}
         />,
@@ -109,7 +109,7 @@ describe('Toast', () => {
     const alert = container.querySelector('[role="alert"]')
 
     expect(alert?.classList.contains('alert-info')).toBe(true)
-    expect(alert?.textContent).toContain('Trwa ładowanie danych')
+    expect(alert?.textContent).toContain('Loading data')
   })
 
   it('calls onRemove with toast id after close button click', () => {
