@@ -1,4 +1,4 @@
-// Model domenowy preferencji lokatora po stronie frontendu
+// Frontend domain model for tenant preferences
 
 export const tenantPreferenceCurrencies = ['PLN'] as const
 

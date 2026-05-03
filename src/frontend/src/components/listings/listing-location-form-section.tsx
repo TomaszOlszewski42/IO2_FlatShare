@@ -26,14 +26,14 @@ export function ListingLocationFormSection({
 }: ListingLocationFormSectionProps) {
   return (
     <ListingFormSection
-      title="Lokalizacja"
-      description="Szczegółowy adres mieszkania."
+      title="Location"
+      description="Detailed address of the apartment."
     >
       <TextInput
         id="city"
         name="city"
-        label="Miasto/Gmina"
-        placeholder="np. Warszawa"
+        label="City/Gmina"
+        placeholder="np. Warsaw"
         required
         value={formData.city}
         error={errors.city}
@@ -46,8 +46,8 @@ export function ListingLocationFormSection({
       <TextInput
         id="district"
         name="district"
-        label="Dzielnica (opcjonalnie)"
-        placeholder="np. Śródmieście"
+        label="District (optional)"
+        placeholder="e.g. City Center"
         value={formData.district || ''}
         error={errors.district}
         onInput={(e) => {
@@ -59,8 +59,8 @@ export function ListingLocationFormSection({
       <TextInput
         id="street"
         name="street"
-        label="Ulica (opcjonalnie)"
-        placeholder="np. ul. Marszałkowska"
+        label="Street (optional)"
+        placeholder="e.g. Marszalkowska St."
         value={formData.street || ''}
         error={errors.street}
         onInput={(e) => {
@@ -73,7 +73,7 @@ export function ListingLocationFormSection({
         <TextInput
           id="buildingNumber"
           name="buildingNumber"
-          label="Numer budynku (opcjonalnie)"
+          label="Building number (optional)"
           placeholder="np. 42"
           value={formData.buildingNumber || ''}
           error={errors.buildingNumber}
@@ -86,7 +86,7 @@ export function ListingLocationFormSection({
         <TextInput
           id="postalCode"
           name="postalCode"
-          label="Kod pocztowy (opcjonalnie)"
+          label="Postal code (optional)"
           placeholder="np. 00-001"
           value={formData.postalCode || ''}
           error={errors.postalCode}
@@ -98,7 +98,7 @@ export function ListingLocationFormSection({
       </div>
 
       <InfoAlert>
-        <span>Podaj możliwie dokładny adres. Pomaga to potencjalnym najemcom w decyzji o wynajmie.</span>
+        <span>Provide as exact an address as possible. This helps potential tenants in their rental decision.</span>
       </InfoAlert>
     </ListingFormSection>
   )

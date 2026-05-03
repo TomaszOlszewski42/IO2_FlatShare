@@ -38,7 +38,7 @@ describe('ListingFormShell', () => {
     act(() => {
       render(
         <ListingFormShell>
-          <div>Formularz</div>
+          <div>Form</div>
         </ListingFormShell>,
         container,
       )

@@ -87,7 +87,7 @@ export function saveListingCreateDraft(formData: ListingFormData): void {
   try {
     localStorage.setItem(LISTING_CREATE_DRAFT_STORAGE_KEY, JSON.stringify(formData))
   } catch {
-    // Ignorujemy błąd zapisu localStorage.
+    // Ignore localStorage write error.
   }
 }
 
@@ -95,6 +95,6 @@ export function clearListingCreateDraft(): void {
   try {
     localStorage.removeItem(LISTING_CREATE_DRAFT_STORAGE_KEY)
   } catch {
-    // Ignorujemy błąd usuwania localStorage.
+    // Ignore localStorage deletion error.
   }
 }

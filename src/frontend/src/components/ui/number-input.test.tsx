@@ -19,9 +19,9 @@ describe('NumberInput', () => {
         <NumberInput
           id="price"
           name="price"
-          label="Cena"
+          label="Price"
           value={1200}
-          placeholder="Podaj cenę"
+          placeholder="Enter price"
           onInput={handleInput}
         />,
         container,
@@ -31,13 +31,13 @@ describe('NumberInput', () => {
     const legend = container.querySelector('legend')
     const input = container.querySelector('input') as HTMLInputElement
 
-    expect(legend?.textContent).toBe('Cena')
+    expect(legend?.textContent).toBe('Price')
     expect(input).not.toBeNull()
     expect(input.id).toBe('price')
     expect(input.name).toBe('price')
     expect(input.type).toBe('number')
     expect(input.value).toBe('1200')
-    expect(input.placeholder).toBe('Podaj cenę')
+    expect(input.placeholder).toBe('Enter price')
     expect(input.classList.contains('input')).toBe(true)
     expect(input.classList.contains('input-bordered')).toBe(true)
   })
@@ -75,7 +75,7 @@ describe('NumberInput', () => {
         <NumberInput
           id="area"
           name="area"
-          label="Metraż"
+          label="Area"
           value={20}
           min={1}
           max={100}
@@ -103,7 +103,7 @@ describe('NumberInput', () => {
         <NumberInput
           id="rooms"
           name="rooms"
-          label="Liczba pokoi"
+          label="Number of rooms"
           value={2}
           required
           disabled
@@ -129,7 +129,7 @@ describe('NumberInput', () => {
         <NumberInput
           id="price"
           name="price"
-          label="Cena"
+          label="Price"
           value=""
           onInput={handleInput}
         />,
@@ -157,9 +157,9 @@ describe('NumberInput', () => {
         <NumberInput
           id="price"
           name="price"
-          label="Cena"
+          label="Price"
           value=""
-          error="Cena jest wymagana"
+          error="Price jest wymagana"
           onInput={handleInput}
         />,
         container,
@@ -172,6 +172,6 @@ describe('NumberInput', () => {
     expect(input.classList.contains('input-error')).toBe(true)
     expect(input.getAttribute('aria-invalid')).toBe('true')
     expect(input.getAttribute('aria-describedby')).toBe('price-error')
-    expect(error?.textContent).toBe('Cena jest wymagana')
+    expect(error?.textContent).toBe('Price jest wymagana')
   })
 })

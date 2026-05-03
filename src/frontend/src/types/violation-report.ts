@@ -3,12 +3,12 @@ export const violationReportTargetTypes = ['LISTING', 'USER'] as const
 export type ViolationReportTargetType = (typeof violationReportTargetTypes)[number]
 
 export const violationReportReasons = [
-  'Podejrzenie oszustwa',
-  'Niezgodne lub wprowadzające w błąd treści',
-  'Dane wrażliwe lub prywatne w opisie',
-  'Nieodpowiednie zdjęcia',
+  'Suspected fraud',
+  'Incompatible or misleading content',
+  'Sensitive or private data in description',
+  'Inappropriate photos',
   'Spam',
-  'Inny powód',
+  'Other reason',
 ] as const
 
 export type ViolationReportReason = (typeof violationReportReasons)[number]

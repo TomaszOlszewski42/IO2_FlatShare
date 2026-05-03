@@ -29,9 +29,9 @@ export function ListingOwnerActionsPanel(props: ListingOwnerActionsPanelProps) {
     <RoleBoundary requiredRole={UserRole.Landlord}>
       <section class="rounded-2xl border border-base-300 bg-base-100 p-5 shadow-sm">
         <div class="mb-4">
-          <h2 class="text-lg font-semibold">Zarządzanie ogłoszeniem</h2>
+          <h2 class="text-lg font-semibold">Listing management</h2>
           <p class="mt-1 text-sm text-base-content/70">
-            Zarządzaj widocznością i cyklem życia tego ogłoszenia.
+            Manage the visibility and life cycle of this listing.
           </p>
         </div>
 
@@ -41,7 +41,7 @@ export function ListingOwnerActionsPanel(props: ListingOwnerActionsPanelProps) {
             onClick={() => route(`/listings/${props.listingId}/edit`)}
             disabled={props.isBusy}
           >
-            Edytuj
+            Edit
           </AppButton>
 
           <HideListingButton
@@ -59,7 +59,7 @@ export function ListingOwnerActionsPanel(props: ListingOwnerActionsPanelProps) {
 
         {props.status && (
           <p class="mt-4 text-xs text-base-content/60">
-            Aktualny status: <span class="font-medium">{props.status}</span>
+            Current status: <span class="font-medium">{props.status}</span>
           </p>
         )}
       </section>

@@ -67,7 +67,7 @@ export function ListingsPage(_: RoutableProps) {
   const activeCount = listings.filter((listing) => listing.status === 'ACTIVE').length
 
   return (
-    <section class="flex w-full flex-1 flex-col gap-5">
+    <section class="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-5 px-4 py-6 md:px-6 md:py-8">
       <ListingsToolbar
         query={query}
         selectedStatus={selectedStatus}

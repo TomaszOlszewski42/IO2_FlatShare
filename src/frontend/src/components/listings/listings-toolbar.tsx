@@ -30,7 +30,7 @@ const statusOptions = [
   'ARCHIVED',
 ].map((status) => ({
   value: status,
-  label: status === 'ALL' ? 'Wszystkie statusy' : formatStatusLabel(status as ListingStatus),
+  label: status === 'ALL' ? 'All statuses' : formatStatusLabel(status as ListingStatus),
 }))
 
 export function ListingsToolbar({
@@ -56,8 +56,8 @@ export function ListingsToolbar({
                 </>
               }
             >
-              <h1 class="text-2xl font-semibold tracking-tight">Twoje ogłoszenia</h1>
-              <p class="text-sm text-base-content/65">Zarządzaj publikacją i widocznością ofert.</p>
+              <h1 class="text-2xl font-semibold tracking-tight">Your listings</h1>
+              <p class="text-sm text-base-content/65">Manage publication and visibility of offers.</p>
             </RoleBoundary>
           </div>
           
@@ -67,31 +67,33 @@ export function ListingsToolbar({
         </div>
 
         <div class="flex flex-wrap items-center gap-2 text-sm">
-          <span class="badge badge-outline">Wszystkie: {totalCount}</span>
-          <span class="badge badge-success badge-soft">Aktywne: {activeCount}</span>
+          <span class="badge badge-outline">Total: {totalCount}</span>
+          <span class="badge badge-success badge-soft">Active: {activeCount}</span>
         </div>
 
         <div class="grid gap-3 md:grid-cols-[2fr_1fr]">
           <TextInput
             id="listings-query"
             name="query"
-            label="Szukaj"
+            label="Search"
             type="text"
             value={query}
-            placeholder="Tytuł, miasto, dzielnica"
+            placeholder="Title, city, district"
             onInput={(event) => onQueryChange((event.currentTarget as HTMLInputElement).value)}
           />
 
-          <SelectInput
-            id="listings-status"
-            name="status"
-            label="Status"
-            value={selectedStatus}
-            options={statusOptions}
-            onChange={(event) =>
-              onStatusChange((event.currentTarget as HTMLSelectElement).value as ListingFilterValue)
-            }
-          />
+          <RoleBoundary requiredRole={UserRole.Landlord} >
+            <SelectInput
+              id="listings-status"
+              name="status"
+              label="Status"
+              value={selectedStatus}
+              options={statusOptions}
+              onChange={(event) =>
+                onStatusChange((event.currentTarget as HTMLSelectElement).value as ListingFilterValue)
+              }
+            />
+          </RoleBoundary>
         </div>
       </div>
     </ListingsSurface>

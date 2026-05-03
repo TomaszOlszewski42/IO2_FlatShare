@@ -114,7 +114,7 @@ export function TenantPreferencesPage(_: RoutableProps) {
 
           setPreferences(emptyPreferences)
           setPreviewPreferences(emptyPreferences)
-          setErrorMessage('Nie udało się wczytać preferencji. Możesz nadal uzupełnić formularz ręcznie.')
+          setErrorMessage('Failed to load preferences. You can still fill out the form manually.')
         }
       } finally {
         if (isMounted) {
@@ -156,11 +156,11 @@ export function TenantPreferencesPage(_: RoutableProps) {
 
       setPreferences(savedPreferences)
       setPreviewPreferences(savedPreferences)
-      setSaveMessage('Preferencje zostały zapisane.')
+      setSaveMessage('Preferences have been saved.')
       clearTenantPreferencesDraft()
     } catch (error) {
       console.error('Failed to save tenant preferences:', error)
-      handleError(error, 'Nie udało się zapisać preferencji. Sprawdź błędy w formularzu.')
+      handleError(error, 'Failed to save preferences. Check form errors.')
     } finally {
       setIsSubmitting(false)
     }
@@ -174,9 +174,9 @@ export function TenantPreferencesPage(_: RoutableProps) {
     <div class="flex w-full flex-1 flex-col py-6">
       <div class="container mx-auto max-w-3xl px-4">
         <div class="mb-6">
-          <h1 class="mb-2 text-3xl font-bold">Preferencje lokatora</h1>
+          <h1 class="mb-2 text-3xl font-bold">Tenant preferences</h1>
           <p class="text-base-content/70">
-            Ustaw preferencje, które w kolejnych sprintach będą wykorzystywane do dopasowywania mieszkań.
+            Set preferences that will be used in subsequent sprints for matching apartments.
           </p>
         </div>
 
@@ -186,7 +186,7 @@ export function TenantPreferencesPage(_: RoutableProps) {
           <div class="card border border-base-300 bg-base-100 shadow-sm">
             <div class="card-body items-start gap-3">
               <span class="loading loading-spinner loading-md" aria-hidden="true" />
-              <p class="text-sm text-base-content/70">Wczytywanie preferencji...</p>
+              <p class="text-sm text-base-content/70">Loading preferences...</p>
             </div>
           </div>
         ) : (

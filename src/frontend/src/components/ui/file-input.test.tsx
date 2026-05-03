@@ -19,7 +19,7 @@ describe('FileInput', () => {
         <FileInput
           id="photos"
           name="photos"
-          label="Zdjęcia"
+          label="Photos"
           accept="image/*"
           onChange={handleChange}
         />,
@@ -33,7 +33,7 @@ describe('FileInput', () => {
 
     expect(label).not.toBeNull()
     expect(label?.getAttribute('for')).toBe('photos')
-    expect(labelText?.textContent).toBe('Zdjęcia')
+    expect(labelText?.textContent).toBe('Photos')
 
     expect(input).not.toBeNull()
     expect(input.id).toBe('photos')
@@ -54,7 +54,7 @@ describe('FileInput', () => {
         <FileInput
           id="photos"
           name="photos"
-          label="Zdjęcia"
+          label="Photos"
           multiple
           disabled
           onChange={handleChange}
@@ -79,7 +79,7 @@ describe('FileInput', () => {
         <FileInput
           id="photos"
           name="photos"
-          label="Zdjęcia"
+          label="Photos"
           onChange={handleChange}
         />,
         container,
@@ -105,8 +105,8 @@ describe('FileInput', () => {
         <FileInput
           id="photos"
           name="photos"
-          label="Zdjęcia"
-          error="Dodaj przynajmniej jedno zdjęcie"
+          label="Photos"
+          error="Add at least one photo"
           onChange={handleChange}
         />,
         container,
@@ -119,7 +119,7 @@ describe('FileInput', () => {
     expect(input.classList.contains('file-input-error')).toBe(true)
     expect(input.getAttribute('aria-invalid')).toBe('true')
     expect(input.getAttribute('aria-describedby')).toBe('photos-error')
-    expect(error?.textContent).toBe('Dodaj przynajmniej jedno zdjęcie')
+    expect(error?.textContent).toBe('Add at least one photo')
   })
 
   it('renders multiple validation errors', () => {
@@ -132,8 +132,8 @@ describe('FileInput', () => {
         <FileInput
           id="photos"
           name="photos"
-          label="Zdjęcia"
-          errors={['Plik jest za duży', 'Nieobsługiwany format pliku']}
+          label="Photos"
+          errors={['File is too large', 'Unsupported file format']}
           onChange={handleChange}
         />,
         container,
@@ -143,7 +143,7 @@ describe('FileInput', () => {
     const errors = container.querySelectorAll('.text-error')
 
     expect(errors.length).toBe(2)
-    expect(errors[0]?.textContent).toBe('Plik jest za duży')
-    expect(errors[1]?.textContent).toBe('Nieobsługiwany format pliku')
+    expect(errors[0]?.textContent).toBe('File is too large')
+    expect(errors[1]?.textContent).toBe('Unsupported file format')
   })
 })

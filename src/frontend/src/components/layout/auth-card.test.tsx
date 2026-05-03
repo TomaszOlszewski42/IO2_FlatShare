@@ -15,7 +15,7 @@ describe('AuthCard', () => {
 
     act(() => {
       render(
-        <AuthCard title="Logowanie" subtitle="Zaloguj się do FlatShare">
+        <AuthCard title="Login" subtitle="Log in to FlatShare">
           <form>
             <input name="email" />
           </form>
@@ -29,12 +29,12 @@ describe('AuthCard', () => {
     const input = container.querySelector('input[name="email"]')
 
     expect(title).not.toBeNull()
-    expect(title?.textContent).toBe('Logowanie')
+    expect(title?.textContent).toBe('Login')
     expect(title?.classList.contains('card-title')).toBe(true)
     expect(title?.classList.contains('text-2xl')).toBe(true)
 
     expect(subtitle).not.toBeNull()
-    expect(subtitle?.textContent).toBe('Zaloguj się do FlatShare')
+    expect(subtitle?.textContent).toBe('Log in to FlatShare')
 
     expect(input).not.toBeNull()
   })
@@ -45,8 +45,8 @@ describe('AuthCard', () => {
 
     act(() => {
       render(
-        <AuthCard title="Rejestracja" subtitle="Utwórz konto">
-          <div>Formularz</div>
+        <AuthCard title="Register" subtitle="Create account">
+          <div>Form</div>
         </AuthCard>,
         container,
       )
@@ -74,11 +74,11 @@ describe('AuthCard', () => {
     act(() => {
       render(
         <AuthCard
-          title="Reset hasła"
-          subtitle="Podaj adres email"
-          footer={<button type="button">Wróć do logowania</button>}
+          title="Reset password"
+          subtitle="Enter your email address"
+          footer={<button type="button">Back to login</button>}
         >
-          <form>Formularz resetu</form>
+          <form>Reset form</form>
         </AuthCard>,
         container,
       )
@@ -90,7 +90,7 @@ describe('AuthCard', () => {
     expect(footer).not.toBeNull()
     expect(footer?.classList.contains('mt-3')).toBe(true)
     expect(button).not.toBeNull()
-    expect(button?.textContent).toBe('Wróć do logowania')
+    expect(button?.textContent).toBe('Back to login')
   })
 
   it('does not render footer container when footer is missing', () => {
@@ -99,8 +99,8 @@ describe('AuthCard', () => {
 
     act(() => {
       render(
-        <AuthCard title="Logowanie" subtitle="Zaloguj się">
-          <form>Formularz</form>
+        <AuthCard title="Login" subtitle="Log in">
+          <form>Form</form>
         </AuthCard>,
         container,
       )

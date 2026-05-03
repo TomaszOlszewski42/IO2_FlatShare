@@ -22,12 +22,12 @@ export function ListingContactSection({
   return (
     <ListingFormSection
       title="Dane kontaktowe"
-      description="Jak lokatorzy mogą się z Tobą skontaktować."
+      description="How tenants can contact you."
     >
       <TextInput
         id="contact"
         name="contact"
-        label="Nazwa/Imię i nazwisko"
+        label="Name/First and Last Name"
         placeholder="np. Jan Kowalski"
         required
         value={formData.contact}
@@ -53,7 +53,7 @@ export function ListingContactSection({
       />
 
       <InfoAlert>
-        <span>Twoja poczta email z konta będzie automatycznie dodana jako dane kontaktowe.</span>
+        <span>Your account email will automatically be added as contact info.</span>
       </InfoAlert>
     </ListingFormSection>
   )

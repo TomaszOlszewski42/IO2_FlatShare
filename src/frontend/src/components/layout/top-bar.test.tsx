@@ -13,6 +13,11 @@ vi.mock('./auth-controls', () => ({
   AuthControls: () => <div data-test-id="auth-controls" />,
 }))
 
+vi.mock('../../services/auth-session', () => ({
+  readAuthSession: vi.fn(() => null),
+  getAuthChangedEventName: vi.fn(() => 'auth-changed'),
+}))
+
 vi.mock('../../hooks/use-auth', () => ({
   useAuth: vi.fn(() => ({
     isLandlord: false,

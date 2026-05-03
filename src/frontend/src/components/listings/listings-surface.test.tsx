@@ -16,7 +16,7 @@ describe('ListingsSurface', () => {
     act(() => {
       render(
         <ListingsSurface>
-          <p>Treść sekcji</p>
+          <p>Section content</p>
         </ListingsSurface>,
         container,
       )
@@ -26,7 +26,7 @@ describe('ListingsSurface', () => {
     const paragraph = container.querySelector('p')
 
     expect(section).not.toBeNull()
-    expect(paragraph?.textContent).toBe('Treść sekcji')
+    expect(paragraph?.textContent).toBe('Section content')
   })
 
   it('uses default solid border and background classes', () => {
@@ -34,7 +34,7 @@ describe('ListingsSurface', () => {
     document.body.appendChild(container)
 
     act(() => {
-      render(<ListingsSurface>Treść</ListingsSurface>, container)
+      render(<ListingsSurface>Content</ListingsSurface>, container)
     })
 
     const section = container.querySelector('section')
@@ -52,7 +52,7 @@ describe('ListingsSurface', () => {
     document.body.appendChild(container)
 
     act(() => {
-      render(<ListingsSurface dashed>Treść</ListingsSurface>, container)
+      render(<ListingsSurface dashed>Content</ListingsSurface>, container)
     })
 
     const section = container.querySelector('section')
@@ -66,7 +66,7 @@ describe('ListingsSurface', () => {
     document.body.appendChild(container)
 
     act(() => {
-      render(<ListingsSurface translucent>Treść</ListingsSurface>, container)
+      render(<ListingsSurface translucent>Content</ListingsSurface>, container)
     })
 
     const section = container.querySelector('section')
@@ -80,7 +80,7 @@ describe('ListingsSurface', () => {
     document.body.appendChild(container)
 
     act(() => {
-      render(<ListingsSurface className="mt-4">Treść</ListingsSurface>, container)
+      render(<ListingsSurface className="mt-4">Content</ListingsSurface>, container)
     })
 
     const section = container.querySelector('section')

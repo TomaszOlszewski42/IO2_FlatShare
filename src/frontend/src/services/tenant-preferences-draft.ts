@@ -112,6 +112,6 @@ export function clearTenantPreferencesDraft(): void {
   try {
     localStorage.removeItem(TENANT_PREFERENCES_DRAFT_STORAGE_KEY)
   } catch {
-    // Ignorujemy błąd localStorage.
+    // Ignore localStorage error.
   }
 }

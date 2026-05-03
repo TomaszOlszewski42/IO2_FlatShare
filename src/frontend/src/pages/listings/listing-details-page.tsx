@@ -87,12 +87,12 @@ export function ListingDetailsPage({ listingId }: ListingDetailsRouteProps) {
 
     if (!session) {
       route('/login')
-      throw new Error('Aby zgłosić naruszenie, zaloguj się ponownie.')
+      throw new Error('To report a violation, please log in again.')
     }
 
     await createViolationReport(payload, session.token, session.type)
 
-    showToast('Zgłoszenie zostało wysłane do moderacji.', 'success')
+    showToast('The report has been sent to moderation.', 'success')
   }
 
   if (isLoading) {
@@ -105,30 +105,30 @@ export function ListingDetailsPage({ listingId }: ListingDetailsRouteProps) {
         <EmptyStateContent
           icon="🔍"
           titleAs="h1"
-          title="Ogłoszenie nie znalezione"
-          description="Przepraszamy, ale szukane przez Ciebie ogłoszenie nie istnieje lub zostało usunięte."
+          title="Listing not found"
+          description="We are sorry, but the listing you are looking for does not exist or has been removed."
         >
-          <AppButton onClick={() => route('/listings')}>Wróć do ogłoszeń</AppButton>
+          <AppButton onClick={() => route('/listings')}>Back to listings</AppButton>
         </EmptyStateContent>
       </section>
     )
   }
 
   const parameterRows = [
-    { label: 'Cena', value: `${formatPrice(listing.price)} / mies.`, icon: listing.currency },
-    { label: 'Powierzchnia', value: listing.area ? formatArea(listing.area) : '-', icon: 'm2' },
-    { label: 'Dostępne od', value: listing.availableFrom ? formatDate(listing.availableFrom) : '-' },
-    { label: 'Status publikacji', value: listing.status ? formatStatusLabel(listing.status) : '-' },
+    { label: 'Price', value: `${formatPrice(listing.price)} / month`, icon: listing.currency },
+    { label: 'Area', value: listing.area ? formatArea(listing.area) : '-', icon: 'm2' },
+    { label: 'Available from', value: listing.availableFrom ? formatDate(listing.availableFrom) : '-' },
+    { label: 'Publication status', value: listing.status ? formatStatusLabel(listing.status) : '-' },
   ]
 
   const featureRows = [
-    { label: 'Umeblowane', value: Boolean(listing.furnished) },
-    { label: 'Zwierzęta w mieszkaniu', value: Boolean(listing.allowPets) },
-    { label: 'Palenie w mieszkaniu', value: Boolean(listing.allowSmoking) },
+    { label: 'Furnished', value: Boolean(listing.furnished) },
+    { label: 'Pets in the apartment', value: Boolean(listing.allowPets) },
+    { label: 'Smoking in the apartment', value: Boolean(listing.allowSmoking) },
   ]
 
   return (
-    <section class="flex w-full flex-1 flex-col gap-5">
+    <section class="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-5 px-4 py-6 md:px-6 md:py-8">
       <ListingDetailsHeader
         title={listing.title}
         onBack={() => route('/listings')}
@@ -151,7 +151,7 @@ export function ListingDetailsPage({ listingId }: ListingDetailsRouteProps) {
       <div class="grid gap-4 lg:grid-cols-2">
         <ListingParametersSection rows={parameterRows} />
 
-        <ListingSection title="Atrybuty">
+        <ListingSection title="Attributes">
           <ListingFeatureBadges features={featureRows} />
         </ListingSection>
       </div>
@@ -161,7 +161,7 @@ export function ListingDetailsPage({ listingId }: ListingDetailsRouteProps) {
 
       <ListingLocationSection location={listing.location} />
 
-      <ListingSection title="Kontakt i opis">
+      <ListingSection title="Contact and description">
         <div class="space-y-3 text-sm leading-relaxed text-base-content/80">
           <p>{listing.description}</p>
           <div class="grid gap-2 md:grid-cols-2">

@@ -92,7 +92,7 @@ describe('ListingPhotoUpload', () => {
 
     await flushEffects()
 
-    const deleteBtn = container.querySelector('button[title="Usuń zdjęcie"]') as HTMLButtonElement
+    const deleteBtn = container.querySelector('button[title="Delete photo"]') as HTMLButtonElement
 
     await act(async () => {
       deleteBtn.click()

@@ -14,7 +14,7 @@ describe('ListingMetaRow', () => {
     document.body.appendChild(container)
 
     act(() => {
-      render(<ListingMetaRow label="Miasto" value="Warszawa" />, container)
+      render(<ListingMetaRow label="City" value="Warsaw" />, container)
     })
 
     const row = container.firstElementChild
@@ -25,8 +25,8 @@ describe('ListingMetaRow', () => {
     expect(row?.classList.contains('justify-between')).toBe(true)
 
     expect(spans.length).toBe(2)
-    expect(spans[0]?.textContent).toBe('Miasto')
-    expect(spans[1]?.textContent).toBe('Warszawa')
+    expect(spans[0]?.textContent).toBe('City')
+    expect(spans[1]?.textContent).toBe('Warsaw')
   })
 
   it('renders icon before label when provided', () => {
@@ -34,12 +34,12 @@ describe('ListingMetaRow', () => {
     document.body.appendChild(container)
 
     act(() => {
-      render(<ListingMetaRow label="Cena" value="1 500 zł" icon="💰" />, container)
+      render(<ListingMetaRow label="Price" value="1 500 PLN" icon="💰" />, container)
     })
 
     const label = container.querySelector('span')
 
-    expect(label?.textContent).toBe('💰 Cena')
+    expect(label?.textContent).toBe('💰 Price')
   })
 
   it('uses muted styling for label and stronger styling for value', () => {
@@ -47,7 +47,7 @@ describe('ListingMetaRow', () => {
     document.body.appendChild(container)
 
     act(() => {
-      render(<ListingMetaRow label="Powierzchnia" value="20 m²" />, container)
+      render(<ListingMetaRow label="Area" value="20 m²" />, container)
     })
 
     const spans = container.querySelectorAll('span')
@@ -64,7 +64,7 @@ describe('ListingMetaRow', () => {
     document.body.appendChild(container)
 
     act(() => {
-      render(<ListingMetaRow label="Dostępne od" value="2025-03-01" />, container)
+      render(<ListingMetaRow label="Available from" value="2025-03-01" />, container)
     })
 
     const row = container.firstElementChild
