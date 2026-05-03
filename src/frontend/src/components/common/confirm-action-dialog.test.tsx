@@ -19,9 +19,9 @@ describe('ConfirmActionDialog', () => {
       render(
         <ConfirmActionDialog
           isOpen={false}
-          title="Ukryj ogłoszenie"
-          message="Czy na pewno chcesz ukryć to ogłoszenie?"
-          confirmLabel="Ukryj"
+          title="Hide listing"
+          message="Are you sure you want to hide this listing?"
+          confirmLabel="Hide"
           onConfirm={handleConfirm}
           onCancel={handleCancel}
         />,
@@ -43,10 +43,10 @@ describe('ConfirmActionDialog', () => {
       render(
         <ConfirmActionDialog
           isOpen
-          title="Archiwizuj ogłoszenie"
-          message="Po archiwizacji ogłoszenie nie będzie widoczne dla lokatorów."
-          confirmLabel="Archiwizuj"
-          cancelLabel="Wróć"
+          title="Archive listing"
+          message="After archiving, the listing will not be visible to tenants."
+          confirmLabel="Archive"
+          cancelLabel="Back"
           onConfirm={handleConfirm}
           onCancel={handleCancel}
         />,
@@ -63,12 +63,12 @@ describe('ConfirmActionDialog', () => {
     expect(dialog?.getAttribute('aria-labelledby')).toBe('confirm-action-dialog-title')
 
     expect(title).not.toBeNull()
-    expect(title?.textContent).toBe('Archiwizuj ogłoszenie')
-    expect(container.textContent).toContain('Po archiwizacji ogłoszenie nie będzie widoczne dla lokatorów.')
+    expect(title?.textContent).toBe('Archive listing')
+    expect(container.textContent).toContain('After archiving, the listing will not be visible to tenants.')
 
     expect(buttons.length).toBe(2)
-    expect(buttons[0]?.textContent).toBe('Wróć')
-    expect(buttons[1]?.textContent).toBe('Archiwizuj')
+    expect(buttons[0]?.textContent).toBe('Back')
+    expect(buttons[1]?.textContent).toBe('Archive')
   })
 
   it('uses default cancel label when cancelLabel is not provided', () => {
@@ -81,9 +81,9 @@ describe('ConfirmActionDialog', () => {
       render(
         <ConfirmActionDialog
           isOpen
-          title="Potwierdź akcję"
-          message="Czy chcesz kontynuować?"
-          confirmLabel="Tak"
+          title="Confirm action"
+          message="Do you want to continue?"
+          confirmLabel="Yes"
           onConfirm={handleConfirm}
           onCancel={handleCancel}
         />,
@@ -94,7 +94,7 @@ describe('ConfirmActionDialog', () => {
     const buttons = container.querySelectorAll('button')
 
     expect(buttons[0]?.textContent).toBe('Cancel')
-    expect(buttons[1]?.textContent).toBe('Tak')
+    expect(buttons[1]?.textContent).toBe('Yes')
   })
 
   it('calls cancel handler after clicking cancel button', () => {
@@ -107,10 +107,10 @@ describe('ConfirmActionDialog', () => {
       render(
         <ConfirmActionDialog
           isOpen
-          title="Potwierdź akcję"
-          message="Czy chcesz kontynuować?"
-          confirmLabel="Potwierdź"
-          cancelLabel="Anuluj"
+          title="Confirm action"
+          message="Do you want to continue?"
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
           onConfirm={handleConfirm}
           onCancel={handleCancel}
         />,
@@ -138,10 +138,10 @@ describe('ConfirmActionDialog', () => {
       render(
         <ConfirmActionDialog
           isOpen
-          title="Potwierdź akcję"
-          message="Czy chcesz kontynuować?"
-          confirmLabel="Potwierdź"
-          cancelLabel="Anuluj"
+          title="Confirm action"
+          message="Do you want to continue?"
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
           onConfirm={handleConfirm}
           onCancel={handleCancel}
         />,
@@ -170,10 +170,10 @@ describe('ConfirmActionDialog', () => {
         <ConfirmActionDialog
           isOpen
           isLoading
-          title="Ukrywanie ogłoszenia"
+          title="Hiding the listing"
           message="Trwa zapisywanie zmian."
-          confirmLabel="Ukryj"
-          cancelLabel="Anuluj"
+          confirmLabel="Hide"
+          cancelLabel="Cancel"
           onConfirm={handleConfirm}
           onCancel={handleCancel}
         />,

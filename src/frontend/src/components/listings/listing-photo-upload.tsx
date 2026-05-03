@@ -22,7 +22,7 @@ export function ListingPhotoUpload({ listingId, onPhotosChange }: ListingPhotoUp
       setPhotoIds(ids)
     } catch (err) {
       console.error('Failed to fetch photos:', err)
-      setError('Nie udało się pobrać zdjęć.')
+      setError('Failed to fetch photos.')
     }
   }
 
@@ -49,7 +49,7 @@ export function ListingPhotoUpload({ listingId, onPhotosChange }: ListingPhotoUp
       onPhotosChange?.()
     } catch (err) {
       console.error('Failed to upload photo:', err)
-      setError('Nie udało się przesłać niektórych zdjęć.')
+      setError('Failed to upload some photos.')
     } finally {
       setIsUploading(false)
       target.value = '' // Reset input
@@ -66,15 +66,15 @@ export function ListingPhotoUpload({ listingId, onPhotosChange }: ListingPhotoUp
       onPhotosChange?.()
     } catch (err) {
       console.error('Failed to delete photo:', err)
-      setError('Nie udało się usunąć zdjęcia.')
+      setError('Failed to delete photo.')
     }
   }
 
   return (
     <div class="space-y-4 card-body">
       <div>
-        <h2 class="text-xl font-semibold">Zdjęcia</h2>
-        <p class="text-sm text-base-content/65">Dodaj zdjęcia swojego mieszkania, aby przyciągnąć więcej zainteresowanych.</p>
+        <h2 class="text-xl font-semibold">Photos</h2>
+        <p class="text-sm text-base-content/65">Add photos of your apartment to attract more interested parties.</p>
       </div>
 
       {error && (
@@ -89,13 +89,13 @@ export function ListingPhotoUpload({ listingId, onPhotosChange }: ListingPhotoUp
             <ListingBackendPhoto
               listingId={listingId}
               photoId={id}
-              alt="Zdjęcie nieruchomości"
+              alt="Property photo"
               className="w-full h-full object-cover"
             />
             <button
               onClick={() => handleDelete(id)}
               class="absolute top-1 right-1 btn btn-circle btn-xs btn-error opacity-0 group-hover:opacity-100 transition-opacity"
-              title="Usuń zdjęcie"
+              title="Delete photo"
             >
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -113,7 +113,7 @@ export function ListingPhotoUpload({ listingId, onPhotosChange }: ListingPhotoUp
                 <svg class="w-8 h-8 mb-4 text-base-content/50" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
                 </svg>
-                <p class="text-xs text-base-content/60 px-2 text-center">Kliknij, aby dodać</p>
+                <p class="text-xs text-base-content/60 px-2 text-center">Click to add</p>
               </>
             )}
           </div>

@@ -19,13 +19,13 @@ export function ListingBasicInfoSection({
   return (
     <ListingFormSection
       title="Informacje podstawowe"
-      description="Tytuł i opis ogłoszenia."
+      description="Title and description of the listing."
     >
       <TextInput
         id="title"
         name="title"
-        label="Tytuł ogłoszenia"
-        placeholder="np. Przytulny pokój w centrum miasta"
+        label="Listing title"
+        placeholder="e.g. Cozy room in the city center"
         required
         value={formData.title}
         error={errors.title}
@@ -38,8 +38,8 @@ export function ListingBasicInfoSection({
       <TextArea
         id="description"
         name="description"
-        label="Opis ogłoszenia"
-        placeholder="Opisz szczegóły mieszkania, wyposażenie, cechy lokalizacji oraz zasady wynajmu..."
+        label="Listing description"
+        placeholder="Describe the details of the apartment, equipment, location features, and rental rules..."
         rows={6}
         required
         value={formData.description}
@@ -51,7 +51,7 @@ export function ListingBasicInfoSection({
       />
 
       <div class="text-xs text-base-content/60">
-        <p> Wskazówka: Im szczegółowszy opis, tym więcej zainteresowanych potencjalnych najemców.</p>
+        <p> Tip: The more detailed the description, the more interested potential tenants.</p>
       </div>
     </ListingFormSection>
   )

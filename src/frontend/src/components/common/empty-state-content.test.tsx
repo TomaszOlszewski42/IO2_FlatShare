@@ -16,8 +16,8 @@ describe('EmptyStateContent', () => {
     act(() => {
       render(
         <EmptyStateContent
-          title="Brak ogłoszeń"
-          description="Nie znaleziono żadnych ogłoszeń spełniających kryteria."
+          title="No listings"
+          description="No listings found matching the criteria."
         />,
         container,
       )
@@ -27,8 +27,8 @@ describe('EmptyStateContent', () => {
     const paragraph = container.querySelector('p')
 
     expect(heading).not.toBeNull()
-    expect(heading?.textContent).toBe('Brak ogłoszeń')
-    expect(paragraph?.textContent).toBe('Nie znaleziono żadnych ogłoszeń spełniających kryteria.')
+    expect(heading?.textContent).toBe('No listings')
+    expect(paragraph?.textContent).toBe('No listings found matching the criteria.')
   })
 
   it('uses h2 heading by default', () => {
@@ -36,7 +36,7 @@ describe('EmptyStateContent', () => {
     document.body.appendChild(container)
 
     act(() => {
-      render(<EmptyStateContent title="Pusto" description="Brak danych." />, container)
+      render(<EmptyStateContent title="Empty" description="No data." />, container)
     })
 
     expect(container.querySelector('h2')).not.toBeNull()
@@ -48,13 +48,13 @@ describe('EmptyStateContent', () => {
     document.body.appendChild(container)
 
     act(() => {
-      render(<EmptyStateContent title="Strona pusta" description="Brak danych." titleAs="h1" />, container)
+      render(<EmptyStateContent title="Empty page" description="No data." titleAs="h1" />, container)
     })
 
     const heading = container.querySelector('h1')
 
     expect(heading).not.toBeNull()
-    expect(heading?.textContent).toBe('Strona pusta')
+    expect(heading?.textContent).toBe('Empty page')
     expect(heading?.classList.contains('text-2xl')).toBe(true)
   })
 
@@ -63,7 +63,7 @@ describe('EmptyStateContent', () => {
     document.body.appendChild(container)
 
     act(() => {
-      render(<EmptyStateContent title="Brak wyników" description="Spróbuj zmienić filtry." icon="🏠" />, container)
+      render(<EmptyStateContent title="No results" description="Try changing the filters." icon="🏠" />, container)
     })
 
     expect(container.textContent).toContain('🏠')
@@ -75,8 +75,8 @@ describe('EmptyStateContent', () => {
 
     act(() => {
       render(
-        <EmptyStateContent title="Brak ogłoszeń" description="Dodaj pierwsze ogłoszenie.">
-          <a href="/listings/create">Dodaj ogłoszenie</a>
+        <EmptyStateContent title="No listings" description="Add your first listing.">
+          <a href="/listings/create">Add listing</a>
         </EmptyStateContent>,
         container,
       )
@@ -85,7 +85,7 @@ describe('EmptyStateContent', () => {
     const actionLink = container.querySelector('a[href="/listings/create"]')
 
     expect(actionLink).not.toBeNull()
-    expect(actionLink?.textContent).toBe('Dodaj ogłoszenie')
+    expect(actionLink?.textContent).toBe('Add listing')
   })
 
   it('does not render actions container when children are not provided', () => {
@@ -93,7 +93,7 @@ describe('EmptyStateContent', () => {
     document.body.appendChild(container)
 
     act(() => {
-      render(<EmptyStateContent title="Brak danych" description="Nie ma jeszcze żadnych elementów." />, container)
+      render(<EmptyStateContent title="No data" description="No items yet." />, container)
     })
 
     expect(container.querySelector('.flex.flex-wrap.justify-center.gap-2')).toBeNull()

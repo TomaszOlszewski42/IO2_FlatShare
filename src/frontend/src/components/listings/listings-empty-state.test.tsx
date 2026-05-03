@@ -46,7 +46,7 @@ describe('ListingsEmptyState', () => {
     const heading = container.querySelector('h2')
 
     expect(heading).not.toBeNull()
-    expect(heading?.textContent).toBe('Brak ogłoszeń do wyświetlenia')
+    expect(heading?.textContent).toBe('No listings to display')
   })
 
   it('renders landlord message and create button when there are no filters', () => {
@@ -67,13 +67,13 @@ describe('ListingsEmptyState', () => {
     })
 
     const createButton = Array.from(container.querySelectorAll('button')).find(
-      (button) => button.textContent === 'Dodaj pierwsze ogłoszenie',
+      (button) => button.textContent === 'Add your first listing',
     )
 
     expect(container.textContent).toContain(
-      'Kiedy dodasz pierwsze ogłoszenie, pojawi się ono tutaj razem ze statusem i kluczowymi metadanami.',
+      'When you add your first listing, it will appear here along with its status and key metadata.',
     )
-    expect(container.textContent).not.toContain('Wyczyść filtry')
+    expect(container.textContent).not.toContain('Clear filters')
     expect(createButton).not.toBeUndefined()
 
     act(() => {
@@ -106,7 +106,7 @@ describe('ListingsEmptyState', () => {
     expect(container.textContent).toContain(
       'Currently there are no active listings available. Check back later!',
     )
-    expect(container.textContent).not.toContain('Dodaj pierwsze ogłoszenie')
+    expect(container.textContent).not.toContain('Add your first listing')
   })
 
   it('renders clear filters action when filters are active', () => {
@@ -127,11 +127,11 @@ describe('ListingsEmptyState', () => {
     })
 
     const clearButton = Array.from(container.querySelectorAll('button')).find(
-      (button) => button.textContent === 'Wyczyść filtry',
+      (button) => button.textContent === 'Clear filters',
     )
 
     expect(container.textContent).toContain(
-      'Zmień filtry lub frazę wyszukiwania, aby zobaczyć więcej wyników.',
+      'Change filters or search phrase to see more results.',
     )
     expect(clearButton).not.toBeUndefined()
 

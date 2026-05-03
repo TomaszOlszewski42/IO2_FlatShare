@@ -291,14 +291,14 @@ export function ListingCreateForm({
   function validateForm(): boolean {
     const newErrors: ListingFormErrors = {}
 
-    if (!formData.title.trim()) newErrors.title = 'Tytuł jest wymagany'
-    if (!formData.description.trim()) newErrors.description = 'Opis jest wymagany'
-    if (formData.pricePerMonth <= 0) newErrors.pricePerMonth = 'Cena musi być większa niż 0'
-    if (formData.areaSqm <= 0) newErrors.areaSqm = 'Powierzchnia musi być większa niż 0'
-    if (formData.rooms < 1) newErrors.rooms = 'Co najmniej 1 pokój'
-    if (formData.bathrooms < 1) newErrors.bathrooms = 'Co najmniej 1 łazienka'
-    if (!formData.city.trim()) newErrors.city = 'Miasto/Gmina jest wymagane'
-    if (!formData.contact.trim()) newErrors.contact = 'Dane kontaktowe są wymagane'
+    if (!formData.title.trim()) newErrors.title = 'Title is required'
+    if (!formData.description.trim()) newErrors.description = 'Description jest wymagany'
+    if (formData.pricePerMonth <= 0) newErrors.pricePerMonth = 'Price must be greater than 0'
+    if (formData.areaSqm <= 0) newErrors.areaSqm = 'Area must be greater than 0'
+    if (formData.rooms < 1) newErrors.rooms = 'At least 1 room'
+    if (formData.bathrooms < 1) newErrors.bathrooms = 'At least 1 bathroom'
+    if (!formData.city.trim()) newErrors.city = 'City/Gmina jest wymagane'
+    if (!formData.contact.trim()) newErrors.contact = 'Contact information is required'
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -346,7 +346,7 @@ export function ListingCreateForm({
           <>
             <div class="alert alert-error text-sm">
               <div>
-                <p class="font-semibold">Niektóre dane ogłoszenia wymagają poprawy:</p>
+                <p class="font-semibold">Some listing data requires correction:</p>
                 <ul class="mt-1 list-disc pl-5">
                   {unboundFieldErrors.map((message) => (
                     <li key={message}>{message}</li>
@@ -369,10 +369,10 @@ export function ListingCreateForm({
 
       <div class="flex flex-wrap gap-3 pt-6">
         <AppButton type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Tworzenie...' : 'Utwórz ogłoszenie'}
+          {isSubmitting ? 'Creating...' : 'Create listing'}
         </AppButton>
         <AppButton type="button" variant="outline" disabled={isSubmitting} onClick={() => window.history.back()}>
-          Anuluj
+          Cancel
         </AppButton>
       </div>
     </form>

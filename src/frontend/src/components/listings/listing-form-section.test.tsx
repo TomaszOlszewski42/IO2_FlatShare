@@ -16,8 +16,8 @@ describe('ListingFormSection', () => {
     act(() => {
       render(
         <ListingFormSection
-          title="Podstawowe informacje"
-          description="Uzupełnij tytuł i opis ogłoszenia."
+          title="Basic information"
+          description="Fill out the title and description of the listing."
         >
           <input name="title" />
         </ListingFormSection>,
@@ -30,12 +30,12 @@ describe('ListingFormSection', () => {
     const input = container.querySelector('input[name="title"]')
 
     expect(heading).not.toBeNull()
-    expect(heading?.textContent).toBe('Podstawowe informacje')
+    expect(heading?.textContent).toBe('Basic information')
     expect(heading?.classList.contains('text-xl')).toBe(true)
     expect(heading?.classList.contains('font-semibold')).toBe(true)
 
     expect(description).not.toBeNull()
-    expect(description?.textContent).toBe('Uzupełnij tytuł i opis ogłoszenia.')
+    expect(description?.textContent).toBe('Fill out the title and description of the listing.')
     expect(description?.classList.contains('text-sm')).toBe(true)
 
     expect(input).not.toBeNull()
@@ -47,8 +47,8 @@ describe('ListingFormSection', () => {
 
     act(() => {
       render(
-        <ListingFormSection title="Cena" description="Podaj koszty najmu.">
-          <div>Formularz</div>
+        <ListingFormSection title="Price" description="Enter rental costs.">
+          <div>Form</div>
         </ListingFormSection>,
         container,
       )
@@ -68,11 +68,11 @@ describe('ListingFormSection', () => {
     act(() => {
       render(
         <ListingFormSection
-          title="Lokalizacja"
-          description="Podaj adres mieszkania."
+          title="Location"
+          description="Enter the apartment address."
           className="border-t"
         >
-          <div>Adres</div>
+          <div>Address</div>
         </ListingFormSection>,
         container,
       )

@@ -26,13 +26,13 @@ describe('FormFieldError', () => {
     document.body.appendChild(container)
 
     act(() => {
-      render(<FormFieldError error="Pole jest wymagane" />, container)
+      render(<FormFieldError error="Field is required" />, container)
     })
 
     const error = container.querySelector('.text-error')
 
     expect(error).not.toBeNull()
-    expect(error?.textContent).toBe('Pole jest wymagane')
+    expect(error?.textContent).toBe('Field is required')
     expect(error?.classList.contains('text-sm')).toBe(true)
   })
 
@@ -41,14 +41,14 @@ describe('FormFieldError', () => {
     document.body.appendChild(container)
 
     act(() => {
-      render(<FormFieldError errors={['Pole jest wymagane', 'Wartość jest za krótka']} />, container)
+      render(<FormFieldError errors={['Field is required', 'Value is too short']} />, container)
     })
 
     const errors = container.querySelectorAll('.text-error')
 
     expect(errors.length).toBe(2)
-    expect(errors[0]?.textContent).toBe('Pole jest wymagane')
-    expect(errors[1]?.textContent).toBe('Wartość jest za krótka')
+    expect(errors[0]?.textContent).toBe('Field is required')
+    expect(errors[1]?.textContent).toBe('Value is too short')
   })
 
   it('ignores empty error messages from errors prop', () => {
@@ -56,14 +56,14 @@ describe('FormFieldError', () => {
     document.body.appendChild(container)
 
     act(() => {
-      render(<FormFieldError errors={['Pierwszy błąd', '', 'Drugi błąd']} />, container)
+      render(<FormFieldError errors={['First error', '', 'Second error']} />, container)
     })
 
     const errors = container.querySelectorAll('.text-error')
 
     expect(errors.length).toBe(2)
-    expect(container.textContent).toContain('Pierwszy błąd')
-    expect(container.textContent).toContain('Drugi błąd')
+    expect(container.textContent).toContain('First error')
+    expect(container.textContent).toContain('Second error')
   })
 
   it('prefers errors prop over error prop when errors are provided', () => {
@@ -71,10 +71,10 @@ describe('FormFieldError', () => {
     document.body.appendChild(container)
 
     act(() => {
-      render(<FormFieldError error="Błąd pojedynczy" errors={['Błąd z listy']} />, container)
+      render(<FormFieldError error="Single error" errors={['List error']} />, container)
     })
 
-    expect(container.textContent).toContain('Błąd z listy')
-    expect(container.textContent).not.toContain('Błąd pojedynczy')
+    expect(container.textContent).toContain('List error')
+    expect(container.textContent).not.toContain('Single error')
   })
 })

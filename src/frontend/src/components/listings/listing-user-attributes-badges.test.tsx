@@ -44,7 +44,7 @@ describe('ListingUserAttributesBadges', () => {
     const badge = container.querySelector('.badge')
 
     expect(badge).not.toBeNull()
-    expect(badge?.textContent).toBe('Akceptowane zwierzęta')
+    expect(badge?.textContent).toBe('Pets allowed')
     expect(badge?.classList.contains('badge-secondary')).toBe(true)
     expect(badge?.classList.contains('badge-outline')).toBe(true)
   })
@@ -57,7 +57,7 @@ describe('ListingUserAttributesBadges', () => {
       render(<ListingUserAttributesBadges attributes={{ petsAllowed: false }} />, container)
     })
 
-    expect(container.textContent).toContain('Bez zwierząt')
+    expect(container.textContent).toContain('No pets')
   })
 
   it('renders badge for non-smoking requirement', () => {
@@ -68,7 +68,7 @@ describe('ListingUserAttributesBadges', () => {
       render(<ListingUserAttributesBadges attributes={{ nonSmokingOnly: true }} />, container)
     })
 
-    expect(container.textContent).toContain('Tylko niepalący')
+    expect(container.textContent).toContain('Non-smokers only')
   })
 
   it('renders translated preferred tenant profile badges', () => {
@@ -89,7 +89,7 @@ describe('ListingUserAttributesBadges', () => {
     })
 
     expect(studentContainer.textContent).toContain('Student')
-    expect(workingContainer.textContent).toContain('Osoba pracująca')
+    expect(workingContainer.textContent).toContain('Working person')
   })
 
   it('renders all available user attribute badges', () => {
@@ -112,8 +112,8 @@ describe('ListingUserAttributesBadges', () => {
     const badges = container.querySelectorAll('.badge')
 
     expect(badges.length).toBe(3)
-    expect(container.textContent).toContain('Akceptowane zwierzęta')
-    expect(container.textContent).toContain('Tylko niepalący')
-    expect(container.textContent).toContain('Osoba pracująca')
+    expect(container.textContent).toContain('Pets allowed')
+    expect(container.textContent).toContain('Non-smokers only')
+    expect(container.textContent).toContain('Working person')
   })
 })

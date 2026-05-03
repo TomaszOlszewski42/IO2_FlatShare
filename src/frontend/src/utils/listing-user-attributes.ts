@@ -15,7 +15,7 @@ export function formatPreferredTenantProfileLabel(value?: string | null): string
   }
 
   if (value === 'working') {
-    return 'Osoba pracująca'
+    return 'Working person'
   }
 
   return value
@@ -23,39 +23,39 @@ export function formatPreferredTenantProfileLabel(value?: string | null): string
 
 export function formatPetsAllowedPresentation(value?: boolean): AttributePresentation {
   if (value === true) {
-    return { label: 'Tak', tone: 'text-success' }
+    return { label: 'Yes', tone: 'text-success' }
   }
 
   if (value === false) {
-    return { label: 'Nie', tone: 'text-error' }
+    return { label: 'No', tone: 'text-error' }
   }
 
-  return { label: 'Nie określono', tone: 'text-base-content/60' }
+  return { label: 'Not specified', tone: 'text-base-content/60' }
 }
 
 export function formatSmokingRequirementPresentation(nonSmokingOnly?: boolean): AttributePresentation {
   if (nonSmokingOnly === true) {
-    return { label: 'Niedozwolone', tone: 'text-error' }
+    return { label: 'Not allowed', tone: 'text-error' }
   }
 
   if (nonSmokingOnly === false) {
-    return { label: 'Dozwolone', tone: 'text-success' }
+    return { label: 'Allowed', tone: 'text-success' }
   }
 
-  return { label: 'Nie określono', tone: 'text-base-content/60' }
+  return { label: 'Not specified', tone: 'text-base-content/60' }
 }
 
 export function getListingUserAttributeBadges(attributes?: ListingAttributes): string[] {
   const badges: string[] = []
 
   if (attributes?.petsAllowed === true) {
-    badges.push('Akceptowane zwierzęta')
+    badges.push('Pets allowed')
   } else if (attributes?.petsAllowed === false) {
-    badges.push('Bez zwierząt')
+    badges.push('No pets')
   }
 
   if (attributes?.nonSmokingOnly === true) {
-    badges.push('Tylko niepalący')
+    badges.push('Non-smokers only')
   }
 
   const preferredTenantProfile = formatPreferredTenantProfileLabel(attributes?.preferredTenantProfile)

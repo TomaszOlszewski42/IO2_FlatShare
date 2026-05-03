@@ -38,7 +38,7 @@ describe('FormField', () => {
 
     act(() => {
       render(
-        <FormField label="Opis">
+        <FormField label="Description">
           <textarea />
         </FormField>,
         container,
@@ -47,7 +47,7 @@ describe('FormField', () => {
 
     const legend = container.querySelector('legend')
 
-    expect(legend?.textContent).toBe('Opis')
+    expect(legend?.textContent).toBe('Description')
     expect(legend?.hasAttribute('id')).toBe(false)
   })
 
@@ -57,14 +57,14 @@ describe('FormField', () => {
 
     act(() => {
       render(
-        <FormField label="Cena" hint="Podaj kwotę w złotówkach">
+        <FormField label="Price" hint="Enter the amount in PLN">
           <input type="number" />
         </FormField>,
         container,
       )
     })
 
-    expect(container.textContent).toContain('Podaj kwotę w złotówkach')
+    expect(container.textContent).toContain('Enter the amount in PLN')
   })
 
   it('renders error instead of hint when error is provided', () => {
@@ -73,15 +73,15 @@ describe('FormField', () => {
 
     act(() => {
       render(
-        <FormField label="Cena" hint="Podaj kwotę w złotówkach" error="Cena jest wymagana">
+        <FormField label="Price" hint="Enter the amount in PLN" error="Price jest wymagana">
           <input type="number" />
         </FormField>,
         container,
       )
     })
 
-    expect(container.textContent).toContain('Cena jest wymagana')
-    expect(container.textContent).not.toContain('Podaj kwotę w złotówkach')
+    expect(container.textContent).toContain('Price jest wymagana')
+    expect(container.textContent).not.toContain('Enter the amount in PLN')
   })
 
   it('marks error message with error styling class', () => {
@@ -90,7 +90,7 @@ describe('FormField', () => {
 
     act(() => {
       render(
-        <FormField label="Tytuł" error="Tytuł jest wymagany">
+        <FormField label="Title" error="Title is required">
           <input type="text" />
         </FormField>,
         container,
@@ -100,6 +100,6 @@ describe('FormField', () => {
     const errorMessage = container.querySelector('.text-error')
 
     expect(errorMessage).not.toBeNull()
-    expect(errorMessage?.textContent).toBe('Tytuł jest wymagany')
+    expect(errorMessage?.textContent).toBe('Title is required')
   })
 })

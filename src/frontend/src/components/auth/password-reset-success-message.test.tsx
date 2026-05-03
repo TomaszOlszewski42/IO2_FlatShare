@@ -51,7 +51,7 @@ describe('PasswordResetSuccessMessage', () => {
 
     act(() => {
       render(
-        <PasswordResetSuccessMessage message="Link do resetu hasła został wysłany." />,
+        <PasswordResetSuccessMessage message="Password reset link has been sent." />,
         container,
       )
     })
@@ -59,7 +59,7 @@ describe('PasswordResetSuccessMessage', () => {
     const alert = container.querySelector('.alert')
 
     expect(alert).not.toBeNull()
-    expect(alert?.textContent).toBe('Link do resetu hasła został wysłany.')
+    expect(alert?.textContent).toBe('Password reset link has been sent.')
     expect(alert?.classList.contains('alert-success')).toBe(true)
     expect(alert?.classList.contains('text-sm')).toBe(true)
   })

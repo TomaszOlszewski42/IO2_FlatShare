@@ -17,22 +17,22 @@ export function ListingsEmptyState({
   return (
     <ListingsSurface dashed translucent>
       <div class="card-body items-center py-10 text-center">
-        <h2 class="text-xl font-semibold">Brak ogłoszeń do wyświetlenia</h2>
+        <h2 class="text-xl font-semibold">No listings to display</h2>
         
         <RoleBoundary 
           requiredRole={UserRole.Landlord}
           fallback={
             <p class="max-w-lg text-sm text-base-content/65">
               {hasFilters
-                ? 'Zmień filtry lub frazę wyszukiwania, aby zobaczyć więcej wyników.'
+                ? 'Change filters or search phrase to see more results.'
                 : 'Currently there are no active listings available. Check back later!'}
             </p>
           }
         >
           <p class="max-w-lg text-sm text-base-content/65">
             {hasFilters
-              ? 'Zmień filtry lub frazę wyszukiwania, aby zobaczyć więcej wyników.'
-              : 'Kiedy dodasz pierwsze ogłoszenie, pojawi się ono tutaj razem ze statusem i kluczowymi metadanami.'}
+              ? 'Change filters or search phrase to see more results.'
+              : 'When you add your first listing, it will appear here along with its status and key metadata.'}
           </p>
         </RoleBoundary>
 
@@ -40,7 +40,7 @@ export function ListingsEmptyState({
           {hasFilters ? <ClearFiltersButton onClick={onClearFilters} /> : null}
           
           <RoleBoundary requiredRole={UserRole.Landlord}>
-            <CreateListingButton text="Dodaj pierwsze ogłoszenie" onClick={onCreateListing} />
+            <CreateListingButton text="Add your first listing" onClick={onCreateListing} />
           </RoleBoundary>
         </div>
       </div>

@@ -53,7 +53,7 @@ function getAuthHeaders(): Record<string, string> {
   const session = readAuthSession()
 
   if (!session) {
-    throw new Error('Brak aktywnej sesji użytkownika.')
+    throw new Error('No active user session.')
   }
 
   return {
@@ -79,6 +79,6 @@ export async function updateTenantPreferences(preferences: TenantPreferences): P
     headers: getAuthHeaders(),
   })
 
-  // Backend zwraca 204 No Content, więc po zapisie dociągamy aktualny stan.
+  // Backend returns 204 No Content, so after saving we fetch the current state.
   return getTenantPreferences()
 }

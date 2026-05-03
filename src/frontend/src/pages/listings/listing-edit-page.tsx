@@ -51,7 +51,7 @@ export function ListingEditPage({ listingId }: ListingEditPageProps) {
 
   useEffect(() => {
     if (!listingId) {
-      setLoadError('Brak identyfikatora ogłoszenia.')
+      setLoadError('Missing listing ID.')
       setIsLoading(false)
       return
     }
@@ -83,7 +83,7 @@ export function ListingEditPage({ listingId }: ListingEditPageProps) {
           return
         }
 
-        setLoadError('Nie udało się pobrać danych ogłoszenia.')
+        setLoadError('Failed to fetch listing data.')
       } finally {
         if (isMounted) {
           setIsLoading(false)
@@ -162,7 +162,7 @@ export function ListingEditPage({ listingId }: ListingEditPageProps) {
     }
 
     if (!listingId) {
-      setLoadError('Brak identyfikatora ogłoszenia.')
+      setLoadError('Missing listing ID.')
       return
     }
 
@@ -178,7 +178,7 @@ export function ListingEditPage({ listingId }: ListingEditPageProps) {
       route(`/listings/${currentListingId}`)
     } catch (error) {
       console.error('Failed to update listing:', error)
-      handleError(error, 'Nie udało się zapisać zmian. Sprawdź błędy w formularzu.')
+      handleError(error, 'Failed to save changes. Check form errors.')
     } finally {
       setIsSubmitting(false)
     }
@@ -209,7 +209,7 @@ export function ListingEditPage({ listingId }: ListingEditPageProps) {
               d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          <span>{loadError || 'Wystąpił nieoczekiwany błąd.'}</span>
+          <span>{loadError || 'An unexpected error occurred.'}</span>
         </div>
 
         <AppButton
@@ -218,7 +218,7 @@ export function ListingEditPage({ listingId }: ListingEditPageProps) {
             route('/listings')
           }}
         >
-          Powrót do ogłoszeń
+          Back to listings
         </AppButton>
       </div>
     )
@@ -228,8 +228,8 @@ export function ListingEditPage({ listingId }: ListingEditPageProps) {
     <div class="flex w-full flex-1 flex-col py-6">
       <div class="container mx-auto max-w-3xl px-4">
         <div class="mb-6">
-          <h1 class="mb-2 text-3xl font-bold">Edycja ogłoszenia</h1>
-          <p class="text-base-content/70">Zaktualizuj szczegóły swojego mieszkania.</p>
+          <h1 class="mb-2 text-3xl font-bold">Edit listing</h1>
+          <p class="text-base-content/70">Update the details of your apartment.</p>
         </div>
 
         {errorMessage ? <div class="alert alert-error mb-6 text-sm">{errorMessage}</div> : null}

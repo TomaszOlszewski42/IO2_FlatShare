@@ -15,7 +15,7 @@ function getAuthHeaders(token?: string, type = 'Bearer'): Record<string, string>
   const session = readAuthSession()
 
   if (!session) {
-    throw new Error('Brak aktywnej sesji użytkownika.')
+    throw new Error('No active user session.')
   }
 
   return {

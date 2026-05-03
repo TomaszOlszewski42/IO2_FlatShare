@@ -6,8 +6,8 @@ import { SelectInput } from './select-input'
 
 describe('SelectInput', () => {
   const cityOptions = [
-    { value: 'warszawa', label: 'Warszawa' },
-    { value: 'krakow', label: 'Kraków' },
+    { value: 'warsaw', label: 'Warsaw' },
+    { value: 'krakow', label: 'Krakow' },
   ]
 
   afterEach(() => {
@@ -24,8 +24,8 @@ describe('SelectInput', () => {
         <SelectInput
           id="city"
           name="city"
-          label="Miasto"
-          value="warszawa"
+          label="City"
+          value="warsaw"
           options={cityOptions}
           onChange={handleChange}
         />,
@@ -37,16 +37,16 @@ describe('SelectInput', () => {
     const select = container.querySelector('select') as HTMLSelectElement
     const options = container.querySelectorAll('option')
 
-    expect(legend?.textContent).toBe('Miasto')
+    expect(legend?.textContent).toBe('City')
     expect(select).not.toBeNull()
     expect(select.id).toBe('city')
     expect(select.name).toBe('city')
-    expect(select.value).toBe('warszawa')
+    expect(select.value).toBe('warsaw')
     expect(select.classList.contains('select')).toBe(true)
     expect(select.classList.contains('select-bordered')).toBe(true)
     expect(options.length).toBe(2)
-    expect(options[0]?.textContent).toBe('Warszawa')
-    expect(options[1]?.textContent).toBe('Kraków')
+    expect(options[0]?.textContent).toBe('Warsaw')
+    expect(options[1]?.textContent).toBe('Krakow')
   })
 
   it('renders placeholder option when placeholder is provided', () => {
@@ -59,10 +59,10 @@ describe('SelectInput', () => {
         <SelectInput
           id="city"
           name="city"
-          label="Miasto"
+          label="City"
           value=""
           options={cityOptions}
-          placeholder="Wybierz miasto"
+          placeholder="Select city"
           onChange={handleChange}
         />,
         container,
@@ -73,7 +73,7 @@ describe('SelectInput', () => {
 
     expect(options.length).toBe(3)
     expect(options[0]?.value).toBe('')
-    expect(options[0]?.textContent).toBe('Wybierz miasto')
+    expect(options[0]?.textContent).toBe('Select city')
   })
 
   it('disables placeholder option when field is required', () => {
@@ -86,10 +86,10 @@ describe('SelectInput', () => {
         <SelectInput
           id="city"
           name="city"
-          label="Miasto"
+          label="City"
           value=""
           options={cityOptions}
-          placeholder="Wybierz miasto"
+          placeholder="Select city"
           required
           onChange={handleChange}
         />,
@@ -112,8 +112,8 @@ describe('SelectInput', () => {
         <SelectInput
           id="city"
           name="city"
-          label="Miasto"
-          value="warszawa"
+          label="City"
+          value="warsaw"
           options={cityOptions}
           required
           disabled
@@ -139,8 +139,8 @@ describe('SelectInput', () => {
         <SelectInput
           id="city"
           name="city"
-          label="Miasto"
-          value="warszawa"
+          label="City"
+          value="warsaw"
           options={cityOptions}
           onChange={handleChange}
         />,
@@ -168,10 +168,10 @@ describe('SelectInput', () => {
         <SelectInput
           id="city"
           name="city"
-          label="Miasto"
+          label="City"
           value=""
           options={cityOptions}
-          error="Miasto jest wymagane"
+          error="City jest wymagane"
           onChange={handleChange}
         />,
         container,
@@ -184,6 +184,6 @@ describe('SelectInput', () => {
     expect(select.classList.contains('select-error')).toBe(true)
     expect(select.getAttribute('aria-invalid')).toBe('true')
     expect(select.getAttribute('aria-describedby')).toBe('city-error')
-    expect(error?.textContent).toBe('Miasto jest wymagane')
+    expect(error?.textContent).toBe('City jest wymagane')
   })
 })

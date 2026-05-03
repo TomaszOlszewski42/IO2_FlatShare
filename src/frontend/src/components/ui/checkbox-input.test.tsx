@@ -19,7 +19,7 @@ describe('CheckboxInput', () => {
         <CheckboxInput
           id="petsAllowed"
           name="petsAllowed"
-          label="Akceptuję zwierzęta"
+          label="I accept pets"
           checked={true}
           onChange={handleChange}
         />,
@@ -33,7 +33,7 @@ describe('CheckboxInput', () => {
 
     expect(label).not.toBeNull()
     expect(label?.getAttribute('for')).toBe('petsAllowed')
-    expect(labelText?.textContent).toBe('Akceptuję zwierzęta')
+    expect(labelText?.textContent).toBe('I accept pets')
     expect(checkbox).not.toBeNull()
     expect(checkbox.id).toBe('petsAllowed')
     expect(checkbox.name).toBe('petsAllowed')
@@ -52,7 +52,7 @@ describe('CheckboxInput', () => {
         <CheckboxInput
           id="nonSmokingOnly"
           name="nonSmokingOnly"
-          label="Tylko niepalący"
+          label="Non-smokers only"
           checked={false}
           onChange={handleChange}
         />,
@@ -75,7 +75,7 @@ describe('CheckboxInput', () => {
         <CheckboxInput
           id="petsAllowed"
           name="petsAllowed"
-          label="Akceptuję zwierzęta"
+          label="I accept pets"
           checked={false}
           disabled
           onChange={handleChange}
@@ -99,7 +99,7 @@ describe('CheckboxInput', () => {
         <CheckboxInput
           id="petsAllowed"
           name="petsAllowed"
-          label="Akceptuję zwierzęta"
+          label="I accept pets"
           checked={false}
           onChange={handleChange}
         />,
@@ -127,9 +127,9 @@ describe('CheckboxInput', () => {
         <CheckboxInput
           id="terms"
           name="terms"
-          label="Akceptuję regulamin"
+          label="I accept the terms"
           checked={false}
-          error="Musisz zaakceptować regulamin"
+          error="You must accept the terms"
           onChange={handleChange}
         />,
         container,
@@ -142,7 +142,7 @@ describe('CheckboxInput', () => {
     expect(checkbox.classList.contains('checkbox-error')).toBe(true)
     expect(checkbox.getAttribute('aria-invalid')).toBe('true')
     expect(checkbox.getAttribute('aria-describedby')).toBe('terms-error')
-    expect(error?.textContent).toBe('Musisz zaakceptować regulamin')
+    expect(error?.textContent).toBe('You must accept the terms')
   })
 
   it('renders multiple validation errors', () => {
@@ -155,9 +155,9 @@ describe('CheckboxInput', () => {
         <CheckboxInput
           id="rules"
           name="rules"
-          label="Akceptuję zasady"
+          label="I accept the rules"
           checked={false}
-          errors={['Pierwszy błąd', 'Drugi błąd']}
+          errors={['First error', 'Second error']}
           onChange={handleChange}
         />,
         container,
@@ -167,7 +167,7 @@ describe('CheckboxInput', () => {
     const errors = container.querySelectorAll('.text-error')
 
     expect(errors.length).toBe(2)
-    expect(errors[0]?.textContent).toBe('Pierwszy błąd')
-    expect(errors[1]?.textContent).toBe('Drugi błąd')
+    expect(errors[0]?.textContent).toBe('First error')
+    expect(errors[1]?.textContent).toBe('Second error')
   })
 })

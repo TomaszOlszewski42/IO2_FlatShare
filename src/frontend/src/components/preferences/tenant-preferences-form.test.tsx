@@ -10,7 +10,7 @@ const initialPreferences: TenantPreferences = {
   currency: 'PLN',
   smokingAllowed: false,
   petsAllowed: true,
-  preferredDistricts: ['Mokotów', 'Wola'],
+  preferredDistricts: ['Mokotow', 'Wola'],
 }
 
 describe('TenantPreferencesForm', () => {
@@ -39,13 +39,13 @@ describe('TenantPreferencesForm', () => {
     const petsSelect = container.querySelector('#tenant-preferences-pets') as HTMLSelectElement
     const districtsInput = container.querySelector('#tenant-preferences-districts') as HTMLInputElement
 
-    expect(container.textContent).toContain('Maksymalny budżet miesięczny')
+    expect(container.textContent).toContain('Maximum monthly budget')
     expect(maxPriceInput.value).toBe('1500')
     expect(currencySelect.value).toBe('PLN')
     expect(smokingSelect.value).toBe('false')
     expect(petsSelect.value).toBe('true')
-    expect(districtsInput.value).toBe('Mokotów, Wola')
-    expect(container.textContent).toContain('Zapisz preferencje')
+    expect(districtsInput.value).toBe('Mokotow, Wola')
+    expect(container.textContent).toContain('Save preferences')
   })
 
   it('submits normalized values and removes duplicated districts', async () => {
@@ -85,7 +85,7 @@ describe('TenantPreferencesForm', () => {
       petsSelect.value = 'true'
       petsSelect.dispatchEvent(new Event('change', { bubbles: true }))
 
-      districtsInput.value = 'Mokotów, Wola, Mokotów, '
+      districtsInput.value = 'Mokotow, Wola, Mokotow, '
       districtsInput.dispatchEvent(new Event('input', { bubbles: true }))
     })
 
@@ -100,7 +100,7 @@ describe('TenantPreferencesForm', () => {
       currency: 'PLN',
       smokingAllowed: false,
       petsAllowed: true,
-      preferredDistricts: ['Mokotów', 'Wola'],
+      preferredDistricts: ['Mokotow', 'Wola'],
     })
   })
 
@@ -139,7 +139,7 @@ describe('TenantPreferencesForm', () => {
     })
 
     expect(handleSubmit).not.toHaveBeenCalled()
-    expect(container.textContent).toContain('Maksymalna cena musi być liczbą większą lub równą 0.')
+    expect(container.textContent).toContain('Maximum price must be a number greater than or equal to 0.')
   })
 
   it('renders server field errors and unbound errors', () => {
@@ -151,8 +151,8 @@ describe('TenantPreferencesForm', () => {
         <TenantPreferencesForm
           initialValues={initialPreferences}
           fieldErrors={{
-            '$.maxPrice': ['Budżet jest zbyt wysoki.'],
-            unexpectedField: ['Nieoczekiwany błąd walidacji.'],
+            '$.maxPrice': ['Budget is too high.'],
+            unexpectedField: ['Unexpected validation error.'],
           }}
           onSubmit={vi.fn()}
         />,
@@ -160,9 +160,9 @@ describe('TenantPreferencesForm', () => {
       )
     })
 
-    expect(container.textContent).toContain('Budżet jest zbyt wysoki.')
-    expect(container.textContent).toContain('Niektóre pola wymagają poprawy:')
-    expect(container.textContent).toContain('Nieoczekiwany błąd walidacji.')
+    expect(container.textContent).toContain('Budget is too high.')
+    expect(container.textContent).toContain('Some fields require correction:')
+    expect(container.textContent).toContain('Unexpected validation error.')
   })
 
   it('clears form and calls onReset after reset button click', () => {
@@ -182,7 +182,7 @@ describe('TenantPreferencesForm', () => {
     })
 
     const resetButton = Array.from(container.querySelectorAll('button')).find(
-      (button) => button.textContent === 'Wyczyść formularz',
+      (button) => button.textContent === 'Clear form',
     ) as HTMLButtonElement
 
     act(() => {
@@ -218,7 +218,7 @@ describe('TenantPreferencesForm', () => {
 
     const maxPriceInput = container.querySelector('#tenant-preferences-max-price') as HTMLInputElement
     const submitButton = Array.from(container.querySelectorAll('button')).find(
-      (button) => button.textContent?.includes('Zapisz preferencje'),
+      (button) => button.textContent?.includes('Save preferences'),
     ) as HTMLButtonElement
 
     expect(maxPriceInput.disabled).toBe(true)

@@ -20,7 +20,7 @@ describe('ListingStatusBadge', () => {
     const badge = container.querySelector('span')
 
     expect(badge).not.toBeNull()
-    expect(badge?.textContent).toBe('Aktywne')
+    expect(badge?.textContent).toBe('Active')
     expect(badge?.classList.contains('badge')).toBe(true)
     expect(badge?.classList.contains('badge-soft')).toBe(true)
     expect(badge?.classList.contains('badge-success')).toBe(true)
@@ -36,7 +36,7 @@ describe('ListingStatusBadge', () => {
 
     const badge = container.querySelector('span')
 
-    expect(badge?.textContent).toBe('W oczekiwaniu na akceptacje')
+    expect(badge?.textContent).toBe('Awaiting review')
     expect(badge?.classList.contains('badge-info')).toBe(true)
   })
 
@@ -50,7 +50,7 @@ describe('ListingStatusBadge', () => {
 
     const badge = container.querySelector('span')
 
-    expect(badge?.textContent).toBe('Wymaga poprawek')
+    expect(badge?.textContent).toBe('Awaiting fixes')
     expect(badge?.classList.contains('badge-warning')).toBe(true)
   })
 
@@ -64,7 +64,7 @@ describe('ListingStatusBadge', () => {
 
     const badge = container.querySelector('span')
 
-    expect(badge?.textContent).toBe('Ukryte przez moderacje')
+    expect(badge?.textContent).toBe('Hidden by moderation')
     expect(badge?.classList.contains('badge-error')).toBe(true)
   })
 
@@ -78,7 +78,7 @@ describe('ListingStatusBadge', () => {
 
     const badge = container.querySelector('span')
 
-    expect(badge?.textContent).toBe('Zarchiwizowane')
+    expect(badge?.textContent).toBe('Archived')
     expect(badge?.classList.contains('badge-neutral')).toBe(true)
   })
 })

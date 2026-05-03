@@ -50,7 +50,7 @@ describe('FormErrorSummary', () => {
     document.body.appendChild(container)
 
     act(() => {
-      render(<FormErrorSummary error="Nie udało się zapisać formularza" />, container)
+      render(<FormErrorSummary error="Failed to save form" />, container)
     })
 
     const alert = container.querySelector('.alert')
@@ -58,6 +58,6 @@ describe('FormErrorSummary', () => {
 
     expect(alert).not.toBeNull()
     expect(alert?.classList.contains('alert-error')).toBe(true)
-    expect(message?.textContent).toBe('Nie udało się zapisać formularza')
+    expect(message?.textContent).toBe('Failed to save form')
   })
 })
