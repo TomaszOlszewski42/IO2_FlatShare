@@ -21,7 +21,7 @@ export function ListingContactSection({
 }: ListingContactSectionProps) {
   return (
     <ListingFormSection
-      title="Dane kontaktowe"
+      title="Contact details"
       description="How tenants can contact you."
     >
       <TextInput

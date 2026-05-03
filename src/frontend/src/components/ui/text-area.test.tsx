@@ -132,7 +132,7 @@ describe('TextArea', () => {
           name="description"
           label="Description"
           value=""
-          error="Description jest wymagany"
+          error="Description is required"
           onInput={handleInput}
         />,
         container,
@@ -145,7 +145,7 @@ describe('TextArea', () => {
     expect(textarea.classList.contains('textarea-error')).toBe(true)
     expect(textarea.getAttribute('aria-invalid')).toBe('true')
     expect(textarea.getAttribute('aria-describedby')).toBe('description-error')
-    expect(error?.textContent).toBe('Description jest wymagany')
+    expect(error?.textContent).toBe('Description is required')
   })
 
   it('renders multiple validation errors', () => {
@@ -160,7 +160,7 @@ describe('TextArea', () => {
           name="description"
           label="Description"
           value=""
-          errors={['Description jest wymagany', 'Description is too short']}
+          errors={['Description is required', 'Description is too short']}
           onInput={handleInput}
         />,
         container,
@@ -170,7 +170,7 @@ describe('TextArea', () => {
     const errors = container.querySelectorAll('.text-error')
 
     expect(errors.length).toBe(2)
-    expect(errors[0]?.textContent).toBe('Description jest wymagany')
+    expect(errors[0]?.textContent).toBe('Description is required')
     expect(errors[1]?.textContent).toBe('Description is too short')
   })
 })
