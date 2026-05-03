@@ -18,6 +18,7 @@ using FlatShareBackend.Infrastructure.Repositories.Sessions;
 using FlatShareBackend.Infrastructure.Repositories.Users;
 using FlatShareBackend.Options;
 using FlatShareBackend.Repositories;
+using FlatShareBackend.Middlewares;
 using LinqKit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -41,6 +42,9 @@ namespace FlatShareBackend
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
+
+            builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+            builder.Services.AddProblemDetails();
 
             builder.Services.Configure<BlobOptions>(builder.Configuration.GetSection("Blob"));
             builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.SectionName));
@@ -110,6 +114,8 @@ namespace FlatShareBackend
             });
 
             var app = builder.Build();
+
+            app.UseExceptionHandler();
 
             using (var scope = app.Services.CreateScope())
             {
