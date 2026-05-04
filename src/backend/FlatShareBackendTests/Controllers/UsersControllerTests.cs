@@ -52,16 +52,11 @@ namespace FlatShareBackendTests.Controllers
             _userServiceMock.Setup(service => service.RegisterAsync(request, It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new EmailAlreadyExistsException("Email already exists."));
 
-            // Act
-            var result = await _controller.Register(request, CancellationToken.None);
-
-            // Assert
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            var apiErrorResponse = Assert.IsType<ApiErrorResponse>(badRequestResult.Value);
-
-            Assert.Equal(400, apiErrorResponse.Status);
-            Assert.Single(apiErrorResponse.FieldErrors!);
-            Assert.Equal("email", apiErrorResponse.FieldErrors!.First().Field);
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<EmailAlreadyExistsException>(() => 
+                _controller.Register(request, CancellationToken.None));
+            
+            Assert.Equal("Email already exists.", exception.Message);
         }
     }
 }

@@ -49,12 +49,11 @@ namespace FlatShareBackendTests.Controllers
             _authServiceMock.Setup(service => service.LoginAsync(request, It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new InvalidCredentialsException("Invalid email or password."));
 
-            // Act
-            var result = await _controller.Login(request, CancellationToken.None);
-
-            // Assert
-            var unauthorizedResult = Assert.IsType<UnauthorizedObjectResult>(result);
-            Assert.Equal(401, unauthorizedResult.StatusCode);
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<InvalidCredentialsException>(() => 
+                _controller.Login(request, CancellationToken.None));
+                
+            Assert.Equal("Invalid email or password.", exception.Message);
         }
     }
 }
