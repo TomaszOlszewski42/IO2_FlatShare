@@ -33,19 +33,8 @@ namespace FlatShareBackend.Controllers
                 return BadRequest(ApiErrorFactory.Validation(ModelState));
             }
 
-            try
-            {
-                var response = await _authService.LoginAsync(request, cancellationToken);
-                return Created($"/api/v1/sessions/{response.SessionId}", response);
-            }
-            catch (InvalidCredentialsException ex)
-            {
-                return Unauthorized(ApiErrorFactory.Unauthorized(ex.Message));
-            }
-            catch (InactiveUserException ex)
-            {
-                return Unauthorized(ApiErrorFactory.Unauthorized(ex.Message));
-            }
+            var response = await _authService.LoginAsync(request, cancellationToken);
+            return Created($"/api/v1/sessions/{response.SessionId}", response);
         }
 
         [Authorize]
@@ -54,31 +43,16 @@ namespace FlatShareBackend.Controllers
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Refresh(Guid sessionId, CancellationToken cancellationToken)
         {
-            try
-            {
-                var tokenUserId = User.GetRequiredUserId();
-                var tokenSessionId = User.GetRequiredSessionId();
+            var tokenUserId = User.GetRequiredUserId();
+            var tokenSessionId = User.GetRequiredSessionId();
 
-                if (tokenSessionId != sessionId)
-                {
-                    return Unauthorized(ApiErrorFactory.Unauthorized("Token does not match the requested session."));
-                }
+            if (tokenSessionId != sessionId)
+            {
+                return Unauthorized(ApiErrorFactory.Unauthorized("Token does not match the requested session."));
+            }
 
-                var response = await _authService.RefreshAsync(sessionId, tokenUserId, cancellationToken);
-                return Created($"/api/v1/sessions/{response.SessionId}", response);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Unauthorized(ApiErrorFactory.Unauthorized(ex.Message));
-            }
-            catch (InvalidSessionException ex)
-            {
-                return Unauthorized(ApiErrorFactory.Unauthorized(ex.Message));
-            }
-            catch (InactiveUserException ex)
-            {
-                return Unauthorized(ApiErrorFactory.Unauthorized(ex.Message));
-            }
+            var response = await _authService.RefreshAsync(sessionId, tokenUserId, cancellationToken);
+            return Created($"/api/v1/sessions/{response.SessionId}", response);
         }
     }
 }
