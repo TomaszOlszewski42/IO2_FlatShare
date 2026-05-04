@@ -35,45 +35,8 @@ public class UsersController : ControllerBase
             return BadRequest(ApiErrorFactory.Validation(ModelState));
         }
 
-        try
-        {
-            var response = await _userService.RegisterAsync(request, cancellationToken);
-            return Created($"/api/v1/users/{response.User.Id}", response);
-        }
-        catch (EmailAlreadyExistsException ex)
-        {
-            return BadRequest(new ApiErrorResponse
-            {
-                Timestamp = DateTime.UtcNow,
-                Status = StatusCodes.Status400BadRequest,
-                Error = "ValidationError",
-                FieldErrors = new List<ApiFieldError>
-            {
-                new()
-                {
-                    Field = "email",
-                    Message = ex.Message
-                }
-            }
-            });
-        }
-        catch (InvalidRoleException ex)
-        {
-            return BadRequest(new ApiErrorResponse
-            {
-                Timestamp = DateTime.UtcNow,
-                Status = StatusCodes.Status400BadRequest,
-                Error = "ValidationError",
-                FieldErrors = new List<ApiFieldError>
-            {
-                new()
-                {
-                    Field = "role",
-                    Message = ex.Message
-                }
-            }
-            });
-        }
+        var response = await _userService.RegisterAsync(request, cancellationToken);
+        return Created($"/api/v1/users/{response.User.Id}", response);
     }
 
     [HttpGet("{userId:guid}")]
