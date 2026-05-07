@@ -25,6 +25,17 @@ function normalizeTenantProfile(value: string): string {
   return normalizedValue.length > 0 ? normalizedValue : 'none'
 }
 
+function buildOwnerContactValue(contact: string, phone?: string): string {
+  const contactName = contact.trim()
+  const normalizedPhone = trimToEmpty(phone)
+
+  if (!normalizedPhone) {
+    return contactName
+  }
+
+  return `${contactName}\nPhone: ${normalizedPhone}`
+}
+
 function readPreferredTenantProfile(listing: Listing): string {
   const attributes = listing.attributes as
     | {
@@ -135,7 +146,7 @@ export function ListingEditPage({ listingId }: ListingEditPageProps) {
       price: formData.pricePerMonth,
       currency: 'PLN',
       availableFrom: formData.availableFrom,
-      ownerContact: formData.contact.trim(),
+      ownerContact: buildOwnerContactValue(formData.contact, formData.phone),
       area: formData.areaSqm,
       availableSince: formData.availableFrom,
       location: {

@@ -59,6 +59,7 @@ export function ListingCard({ listing, onEdit, onViewDetails }: ListingCardProps
   const isOwner = session?.userId === listing.ownerId
   const canEdit = isLandlord && isOwner
   const shouldShowStatus = isLandlord && Boolean(listing.status)
+  const ownerProfileHref = listing.ownerId ? `/users/${encodeURIComponent(listing.ownerId)}` : ''
 
   const featureBadges = [
     { label: 'Furnished', value: Boolean(listing.furnished) },
@@ -75,6 +76,12 @@ export function ListingCard({ listing, onEdit, onViewDetails }: ListingCardProps
           <div class="min-w-0 space-y-1">
             <h2 class="card-title text-lg leading-tight">{listing.title}</h2>
             <p class="text-sm text-base-content/65">{formatLocation(listing.location)}</p>
+
+            {ownerProfileHref ? (
+              <a class="link link-hover text-xs font-medium text-primary" href={ownerProfileHref}>
+                {isOwner ? 'Your public profile' : 'Owner profile'}
+              </a>
+            ) : null}
           </div>
 
           <div class="flex shrink-0 flex-col items-end gap-2 text-right">

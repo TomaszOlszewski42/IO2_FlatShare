@@ -9,6 +9,7 @@ import { ListingCreatePage } from './pages/listings/listing-create-page'
 import { ListingEditPage } from './pages/listings/listing-edit-page'
 import { ListingDetailsPage } from './pages/listings/listing-details-page'
 import { ListingsPage } from './pages/listings/listings-page'
+import { PublicUserProfilePage } from './pages/users/public-user-profile-page'
 import { RegisterPage } from './pages/register-page'
 import { readAuthSession } from './services/auth-session'
 import { refreshSessionOnAppLoad } from './services/auth-bootstrap'
@@ -65,6 +66,7 @@ export function App() {
         <ProtectedRoute path="/preferences" component={TenantPreferencesPage} requiredRole={UserRole.Tenant} />
         <ProtectedRoute path="/listings/create" component={ListingCreatePage} requiredRole={UserRole.Landlord} />
         <ProtectedRoute path="/listings/:listingId/edit" component={ListingEditPage} requiredRole={UserRole.Landlord} />
+        <PublicUserProfilePage path="/users/:userId" />
         <ListingDetailsPage path="/listings/:listingId" />
         <LoginPage path="/login" />
         <RegisterPage path="/register" />

@@ -99,6 +99,43 @@ describe('ListingCard', () => {
     expect(container.textContent).toContain('Available from')
   })
 
+  it('renders owner public profile link when owner id is available', () => {
+    mockAuth({ isLandlord: false })
+
+    const container = document.createElement('div')
+    document.body.appendChild(container)
+
+    act(() => {
+      render(<ListingCard listing={baseListing} />, container)
+    })
+
+    const profileLink = Array.from(container.querySelectorAll('a')).find(
+      (link) => link.textContent === 'Owner profile',
+    )
+
+    expect(profileLink).not.toBeUndefined()
+    expect(profileLink?.getAttribute('href')).toBe('/users/owner-1')
+  })
+
+  it('does not render owner public profile link when owner id is missing', () => {
+    mockAuth({ isLandlord: false })
+
+    const listingWithoutOwnerId: Listing = {
+      ...baseListing,
+      ownerId: undefined,
+    }
+
+    const container = document.createElement('div')
+    document.body.appendChild(container)
+
+    act(() => {
+      render(<ListingCard listing={listingWithoutOwnerId} />, container)
+    })
+
+    expect(container.textContent).not.toContain('Owner profile')
+    expect(container.querySelector('a[href^="/users/"]')).toBeNull()
+  })
+
   it('hides publication status for tenant', () => {
     mockAuth({ isLandlord: false })
 
@@ -175,6 +212,10 @@ describe('ListingCard', () => {
     })
 
     expect(container.textContent).toContain('Active')
+    expect(container.textContent).toContain('Your public profile')
+
+    const profileLink = container.querySelector('a[href="/users/owner-1"]')
+    expect(profileLink).not.toBeNull()
 
     const editButton = Array.from(container.querySelectorAll('button')).find(
       (button) => button.textContent === 'Edit',
