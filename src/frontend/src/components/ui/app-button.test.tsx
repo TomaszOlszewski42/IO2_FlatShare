@@ -63,6 +63,30 @@ describe('AppButton', () => {
     expect(button?.classList.contains('w-full')).toBe(true)
   })
 
+  it('forwards native button attributes', () => {
+    const container = document.createElement('div')
+    document.body.appendChild(container)
+
+    act(() => {
+      render(
+        <AppButton
+          aria-label="Go to listings page 3"
+          aria-current="page"
+          data-testid="pagination-page"
+        >
+          3
+        </AppButton>,
+        container,
+      )
+    })
+
+    const button = container.querySelector('button')
+
+    expect(button?.getAttribute('aria-label')).toBe('Go to listings page 3')
+    expect(button?.getAttribute('aria-current')).toBe('page')
+    expect(button?.getAttribute('data-testid')).toBe('pagination-page')
+  })
+
   it('calls onClick when the button is clicked', () => {
     const handleClick = vi.fn()
     const container = document.createElement('div')
