@@ -10,6 +10,12 @@ vi.mock('../../hooks/use-auth', () => ({
   useAuth: vi.fn(),
 }))
 
+vi.mock('./listing-card-photo', () => ({
+  ListingCardPhoto: ({ title }: { title: string }) => (
+    <div data-testid="listing-photo">Photo for {title}</div>
+  ),
+}))
+
 const baseListing: Listing = {
   id: 'listing-1',
   ownerId: 'owner-1',
@@ -21,6 +27,7 @@ const baseListing: Listing = {
   availableFrom: '2025-05-01',
   area: 18,
   rooms: 2,
+  bathrooms: 1,
   furnished: true,
   allowPets: false,
   allowSmoking: false,
@@ -67,7 +74,7 @@ describe('ListingCard', () => {
     vi.clearAllMocks()
   })
 
-  it('renders key listing information', () => {
+  it('renders tenant-facing listing information', () => {
     mockAuth({ isLandlord: false })
 
     const container = document.createElement('div')
@@ -77,16 +84,32 @@ describe('ListingCard', () => {
       render(<ListingCard listing={baseListing} />, container)
     })
 
+    expect(container.textContent).toContain('Photo for Bright room near the center')
     expect(container.textContent).toContain('Bright room near the center')
     expect(container.textContent).toContain('Warsaw')
     expect(container.textContent).toContain('Mokotow')
-    expect(container.textContent).toContain('Price')
-    expect(container.textContent).toContain('/ month')
+    expect(container.textContent).toContain('per month')
     expect(container.textContent).toContain('Area')
     expect(container.textContent).toContain('18 m2')
-    expect(container.textContent).toContain('Number of rooms')
-    expect(container.textContent).toContain('2')
-    expect(container.textContent).toContain('Active')
+    expect(container.textContent).toContain('Rooms')
+    expect(container.textContent).toContain('2 rooms')
+    expect(container.textContent).toContain('Bathrooms')
+    expect(container.textContent).toContain('1 bathroom')
+    expect(container.textContent).toContain('Availability')
+    expect(container.textContent).toContain('Available from')
+  })
+
+  it('hides publication status for tenant', () => {
+    mockAuth({ isLandlord: false })
+
+    const container = document.createElement('div')
+    document.body.appendChild(container)
+
+    act(() => {
+      render(<ListingCard listing={baseListing} />, container)
+    })
+
+    expect(container.textContent).not.toContain('Active')
   })
 
   it('renders listing feature and tenant requirement badges', () => {
@@ -107,7 +130,7 @@ describe('ListingCard', () => {
     expect(container.textContent).toContain('Student')
   })
 
-  it('always allows opening listing details', () => {
+  it('allows tenant to open offer details', () => {
     mockAuth({ isLandlord: false })
 
     const onViewDetails = vi.fn()
@@ -118,41 +141,64 @@ describe('ListingCard', () => {
       render(<ListingCard listing={baseListing} onViewDetails={onViewDetails} />, container)
     })
 
-    const detailsButton = Array.from(container.querySelectorAll('button')).find(
-      (button) => button.textContent === 'Details',
+    const viewOfferButton = Array.from(container.querySelectorAll('button')).find(
+      (button) => button.textContent === 'View offer',
     ) as HTMLButtonElement
 
+    expect(viewOfferButton).not.toBeUndefined()
+
     act(() => {
-      detailsButton.click()
+      viewOfferButton.click()
     })
 
     expect(onViewDetails).toHaveBeenCalledTimes(1)
     expect(onViewDetails).toHaveBeenCalledWith('listing-1')
   })
 
-  it('shows edit action for landlord who owns the listing', () => {
+  it('shows edit action and status for landlord who owns the listing', () => {
     mockAuth({ userId: 'owner-1', isLandlord: true })
 
     const onEdit = vi.fn()
+    const onViewDetails = vi.fn()
     const container = document.createElement('div')
     document.body.appendChild(container)
 
     act(() => {
-      render(<ListingCard listing={baseListing} onEdit={onEdit} />, container)
+      render(
+        <ListingCard
+          listing={baseListing}
+          onEdit={onEdit}
+          onViewDetails={onViewDetails}
+        />,
+        container,
+      )
     })
+
+    expect(container.textContent).toContain('Active')
 
     const editButton = Array.from(container.querySelectorAll('button')).find(
       (button) => button.textContent === 'Edit',
     ) as HTMLButtonElement
 
+    const detailsButton = Array.from(container.querySelectorAll('button')).find(
+      (button) => button.textContent === 'Details',
+    ) as HTMLButtonElement
+
     expect(editButton).not.toBeUndefined()
+    expect(detailsButton).not.toBeUndefined()
 
     act(() => {
       editButton.click()
     })
 
+    act(() => {
+      detailsButton.click()
+    })
+
     expect(onEdit).toHaveBeenCalledTimes(1)
     expect(onEdit).toHaveBeenCalledWith('listing-1')
+    expect(onViewDetails).toHaveBeenCalledTimes(1)
+    expect(onViewDetails).toHaveBeenCalledWith('listing-1')
   })
 
   it('hides edit action for landlord who does not own the listing', () => {
