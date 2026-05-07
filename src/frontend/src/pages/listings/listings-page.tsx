@@ -1,10 +1,11 @@
 import type { RoutableProps } from 'preact-router'
 import { route } from 'preact-router'
-import { useEffect, useMemo, useState } from 'preact/hooks'
+import { useEffect, useMemo, useRef, useState } from 'preact/hooks'
 
 import { InfoAlert } from '../../components/common/info-alert'
 import { ListingCard } from '../../components/listings/listing-card'
 import { ListingsEmptyState } from '../../components/listings/listings-empty-state'
+import { ListingsPagination } from '../../components/listings/listings-pagination'
 import { ListingsResultsSummary } from '../../components/listings/listings-results-summary'
 import { ListingsSkeleton } from '../../components/listings/listings-skeleton'
 import { ListingsToolbar } from '../../components/listings/listings-toolbar'
@@ -13,6 +14,8 @@ import { getListings } from '../../services/listings-api'
 import type { Listing } from '../../types/listing'
 import type { ListingStatus } from '../../types/listing-status'
 import { formatLocation } from '../../utils/format-location'
+import { getPageFromSearch, withPageInSearch } from '../../utils/page-query'
+import { getPaginatedItems } from '../../utils/pagination'
 
 type ListingFilterValue = ListingStatus | 'ALL'
 type PriceFilterValue = number | ''
@@ -24,10 +27,20 @@ type TenantFeatureFilters = {
   nonSmoking: boolean
 }
 
+const LISTINGS_PER_PAGE = 6
+
 const emptyFeatureFilters: TenantFeatureFilters = {
   petsAllowed: false,
   furnished: false,
   nonSmoking: false,
+}
+
+function getInitialPage(): number {
+  if (typeof window === 'undefined') {
+    return 1
+  }
+
+  return getPageFromSearch(window.location.search)
 }
 
 function getListingCreatedAtTime(listing: Listing): number {
@@ -58,6 +71,8 @@ function getReadableListingsError(error: unknown): string {
 
 export function ListingsPage(_: RoutableProps) {
   const { session, isLandlord } = useAuth()
+  const resultsTopRef = useRef<HTMLDivElement>(null)
+
   const [isLoading, setIsLoading] = useState(true)
   const [listings, setListings] = useState<Listing[]>([])
   const [loadError, setLoadError] = useState<string | null>(null)
@@ -67,6 +82,7 @@ export function ListingsPage(_: RoutableProps) {
   const [priceMax, setPriceMax] = useState<PriceFilterValue>('')
   const [selectedSort, setSelectedSort] = useState<ListingSortValue>('NEWEST')
   const [featureFilters, setFeatureFilters] = useState<TenantFeatureFilters>(emptyFeatureFilters)
+  const [currentPage, setCurrentPage] = useState(getInitialPage)
 
   useEffect(() => {
     if (!session) {
@@ -116,6 +132,10 @@ export function ListingsPage(_: RoutableProps) {
       setSelectedStatus('ALL')
     }
   }, [isLandlord])
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [query, selectedStatus, priceMin, priceMax, selectedSort, featureFilters])
 
   const visibleListings = useMemo(() => {
     if (isLandlord) {
@@ -167,6 +187,35 @@ export function ListingsPage(_: RoutableProps) {
     )
   }, [filteredListings, selectedSort])
 
+  const pagination = useMemo(
+    () => getPaginatedItems(sortedListings, currentPage, LISTINGS_PER_PAGE),
+    [currentPage, sortedListings],
+  )
+
+  useEffect(() => {
+    if (isLoading) {
+      return
+    }
+
+    if (currentPage !== pagination.currentPage) {
+      setCurrentPage(pagination.currentPage)
+    }
+  }, [currentPage, isLoading, pagination.currentPage])
+
+  useEffect(() => {
+    if (isLoading || typeof window === 'undefined') {
+      return
+    }
+
+    const nextSearch = withPageInSearch(window.location.search, pagination.currentPage)
+    const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`
+    const nextUrl = `${window.location.pathname}${nextSearch}${window.location.hash}`
+
+    if (currentUrl !== nextUrl) {
+      window.history.replaceState(window.history.state, '', nextUrl)
+    }
+  }, [isLoading, pagination.currentPage])
+
   const hasFeatureFilters = Object.values(featureFilters).some(Boolean)
 
   const hasFilters =
@@ -181,6 +230,25 @@ export function ListingsPage(_: RoutableProps) {
     (listing) => !listing.status || listing.status === 'ACTIVE',
   ).length
 
+  const scrollToResultsTop = () => {
+    if (!resultsTopRef.current) {
+      return
+    }
+
+    resultsTopRef.current.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    })
+  }
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page)
+
+    if (page !== pagination.currentPage) {
+      window.requestAnimationFrame(scrollToResultsTop)
+    }
+  }
+
   const clearFilters = () => {
     setQuery('')
     setSelectedStatus('ALL')
@@ -188,6 +256,7 @@ export function ListingsPage(_: RoutableProps) {
     setPriceMax('')
     setSelectedSort('NEWEST')
     setFeatureFilters(emptyFeatureFilters)
+    setCurrentPage(1)
   }
 
   return (
@@ -220,19 +289,23 @@ export function ListingsPage(_: RoutableProps) {
 
       {isLoading ? <ListingsSkeleton /> : null}
 
+      <div ref={resultsTopRef} />
+
       {!isLoading ? (
         <ListingsResultsSummary
           visibleCount={sortedListings.length}
           totalCount={visibleListings.length}
           hasFilters={hasFilters}
           isLandlord={isLandlord}
+          pageStart={pagination.pageStart}
+          pageEnd={pagination.pageEnd}
           onClearFilters={clearFilters}
         />
       ) : null}
 
       {!isLoading && sortedListings.length > 0 ? (
         <div class="grid gap-4 md:grid-cols-2">
-          {sortedListings.map((listing) => (
+          {pagination.items.map((listing) => (
             <ListingCard
               key={listing.id}
               listing={listing}
@@ -241,6 +314,14 @@ export function ListingsPage(_: RoutableProps) {
             />
           ))}
         </div>
+      ) : null}
+
+      {!isLoading && sortedListings.length > 0 ? (
+        <ListingsPagination
+          currentPage={pagination.currentPage}
+          totalPages={pagination.totalPages}
+          onPageChange={handlePageChange}
+        />
       ) : null}
 
       {!isLoading && sortedListings.length === 0 ? (
