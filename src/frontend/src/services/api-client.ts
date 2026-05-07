@@ -52,10 +52,32 @@ type SessionResponseLike = {
   roles?: string[]
 }
 
+async function readResponseBody(response: Response): Promise<unknown> {
+  const contentType = (response.headers.get('content-type') ?? '').toLowerCase()
+
+  if (!contentType.includes('json')) {
+    return null
+  }
+
+  try {
+    return await response.json()
+  } catch {
+    return null
+  }
+}
+
 function getApiErrorMessage(status: number, responseBody: unknown): string {
   if (typeof responseBody === 'object' && responseBody !== null) {
     const apiError = responseBody as Record<string, unknown>
-    const message = apiError.message ?? apiError.Message ?? apiError.error ?? apiError.Error
+    const message =
+      apiError.message ??
+      apiError.Message ??
+      apiError.detail ??
+      apiError.Detail ??
+      apiError.title ??
+      apiError.Title ??
+      apiError.error ??
+      apiError.Error
 
     if (typeof message === 'string' && message.trim().length > 0) {
       return message.trim()
@@ -100,12 +122,7 @@ export async function apiRequest<T>(
     markBackendAvailable()
   }
 
-  let responseBody: unknown = null
-
-  const contentType = response.headers.get('content-type') ?? ''
-  if (contentType.includes('application/json')) {
-    responseBody = await response.json()
-  }
+  const responseBody = await readResponseBody(response)
 
   if (!response.ok) {
     if (response.status === 401) {

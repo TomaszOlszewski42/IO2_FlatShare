@@ -17,6 +17,8 @@ const GENERIC_ERROR_CODES = new Set([
   'InvalidRequest',
 ])
 
+const ASP_NET_GENERIC_VALIDATION_SUMMARY = 'one or more validation errors occurred.'
+
 function isRecord(value: unknown): value is UnknownRecord {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
@@ -87,6 +89,39 @@ function getFieldNameAliases(fieldName: string): string[] {
   )
 }
 
+function isTenantProfileField(fieldName: string): boolean {
+  const cleanedFieldName = cleanFieldName(fieldName).toLowerCase()
+
+  return (
+    cleanedFieldName === 'profile' ||
+    cleanedFieldName.endsWith('.profile') ||
+    cleanedFieldName === 'preferredtenantprofile' ||
+    cleanedFieldName.endsWith('.preferredtenantprofile')
+  )
+}
+
+function toFriendlyFieldError(fieldName: string, message: string): string {
+  const normalizedMessage = message.toLowerCase()
+
+  if (
+    isTenantProfileField(fieldName) &&
+    (
+      normalizedMessage.includes('userprofile') ||
+      normalizedMessage.includes('json value could not be converted') ||
+      normalizedMessage.includes('could not convert') ||
+      normalizedMessage.includes('could not be converted')
+    )
+  ) {
+    return 'Backend currently accepts only Student as a preferred tenant profile. No preferences and Working person are not supported yet.'
+  }
+
+  return message
+}
+
+function isGenericValidationSummary(value: string): boolean {
+  return value.trim().toLowerCase() === ASP_NET_GENERIC_VALIDATION_SUMMARY
+}
+
 function appendFieldError(
   result: FormFieldErrors,
   fieldName: string,
@@ -107,9 +142,10 @@ function appendFieldErrorsWithAliases(
   messages: string[],
 ): void {
   const aliases = fieldName === 'general' ? ['general'] : getFieldNameAliases(fieldName)
+  const friendlyMessages = messages.map((message) => toFriendlyFieldError(fieldName, message))
 
   for (const alias of aliases) {
-    for (const message of messages) {
+    for (const message of friendlyMessages) {
       appendFieldError(result, alias, message)
     }
   }
@@ -244,7 +280,10 @@ function getErrorMessage(
       'Title',
     )
 
-    if (explicitMessage) {
+    if (
+      explicitMessage &&
+      !(containsFieldErrors && isGenericValidationSummary(explicitMessage))
+    ) {
       return explicitMessage
     }
 
@@ -257,7 +296,10 @@ function getErrorMessage(
     if (error instanceof ApiHttpError && error.message.trim().length > 0) {
       const apiErrorMessage = error.message.trim()
 
-      if (!(containsFieldErrors && isGenericErrorCode(apiErrorMessage))) {
+      if (
+        !(containsFieldErrors && isGenericErrorCode(apiErrorMessage)) &&
+        !(containsFieldErrors && isGenericValidationSummary(apiErrorMessage))
+      ) {
         return apiErrorMessage
       }
     }
