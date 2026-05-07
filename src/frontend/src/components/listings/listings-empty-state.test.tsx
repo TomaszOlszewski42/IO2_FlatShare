@@ -71,7 +71,7 @@ describe('ListingsEmptyState', () => {
     )
 
     expect(container.textContent).toContain(
-      'When you add your first listing, it will appear here along with its status and key metadata.',
+      'When you add your first listing, it will appear here together with its status and key metadata.',
     )
     expect(container.textContent).not.toContain('Clear filters')
     expect(createButton).not.toBeUndefined()
@@ -104,7 +104,7 @@ describe('ListingsEmptyState', () => {
     })
 
     expect(container.textContent).toContain(
-      'Currently there are no active listings available. Check back later!',
+      'There are no active listings available right now. Check back later.',
     )
     expect(container.textContent).not.toContain('Add your first listing')
   })
@@ -131,7 +131,7 @@ describe('ListingsEmptyState', () => {
     )
 
     expect(container.textContent).toContain(
-      'Change filters or search phrase to see more results.',
+      'Change the search phrase or filters to see more results.',
     )
     expect(clearButton).not.toBeUndefined()
 
@@ -140,6 +140,30 @@ describe('ListingsEmptyState', () => {
     })
 
     expect(handleClearFilters).toHaveBeenCalledTimes(1)
+  })
+
+  it('renders tenant filtered empty state message', () => {
+    roleBoundaryState.allowRole = false
+
+    const handleClearFilters = vi.fn()
+    const handleCreateListing = vi.fn()
+    const container = document.createElement('div')
+    document.body.appendChild(container)
+
+    act(() => {
+      render(
+        <ListingsEmptyState
+          hasFilters
+          onClearFilters={handleClearFilters}
+          onCreateListing={handleCreateListing}
+        />,
+        container,
+      )
+    })
+
+    expect(container.textContent).toContain('No matching listings')
+    expect(container.textContent).toContain('Change the search phrase to see more results.')
+    expect(container.textContent).not.toContain('Add your first listing')
   })
 
   it('uses dashed and translucent surface styling', () => {

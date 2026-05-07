@@ -7,13 +7,15 @@ import { ListingDetailsHeader } from '../../components/listings/listing-details-
 import { ListingDetailsSkeleton } from '../../components/listings/listing-details-skeleton'
 import { ListingFeatureBadges } from '../../components/listings/listing-feature-badges'
 import { ListingGallery } from '../../components/listings/listing-gallery'
-import { ListingMetaRow } from '../../components/listings/listing-meta-row'
 import { ListingLocationSection } from '../../components/listings/listing-location-section'
+import { ListingMetaRow } from '../../components/listings/listing-meta-row'
 import { ListingParametersSection } from '../../components/listings/listing-parameters-section'
 import { ListingSection } from '../../components/listings/listing-section'
-import { AppButton } from '../../components/ui/app-button'
+import { ListingTenantContactPanel } from '../../components/listings/listing-tenant-contact-panel'
 import { ListingUserAttributesSection } from '../../components/listings/listing-user-attributes-section'
 import { ReportViolationDialog } from '../../components/reports/report-violation-dialog'
+import { AppButton } from '../../components/ui/app-button'
+import { useAuth } from '../../hooks/use-auth'
 import { readAuthSession } from '../../services/auth-session'
 import { useErrorHandler } from '../../services/error-handler-context'
 import { getListingById, getListingPhotoIds } from '../../services/listings-api'
@@ -31,6 +33,7 @@ type ListingDetailsRouteProps = RoutableProps & {
 
 export function ListingDetailsPage({ listingId }: ListingDetailsRouteProps) {
   const { showToast } = useErrorHandler()
+  const { isLandlord, isTenant } = useAuth()
 
   const [isLoading, setIsLoading] = useState(true)
   const [listing, setListing] = useState<Listing | null>(null)
@@ -55,6 +58,7 @@ export function ListingDetailsPage({ listingId }: ListingDetailsRouteProps) {
     let isMounted = true
 
     setIsLoading(true)
+
     void Promise.all([
       getListingById(listingId, session.token, session.type),
       getListingPhotoIds(listingId, session.token, session.type),
@@ -118,8 +122,14 @@ export function ListingDetailsPage({ listingId }: ListingDetailsRouteProps) {
     { label: 'Price', value: `${formatPrice(listing.price)} / month`, icon: listing.currency },
     { label: 'Area', value: listing.area ? formatArea(listing.area) : '-', icon: 'm2' },
     { label: 'Available from', value: listing.availableFrom ? formatDate(listing.availableFrom) : '-' },
-    { label: 'Publication status', value: listing.status ? formatStatusLabel(listing.status) : '-' },
   ]
+
+  if (isLandlord) {
+    parameterRows.push({
+      label: 'Publication status',
+      value: listing.status ? formatStatusLabel(listing.status) : '-',
+    })
+  }
 
   const featureRows = [
     { label: 'Furnished', value: Boolean(listing.furnished) },
@@ -157,22 +167,23 @@ export function ListingDetailsPage({ listingId }: ListingDetailsRouteProps) {
       </div>
 
       <ListingGallery listingId={listing.id} photoIds={photoIds} title={listing.title} />
+
+      {isTenant ? <ListingTenantContactPanel listing={listing} /> : null}
+
       <ListingUserAttributesSection attributes={listing.attributes} />
 
       <ListingLocationSection location={listing.location} />
 
-      <ListingSection title="Contact and description">
-        <div class="space-y-3 text-sm leading-relaxed text-base-content/80">
-          <p>{listing.description}</p>
-          <div class="grid gap-2 md:grid-cols-2">
+      <ListingSection title="Description">
+        <p class="text-sm leading-relaxed text-base-content/80">{listing.description}</p>
+
+        {isLandlord ? (
+          <div class="mt-3 grid gap-2 md:grid-cols-2">
             <ListingMetaRow label="Kontakt" value={listing.contact || listing.ownerContact || '-'} />
             <ListingMetaRow label="Telefon" value={listing.phone || listing.contactPhone || '-'} />
-            <ListingMetaRow
-              label="Status"
-              value={listing.status ? formatStatusLabel(listing.status) : '-'}
-            />
+            <ListingMetaRow label="Status" value={listing.status ? formatStatusLabel(listing.status) : '-'} />
           </div>
-        </div>
+        ) : null}
       </ListingSection>
     </section>
   )

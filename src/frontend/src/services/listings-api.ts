@@ -8,16 +8,20 @@ export type ListingListQuery = {
   size?: number
   status?: ListingStatus
   city?: string
+  district?: string
+  street?: string
+  aptNumber?: string
   ownerId?: string
 }
 
 type ListingDto = {
   id: string
+  ownerId?: string | null
   title: string
   description: string
   price: number
   currency: string
-  status?: ListingStatus
+  status?: ListingStatus | string | number | null
   availableFrom?: string | null
   availableSince?: string | null
   ownerContact?: string | null
@@ -44,6 +48,7 @@ type ListingDto = {
     petsAllowed?: boolean
     nonSmokingOnly?: boolean
     preferredTenantProfile?: string | null
+    profile?: string | null
   }
   createdAt?: string
   updatedAt?: string
@@ -66,6 +71,42 @@ type ListingPhotosDto = {
   photos: string[]
 }
 
+const listingStatusByBackendNumber: Record<number, ListingStatus> = {
+  0: 'ACTIVE',
+  1: 'HIDDEN',
+  2: 'ARCHIVED',
+  3: 'AWAITING_REVIEW',
+  4: 'AWAITING_FIXES',
+  5: 'HIDDEN_BY_MODERATION',
+}
+
+function normalizeListingStatus(status: ListingDto['status']): ListingStatus | undefined {
+  if (typeof status === 'number') {
+    return listingStatusByBackendNumber[status]
+  }
+
+  if (typeof status !== 'string') {
+    return undefined
+  }
+
+  const normalizedStatus = status.trim().toUpperCase()
+
+  switch (normalizedStatus) {
+    case 'DRAFT':
+    case 'UNDER_REVIEW':
+    case 'AWAITING_REVIEW':
+    case 'AWAITING_FIXES':
+    case 'ACTIVE':
+    case 'HIDDEN':
+    case 'ARCHIVED':
+    case 'HIDDEN_BY_MODERATION':
+      return normalizedStatus
+
+    default:
+      return undefined
+  }
+}
+
 function buildQueryString(params?: ListingListQuery): string {
   if (!params) {
     return ''
@@ -74,23 +115,35 @@ function buildQueryString(params?: ListingListQuery): string {
   const searchParams = new URLSearchParams()
 
   if (typeof params.page === 'number') {
-    searchParams.set('page', String(params.page))
+    searchParams.set('Page', String(params.page))
   }
 
   if (typeof params.size === 'number') {
-    searchParams.set('size', String(params.size))
+    searchParams.set('Size', String(params.size))
   }
 
   if (params.status) {
-    searchParams.set('status', params.status)
+    searchParams.set('Status', params.status)
   }
 
   if (params.city) {
-    searchParams.set('city', params.city)
+    searchParams.set('City', params.city)
+  }
+
+  if (params.district) {
+    searchParams.set('District', params.district)
+  }
+
+  if (params.street) {
+    searchParams.set('Street', params.street)
+  }
+
+  if (params.aptNumber) {
+    searchParams.set('AptNumber', params.aptNumber)
   }
 
   if (params.ownerId) {
-    searchParams.set('ownerId', params.ownerId)
+    searchParams.set('OwnerId', params.ownerId)
   }
 
   const queryString = searchParams.toString()
@@ -103,14 +156,15 @@ function getAuthHeaders(token: string, type = 'Bearer'): Record<string, string> 
   }
 }
 
-function mapListingDtoToListing(item: ListingDto): Listing {
+function mapListingDtoToListing(item: ListingDto, fallbackOwnerId?: string): Listing {
   return {
     id: item.id,
+    ownerId: item.ownerId ?? fallbackOwnerId,
     title: item.title,
     description: item.description,
     price: item.price,
     currency: item.currency,
-    status: item.status,
+    status: normalizeListingStatus(item.status),
     availableFrom: item.availableFrom ?? null,
     availableSince: item.availableSince ?? null,
     ownerContact: item.ownerContact ?? null,
@@ -137,7 +191,8 @@ function mapListingDtoToListing(item: ListingDto): Listing {
       ? {
           petsAllowed: item.attributes.petsAllowed,
           nonSmokingOnly: item.attributes.nonSmokingOnly,
-          preferredTenantProfile: item.attributes.preferredTenantProfile ?? null,
+          preferredTenantProfile:
+            item.attributes.preferredTenantProfile ?? item.attributes.profile ?? null,
         }
       : undefined,
     createdAt: item.createdAt,
@@ -155,7 +210,7 @@ export async function getListings(
     headers: getAuthHeaders(token, type),
   })
 
-  return items.map(mapListingDtoToListing)
+  return items.map((item) => mapListingDtoToListing(item, query?.ownerId))
 }
 
 export async function getListingById(
@@ -202,11 +257,13 @@ export async function updateListing(
   token: string,
   type = 'Bearer',
 ): Promise<Listing> {
-  return apiRequest<Listing>(`/listings/${listingId}`, {
+  const item = await apiRequest<ListingDto>(`/listings/${listingId}`, {
     method: 'PATCH',
     body: payload,
     headers: getAuthHeaders(token, type),
   })
+
+  return mapListingDtoToListing(item)
 }
 
 export async function hideListing(

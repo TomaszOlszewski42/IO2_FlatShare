@@ -81,7 +81,7 @@ export function ListingBackendPhoto({
   }
 
   if (!photoUrl || hasError) {
-    return <div class={errorClassName}>No udalo sie zaladowac zdjecia</div>
+    return <div class={errorClassName}>Could not load photo</div>
   }
 
   return <img src={photoUrl} alt={alt} class={className} loading="lazy" />

@@ -112,7 +112,7 @@ describe('ListingBackendPhoto', () => {
       const error = container.querySelector('.custom-error')
 
       expect(error).not.toBeNull()
-      expect(error?.textContent).toBe('No udalo sie zaladowac zdjecia')
+      expect(error?.textContent).toBe('Could not load photo')
     })
 
     expect(fetchMock).not.toHaveBeenCalled()
@@ -208,7 +208,7 @@ describe('ListingBackendPhoto', () => {
       const error = container.querySelector('.custom-error')
 
       expect(error).not.toBeNull()
-      expect(error?.textContent).toBe('No udalo sie zaladowac zdjecia')
+      expect(error?.textContent).toBe('Could not load photo')
     })
 
     expect(container.querySelector('img')).toBeNull()
