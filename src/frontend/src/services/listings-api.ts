@@ -71,6 +71,11 @@ type ListingPhotosDto = {
   photos: string[]
 }
 
+type OwnerContactParts = {
+  name: string | null
+  phone: string | null
+}
+
 const listingStatusByBackendNumber: Record<number, ListingStatus> = {
   0: 'ACTIVE',
   1: 'HIDDEN',
@@ -104,6 +109,45 @@ function normalizeListingStatus(status: ListingDto['status']): ListingStatus | u
 
     default:
       return undefined
+  }
+}
+
+function splitOwnerContact(value?: string | null): OwnerContactParts {
+  const rawValue = (value ?? '').trim()
+
+  if (!rawValue) {
+    return {
+      name: null,
+      phone: null,
+    }
+  }
+
+  const lines = rawValue
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+
+  const phoneLineIndex = lines.findIndex((line) => /^(phone|tel\.?|telefon):/i.test(line))
+
+  if (phoneLineIndex === -1) {
+    return {
+      name: rawValue,
+      phone: null,
+    }
+  }
+
+  const phone = lines[phoneLineIndex]
+    .replace(/^(phone|tel\.?|telefon):\s*/i, '')
+    .trim()
+
+  const name = lines
+    .filter((_, index) => index !== phoneLineIndex)
+    .join(' ')
+    .trim()
+
+  return {
+    name: name || rawValue,
+    phone: phone || null,
   }
 }
 
@@ -157,6 +201,10 @@ function getAuthHeaders(token: string, type = 'Bearer'): Record<string, string> 
 }
 
 function mapListingDtoToListing(item: ListingDto, fallbackOwnerId?: string): Listing {
+  const ownerContactParts = splitOwnerContact(item.ownerContact)
+  const resolvedContact = item.contact ?? ownerContactParts.name ?? item.ownerContact ?? null
+  const resolvedPhone = item.phone ?? item.contactPhone ?? ownerContactParts.phone ?? null
+
   return {
     id: item.id,
     ownerId: item.ownerId ?? fallbackOwnerId,
@@ -167,11 +215,11 @@ function mapListingDtoToListing(item: ListingDto, fallbackOwnerId?: string): Lis
     status: normalizeListingStatus(item.status),
     availableFrom: item.availableFrom ?? null,
     availableSince: item.availableSince ?? null,
-    ownerContact: item.ownerContact ?? null,
-    contact: item.contact ?? item.ownerContact ?? null,
+    ownerContact: ownerContactParts.name ?? item.ownerContact ?? null,
+    contact: resolvedContact,
     contactEmail: item.contactEmail ?? null,
-    contactPhone: item.contactPhone ?? null,
-    phone: item.phone ?? item.contactPhone ?? null,
+    contactPhone: item.contactPhone ?? resolvedPhone,
+    phone: item.phone ?? resolvedPhone,
     area: item.area ?? null,
     rooms: item.rooms ?? null,
     bathrooms: item.bathrooms ?? null,
@@ -256,12 +304,16 @@ export async function updateListing(
   payload: UpdateListingPayload,
   token: string,
   type = 'Bearer',
-): Promise<Listing> {
-  const item = await apiRequest<ListingDto>(`/listings/${listingId}`, {
+): Promise<Listing | null> {
+  const item = await apiRequest<ListingDto | null>(`/listings/${listingId}`, {
     method: 'PATCH',
     body: payload,
     headers: getAuthHeaders(token, type),
   })
+
+  if (!item) {
+    return null
+  }
 
   return mapListingDtoToListing(item)
 }

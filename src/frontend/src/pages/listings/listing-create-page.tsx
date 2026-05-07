@@ -27,6 +27,17 @@ function normalizeTenantProfile(value: string): string {
   return normalizedValue.length > 0 ? normalizedValue : 'none'
 }
 
+function buildOwnerContactValue(contact: string, phone?: string): string {
+  const contactName = contact.trim()
+  const normalizedPhone = trimToEmpty(phone)
+
+  if (!normalizedPhone) {
+    return contactName
+  }
+
+  return `${contactName}\nPhone: ${normalizedPhone}`
+}
+
 export function ListingCreatePage(_: RoutableProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [initialValues] = useState<ListingFormData>(() => ({
@@ -49,7 +60,7 @@ export function ListingCreatePage(_: RoutableProps) {
       price: formData.pricePerMonth,
       currency: 'PLN',
       availableFrom: formData.availableFrom,
-      ownerContact: formData.contact.trim(),
+      ownerContact: buildOwnerContactValue(formData.contact, formData.phone),
       area: formData.areaSqm,
       availableSince: formData.availableFrom,
       location: {
