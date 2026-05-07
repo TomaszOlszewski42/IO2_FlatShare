@@ -10,6 +10,7 @@ export function ListingTenantContactPanel({ listing }: ListingTenantContactPanel
   const contactName = listing.contact || listing.ownerContact || 'Owner'
   const phone = listing.phone || listing.contactPhone || ''
   const email = listing.contactEmail || ''
+  const ownerProfileHref = listing.ownerId ? `/users/${encodeURIComponent(listing.ownerId)}` : ''
 
   return (
     <ListingSection title="Interested in this offer?">
@@ -24,7 +25,22 @@ export function ListingTenantContactPanel({ listing }: ListingTenantContactPanel
           <ListingMetaRow label="Email" value={email || '-'} />
         </div>
 
-        <div class="flex flex-wrap gap-2">
+        <div class="flex flex-wrap items-center gap-2">
+          {ownerProfileHref ? (
+            <a class="btn btn-outline btn-sm" href={ownerProfileHref}>
+              Owner profile
+            </a>
+          ) : (
+            <button
+              class="btn btn-outline btn-sm"
+              type="button"
+              disabled
+              title="The listing response does not include owner id, so the public profile cannot be opened yet."
+            >
+              Owner profile unavailable
+            </button>
+          )}
+
           {phone ? (
             <a class="btn btn-primary btn-sm" href={`tel:${phone}`}>
               Call owner
@@ -36,13 +52,19 @@ export function ListingTenantContactPanel({ listing }: ListingTenantContactPanel
               Send email
             </a>
           ) : null}
-
-          {!phone && !email ? (
-            <p class="text-sm text-base-content/60">
-              Contact details are not available for this listing yet.
-            </p>
-          ) : null}
         </div>
+
+        {!phone && !email ? (
+          <p class="text-sm text-base-content/60">
+            Direct contact details are not available for this listing yet.
+          </p>
+        ) : null}
+
+        {!ownerProfileHref ? (
+          <p class="text-xs text-base-content/50">
+            Owner profile link will become available when this listing includes the owner id.
+          </p>
+        ) : null}
       </div>
     </ListingSection>
   )

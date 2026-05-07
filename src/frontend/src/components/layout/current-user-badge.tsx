@@ -5,7 +5,9 @@ import { getUserById } from '../../services/user-api'
 import type { User } from '../../types/user'
 
 function getFullName(user: User): string {
-  return `${user.firstName} ${user.lastName}`.trim()
+  const fullName = `${user.firstName} ${user.lastName}`.trim()
+
+  return fullName || 'FlatShare user'
 }
 
 function getRoleLabel(role: string): string {
@@ -79,10 +81,18 @@ export function CurrentUserBadge() {
     return null
   }
 
+  const fullName = getFullName(user)
+  const profileHref = `/users/${encodeURIComponent(user.id)}`
+
   return (
-    <div class="hidden items-center gap-2 sm:flex">
-      <span class="badge badge-neutral badge-outline">{getFullName(user)}</span>
+    <a
+      class="hidden items-center gap-2 rounded-box px-2 py-1 transition hover:bg-base-200 sm:flex"
+      href={profileHref}
+      aria-label={`View public profile of ${fullName}`}
+      title="View public profile"
+    >
+      <span class="badge badge-neutral badge-outline">{fullName}</span>
       <span class={`badge ${getRoleBadgeClass(user.role)}`}>{getRoleLabel(user.role)}</span>
-    </div>
+    </a>
   )
 }
