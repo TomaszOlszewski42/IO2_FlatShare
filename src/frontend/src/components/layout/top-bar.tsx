@@ -53,6 +53,12 @@ export function TopBar() {
               Listings
             </a>
 
+            <RoleBoundary requiredRole={UserRole.Admin}>
+              <a class="link link-hover text-sm" href="/admin/reports">
+                Dashboard
+              </a>
+            </RoleBoundary>
+
             <RoleBoundary requiredRole={UserRole.Landlord}>
               <a class="link link-hover text-sm" href="/listings/create">
                 Create listing

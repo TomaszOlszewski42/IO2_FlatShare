@@ -3,7 +3,22 @@ import { readAuthSession } from './auth-session'
 import type {
   CreateViolationReportPayload,
   CreateViolationReportResponse,
+  ViolationReportTargetType,
 } from '../types/violation-report'
+
+type BackendViolationReportTargetType = 0 | 1
+
+type CreateViolationReportBackendPayload = {
+  type: BackendViolationReportTargetType
+  targetId: string
+  reason: string
+  details: string
+}
+
+const targetTypeCodeByValue: Record<ViolationReportTargetType, BackendViolationReportTargetType> = {
+  LISTING: 0,
+  USER: 1,
+}
 
 function getAuthHeaders(token?: string, type = 'Bearer'): Record<string, string> {
   if (token) {
@@ -25,9 +40,9 @@ function getAuthHeaders(token?: string, type = 'Bearer'): Record<string, string>
 
 function normalizeViolationReportPayload(
   payload: CreateViolationReportPayload,
-): CreateViolationReportPayload {
+): CreateViolationReportBackendPayload {
   return {
-    type: payload.type,
+    type: targetTypeCodeByValue[payload.type],
     targetId: payload.targetId,
     reason: payload.reason.trim(),
     details: payload.details?.trim() ?? '',
