@@ -5,6 +5,7 @@ import { TenantPreferencesPage } from './pages/tenant-preferences-page'
 import { AppShell } from './components/layout/app-shell'
 import { HomePage } from './pages/home-page'
 import { LoginPage } from './pages/login-page'
+import { AdminReportsPage } from './pages/admin/admin-reports-page'
 import { ListingCreatePage } from './pages/listings/listing-create-page'
 import { ListingEditPage } from './pages/listings/listing-edit-page'
 import { ListingDetailsPage } from './pages/listings/listing-details-page'
@@ -62,6 +63,7 @@ export function App() {
     <AppShell>
       <Router>
         <HomePage path="/" />
+        <ProtectedRoute path="/admin/reports" component={AdminReportsPage} requiredRole={UserRole.Admin} />
         <ProtectedRoute path="/listings" component={ListingsPage} />
         <ProtectedRoute path="/preferences" component={TenantPreferencesPage} requiredRole={UserRole.Tenant} />
         <ProtectedRoute path="/listings/create" component={ListingCreatePage} requiredRole={UserRole.Landlord} />
