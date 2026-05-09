@@ -5,8 +5,10 @@ import { EmptyStateContent } from '../../components/common/empty-state-content'
 import { InfoAlert } from '../../components/common/info-alert'
 import { AppButton } from '../../components/ui/app-button'
 import { useAuth } from '../../hooks/use-auth'
+import { getListingById } from '../../services/listings-api'
 import {
   adminReportStatuses,
+  banAdminUser,
   getAdminReports,
   updateAdminReportStatus,
   type AdminReportStatus,
@@ -79,6 +81,7 @@ type AdminReportTargetBoxProps = {
 
 function AdminReportTargetBox({ report }: AdminReportTargetBoxProps) {
   const isListingReport = report.targetType === 'LISTING'
+  const isUserReport = report.targetType === 'USER'
 
   return (
     <div class="rounded-box bg-base-200 px-3 py-2 text-xs text-base-content/70">
@@ -95,6 +98,256 @@ function AdminReportTargetBox({ report }: AdminReportTargetBoxProps) {
         >
           Open listing
         </a>
+      ) : null}
+
+      {isUserReport ? (
+        <a
+          class="btn btn-outline btn-xs mt-3 w-full"
+          href={`/users/${encodeURIComponent(report.targetId)}`}
+        >
+          Open profile
+        </a>
+      ) : null}
+    </div>
+  )
+}
+
+type AdminUserBanPanelProps = {
+  report: AdminViolationReport
+  userId: string
+  title: string
+  description: string
+  token: string
+  tokenType: string
+  onUserBanned: () => void
+}
+
+function AdminUserBanPanel({
+  report,
+  userId,
+  title,
+  description,
+  token,
+  tokenType,
+  onUserBanned,
+}: AdminUserBanPanelProps) {
+  const [banReason, setBanReason] = useState('')
+  const [isBanning, setIsBanning] = useState(false)
+  const [banError, setBanError] = useState<string | null>(null)
+  const [banSuccess, setBanSuccess] = useState<string | null>(null)
+
+  const trimmedReason = banReason.trim()
+  const canBan = trimmedReason.length >= 3 && !isBanning
+
+  async function handleBanUser() {
+    if (!canBan) {
+      return
+    }
+
+    setIsBanning(true)
+    setBanError(null)
+    setBanSuccess(null)
+
+    try {
+      await banAdminUser(userId, trimmedReason, token, tokenType)
+
+      try {
+        await updateAdminReportStatus(report.id, 'ActionTaken', token, tokenType)
+      } catch (statusError) {
+        console.error('User was banned, but report status update failed:', statusError)
+
+        setBanSuccess(
+          'User was banned, but the report status could not be changed automatically. You can set it to Action taken manually.',
+        )
+
+        return
+      }
+
+      onUserBanned()
+    } catch (error) {
+      console.error('Failed to ban user:', error)
+      setBanError(getReadableActionError(error))
+    } finally {
+      setIsBanning(false)
+    }
+  }
+
+  return (
+    <div class="rounded-box border border-error/30 bg-error/5 p-4">
+      <div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+        <div class="space-y-1">
+          <h3 class="font-semibold text-error">{title}</h3>
+          <p class="max-w-2xl text-sm text-base-content/70">{description}</p>
+        </div>
+
+        <div class="badge badge-error badge-outline">Admin only</div>
+      </div>
+
+      <div class="mt-4 grid gap-3">
+        <label class="form-control">
+          <span class="label py-1">
+            <span class="label-text">Ban reason</span>
+          </span>
+
+          <textarea
+            class="textarea textarea-bordered min-h-24 bg-base-100"
+            value={banReason}
+            disabled={isBanning}
+            placeholder="Example: Multiple confirmed scam reports."
+            onInput={(event) => {
+              setBanReason((event.currentTarget as HTMLTextAreaElement).value)
+              setBanError(null)
+              setBanSuccess(null)
+            }}
+          />
+        </label>
+
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <p class="text-xs text-base-content/60">
+            Minimum 3 characters. After a successful ban, this report will be marked as Action taken.
+          </p>
+
+          <AppButton
+            variant="primary"
+            className="btn-sm btn-error"
+            loading={isBanning}
+            disabled={!canBan}
+            onClick={handleBanUser}
+          >
+            Ban user
+          </AppButton>
+        </div>
+
+        {banError ? (
+          <InfoAlert
+            title="User could not be banned"
+            message={banError}
+            variant="error"
+          />
+        ) : null}
+
+        {banSuccess ? (
+          <InfoAlert
+            title="User banned"
+            message={banSuccess}
+            variant="success"
+          />
+        ) : null}
+      </div>
+    </div>
+  )
+}
+
+type AdminListingOwnerModerationPanelProps = {
+  report: AdminViolationReport
+  token: string
+  tokenType: string
+  onUserBanned: () => void
+}
+
+function AdminListingOwnerModerationPanel({
+  report,
+  token,
+  tokenType,
+  onUserBanned,
+}: AdminListingOwnerModerationPanelProps) {
+  const [ownerId, setOwnerId] = useState<string | null>(null)
+  const [isLoadingOwner, setIsLoadingOwner] = useState(true)
+  const [ownerLookupError, setOwnerLookupError] = useState<string | null>(null)
+
+  useEffect(() => {
+    let isMounted = true
+
+    setOwnerId(null)
+    setOwnerLookupError(null)
+    setIsLoadingOwner(true)
+
+    void getListingById(report.targetId, token, tokenType)
+      .then((listing) => {
+        if (!isMounted) {
+          return
+        }
+
+        const resolvedOwnerId = listing.ownerId?.trim() ?? null
+        setOwnerId(resolvedOwnerId && resolvedOwnerId.length > 0 ? resolvedOwnerId : null)
+      })
+      .catch((error) => {
+        console.error('Failed to load listing owner for admin report:', error)
+
+        if (isMounted) {
+          setOwnerLookupError(getReadableActionError(error))
+        }
+      })
+      .finally(() => {
+        if (isMounted) {
+          setIsLoadingOwner(false)
+        }
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [report.targetId, token, tokenType])
+
+  return (
+    <div class="rounded-box border border-base-300 bg-base-200/40 p-4">
+      <div class="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+        <div class="space-y-1">
+          <h3 class="font-semibold">Listing owner actions</h3>
+          <p class="text-sm text-base-content/65">
+            If the listing response includes ownerId, admin can open or ban the owner directly from this report.
+          </p>
+        </div>
+
+        {ownerId ? (
+          <a
+            class="btn btn-outline btn-sm"
+            href={`/users/${encodeURIComponent(ownerId)}`}
+          >
+            Open owner profile
+          </a>
+        ) : null}
+      </div>
+
+      {isLoadingOwner ? (
+        <div class="mt-4 flex items-center gap-2 text-sm text-base-content/60">
+          <span class="loading loading-spinner loading-sm" />
+          Loading listing owner...
+        </div>
+      ) : null}
+
+      {!isLoadingOwner && ownerLookupError ? (
+        <div class="mt-4">
+          <InfoAlert
+            title="Listing owner could not be loaded"
+            message={ownerLookupError}
+            variant="error"
+          />
+        </div>
+      ) : null}
+
+      {!isLoadingOwner && !ownerLookupError && !ownerId ? (
+        <div class="mt-4">
+          <InfoAlert
+            title="Owner actions unavailable"
+            message="This listing response does not include ownerId yet. After ownerId is added to ListingDto, this dashboard will show owner profile and ban actions here."
+            variant="warning"
+          />
+        </div>
+      ) : null}
+
+      {!isLoadingOwner && ownerId ? (
+        <div class="mt-4">
+          <AdminUserBanPanel
+            report={report}
+            userId={ownerId}
+            title="Ban listing owner"
+            description="This action blocks the owner of the reported listing. The backend moderation flow should hide active listings owned by this user."
+            token={token}
+            tokenType={tokenType}
+            onUserBanned={onUserBanned}
+          />
+        </div>
       ) : null}
     </div>
   )
@@ -116,6 +369,10 @@ function AdminReportCard({
   const [selectedStatus, setSelectedStatus] = useState<AdminReportStatus>(report.status)
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false)
   const [statusUpdateError, setStatusUpdateError] = useState<string | null>(null)
+
+  useEffect(() => {
+    setSelectedStatus(report.status)
+  }, [report.status])
 
   const hasStatusChanged = selectedStatus !== report.status
 
@@ -246,6 +503,27 @@ function AdminReportCard({
             </div>
           ) : null}
         </div>
+
+        {report.targetType === 'USER' ? (
+          <AdminUserBanPanel
+            report={report}
+            userId={report.targetId}
+            title="Ban reported user"
+            description="This action blocks the reported user account. According to the backend flow, active listings owned by this user will also be hidden by moderation."
+            token={token}
+            tokenType={tokenType}
+            onUserBanned={onStatusUpdated}
+          />
+        ) : null}
+
+        {report.targetType === 'LISTING' ? (
+          <AdminListingOwnerModerationPanel
+            report={report}
+            token={token}
+            tokenType={tokenType}
+            onUserBanned={onStatusUpdated}
+          />
+        ) : null}
       </div>
     </article>
   )
