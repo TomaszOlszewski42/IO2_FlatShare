@@ -17,6 +17,7 @@ export type ListingListQuery = {
 type ListingDto = {
   id: string
   ownerId?: string | null
+  OwnerId?: string | null
   title: string
   description: string
   price: number
@@ -207,7 +208,7 @@ function mapListingDtoToListing(item: ListingDto, fallbackOwnerId?: string): Lis
 
   return {
     id: item.id,
-    ownerId: item.ownerId ?? fallbackOwnerId,
+    ownerId: item.ownerId ?? item.OwnerId ?? fallbackOwnerId,
     title: item.title,
     description: item.description,
     price: item.price,
