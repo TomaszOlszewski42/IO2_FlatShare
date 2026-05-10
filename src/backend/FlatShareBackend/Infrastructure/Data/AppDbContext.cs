@@ -16,10 +16,26 @@ namespace FlatShareBackend.Infrastructure.Data
         public DbSet<Listing> Listings => Set<Listing>();
         public DbSet<UserPreferences> UsersPreferences => Set<UserPreferences>();
         public DbSet<ViolationReport> ViolationReports => Set<ViolationReport>();
+        public DbSet<ListingOpinion> ListingOpinions => Set<ListingOpinion>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<ListingOpinion>(entity =>
+            {
+                entity.HasKey(x => x.Id);
+                
+                entity.HasOne(x => x.Listing)
+                    .WithMany()
+                    .HasForeignKey(x => x.ListingId)
+                    .OnDelete(DeleteBehavior.Cascade);
+                    
+                entity.HasOne(x => x.User)
+                    .WithMany()
+                    .HasForeignKey(x => x.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
 
             modelBuilder.Entity<ViolationReport>(entity =>
             {
