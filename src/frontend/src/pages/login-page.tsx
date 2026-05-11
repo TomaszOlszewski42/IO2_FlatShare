@@ -12,11 +12,26 @@ import { AuthCardFooterLink } from '../components/auth/auth-card-footer-link'
 
 import { FormErrorSummary } from '../components/forms/form-error-summary'
 
+function isInactiveAccountError(error: unknown): boolean {
+  if (!(error instanceof Error)) {
+    return false
+  }
+
+  return error.message.trim().toLowerCase() === 'user account is not active.'
+}
+
 export function LoginPage(_: RoutableProps) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const { errorMessage, fieldErrors, clearErrors, handleError } = usePageErrorHandler()
+  const {
+    errorMessage,
+    fieldErrors,
+    clearErrors,
+    handleError,
+    setErrorMessage,
+    setFieldErrors,
+  } = usePageErrorHandler()
 
   async function onSubmit(event: SubmitEvent) {
     event.preventDefault()
@@ -36,6 +51,12 @@ export function LoginPage(_: RoutableProps) {
 
       route('/listings')
     } catch (error) {
+      if (isInactiveAccountError(error)) {
+        setErrorMessage('User account banned')
+        setFieldErrors({})
+        return
+      }
+
       handleError(error, 'Login failed. Check your credentials and try again.')
     } finally {
       setIsSubmitting(false)
