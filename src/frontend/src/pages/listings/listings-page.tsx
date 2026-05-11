@@ -61,6 +61,26 @@ function isNonSmokingListing(listing: Listing): boolean {
   return listing.allowSmoking === false || Boolean(listing.attributes?.nonSmokingOnly)
 }
 
+function isHiddenByModeration(listing: Listing): boolean {
+  return listing.status === 'HIDDEN_BY_MODERATION'
+}
+
+function isActiveListing(listing: Listing): boolean {
+  return !listing.status || listing.status === 'ACTIVE'
+}
+
+function shouldShowListingInListingsTab(listing: Listing, isLandlord: boolean): boolean {
+  if (isHiddenByModeration(listing)) {
+    return false
+  }
+
+  if (isLandlord) {
+    return true
+  }
+
+  return isActiveListing(listing)
+}
+
 function getReadableListingsError(error: unknown): string {
   if (error instanceof Error && error.message.trim().length > 0) {
     return error.message.trim()
@@ -94,14 +114,6 @@ export function ListingsPage(_: RoutableProps) {
     setIsLoading(true)
     setLoadError(null)
 
-    /*
-      Backend currently returns 500 for:
-      /api/v1/listings?OwnerId=<id>
-
-      Until the backend endpoint is fixed, do not send OwnerId from the frontend.
-      The backend ListingDto also does not return ownerId yet, so the frontend cannot
-      reliably filter "my listings" locally without backend support.
-    */
     void getListings(session.token, undefined, session.type)
       .then((items) => {
         if (isMounted) {
@@ -138,11 +150,7 @@ export function ListingsPage(_: RoutableProps) {
   }, [query, selectedStatus, priceMin, priceMax, selectedSort, featureFilters])
 
   const visibleListings = useMemo(() => {
-    if (isLandlord) {
-      return listings
-    }
-
-    return listings.filter((listing) => !listing.status || listing.status === 'ACTIVE')
+    return listings.filter((listing) => shouldShowListingInListingsTab(listing, isLandlord))
   }, [isLandlord, listings])
 
   const filteredListings = useMemo(() => {
@@ -226,9 +234,7 @@ export function ListingsPage(_: RoutableProps) {
     hasFeatureFilters ||
     (isLandlord && selectedStatus !== 'ALL')
 
-  const activeCount = visibleListings.filter(
-    (listing) => !listing.status || listing.status === 'ACTIVE',
-  ).length
+  const activeCount = visibleListings.filter(isActiveListing).length
 
   const scrollToResultsTop = () => {
     if (!resultsTopRef.current) {
