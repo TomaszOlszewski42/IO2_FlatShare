@@ -1,0 +1,155 @@
+import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { render } from 'preact'
+import { act } from 'preact/test-utils'
+import { ListingUnavailabilityCalendar } from './listing-unavailability-calendar'
+import * as unavailabilityApi from '../../services/unavailability-api'
+import * as authSession from '../../services/auth-session'
+import { ErrorHandlerContext } from '../../services/error-handler-context'
+
+vi.mock('../../services/unavailability-api', () => ({
+  getListingUnavailability: vi.fn(),
+  createUnavailability: vi.fn(),
+  updateUnavailability: vi.fn(),
+  deleteUnavailability: vi.fn(),
+}))
+
+vi.mock('../../services/auth-session', () => ({
+  readAuthSession: vi.fn(),
+}))
+
+describe('ListingUnavailabilityCalendar', () => {
+  const mockListingId = 'listing-123'
+  const mockSession = { token: 'abc', type: 'Bearer' }
+  const mockShowToast = vi.fn()
+
+  const flushEffects = async () => {
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0))
+    })
+  }
+
+  const renderComponent = (container: HTMLElement) => {
+    act(() => {
+      render(
+        <ErrorHandlerContext.Provider
+          value={{
+            handleApiError: vi.fn(),
+            showToast: mockShowToast,
+            clearError: vi.fn(),
+            error: null,
+          }}
+        >
+          <ListingUnavailabilityCalendar listingId={mockListingId} />
+        </ErrorHandlerContext.Provider>,
+        container,
+      )
+    })
+  }
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    vi.mocked(authSession.readAuthSession).mockReturnValue(mockSession as any)
+
+    // Override global confirm to return true for deletes
+    global.confirm = vi.fn().mockReturnValue(true)
+    document.body.innerHTML = ''
+  })
+
+  it('renders and fetches unavailabilities on mount', async () => {
+    vi.mocked(unavailabilityApi.getListingUnavailability).mockResolvedValue([
+      { id: 'u1', startDate: '2026-06-01T00:00:00Z', endDate: '2026-06-10T00:00:00Z', reason: 'Test Reason' },
+    ])
+
+    const container = document.createElement('div')
+    document.body.appendChild(container)
+
+    renderComponent(container)
+    await flushEffects()
+
+    expect(unavailabilityApi.getListingUnavailability).toHaveBeenCalledWith(mockListingId, 'abc', 'Bearer')
+    expect(container.textContent).toContain('Test Reason')
+    expect(container.textContent).toContain('Unavailability Calendar')
+  })
+
+  it('displays a message when no unavailabilities are present', async () => {
+    vi.mocked(unavailabilityApi.getListingUnavailability).mockResolvedValue([])
+
+    const container = document.createElement('div')
+    document.body.appendChild(container)
+
+    renderComponent(container)
+    await flushEffects()
+
+    expect(container.textContent).toContain('No unavailabilities scheduled.')
+  })
+
+  it('handles form submission to add unavailability', async () => {
+    vi.mocked(unavailabilityApi.getListingUnavailability).mockResolvedValue([])
+    vi.mocked(unavailabilityApi.createUnavailability).mockResolvedValue({
+      id: 'new-u',
+      startDate: '2026-07-01T00:00:00Z',
+      endDate: '2026-07-05T00:00:00Z',
+      reason: 'Holiday',
+    })
+
+    const container = document.createElement('div')
+    document.body.appendChild(container)
+
+    renderComponent(container)
+    await flushEffects()
+
+    // Simulate calendar range change
+    const calendarRange = container.querySelector('calendar-range') as HTMLElement
+    await act(async () => {
+      const event = new Event('change')
+      Object.defineProperty(event, 'target', { value: { value: '2026-07-01/2026-07-05' } })
+      calendarRange.dispatchEvent(event)
+    })
+
+    // Simulate reason input
+    const reasonInput = container.querySelector('input[placeholder="e.g. Maintenance"]') as HTMLInputElement
+    await act(async () => {
+      reasonInput.value = 'Holiday'
+      reasonInput.dispatchEvent(new Event('input', { bubbles: true }))
+    })
+
+    // Simulate form submit
+    const form = container.querySelector('form') as HTMLFormElement
+    await act(async () => {
+      form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))
+    })
+    await flushEffects()
+
+    expect(unavailabilityApi.createUnavailability).toHaveBeenCalledWith(
+      mockListingId,
+      { startDate: '2026-07-01', endDate: '2026-07-05', reason: 'Holiday' },
+      'abc',
+      'Bearer'
+    )
+    expect(mockShowToast).toHaveBeenCalledWith('Unavailability added successfully.', 'success')
+  })
+
+  it('handles delete action', async () => {
+    vi.mocked(unavailabilityApi.getListingUnavailability).mockResolvedValue([
+      { id: 'u1', startDate: '2026-06-01T00:00:00Z', endDate: '2026-06-10T00:00:00Z', reason: 'Test Reason' },
+    ])
+    vi.mocked(unavailabilityApi.deleteUnavailability).mockResolvedValue(undefined)
+
+    const container = document.createElement('div')
+    document.body.appendChild(container)
+
+    renderComponent(container)
+    await flushEffects()
+
+    const deleteBtn = container.querySelector('button.text-error') as HTMLButtonElement
+
+    await act(async () => {
+      deleteBtn.click()
+    })
+    await flushEffects()
+
+    expect(global.confirm).toHaveBeenCalled()
+    expect(unavailabilityApi.deleteUnavailability).toHaveBeenCalledWith(mockListingId, 'u1', 'abc', 'Bearer')
+    expect(mockShowToast).toHaveBeenCalledWith('Unavailability removed.', 'success')
+  })
+})
