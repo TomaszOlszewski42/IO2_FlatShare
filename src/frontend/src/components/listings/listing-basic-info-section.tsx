@@ -18,7 +18,7 @@ export function ListingBasicInfoSection({
 }: ListingBasicInfoSectionProps) {
   return (
     <ListingFormSection
-      title="Informacje podstawowe"
+      title="Basic information"
       description="Title and description of the listing."
     >
       <TextInput

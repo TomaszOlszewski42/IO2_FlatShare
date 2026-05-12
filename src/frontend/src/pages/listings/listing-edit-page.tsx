@@ -3,6 +3,8 @@ import { route } from 'preact-router'
 import { useEffect, useState } from 'preact/hooks'
 
 import { ListingEditForm } from '../../components/listings/listing-edit-form'
+import { ListingPhotoUpload } from '../../components/listings/listing-photo-upload'
+import { ListingUnavailabilityCalendar } from '../../components/listings/listing-unavailability-calendar'
 import type { ListingFormData } from '../../components/listings/listing-create-form'
 import { AppButton } from '../../components/ui/app-button'
 import { usePageErrorHandler } from '../../hooks/use-page-error-handler'
@@ -48,6 +50,7 @@ function readPreferredTenantProfile(listing: Listing): string {
 }
 
 export function ListingEditPage({ listingId }: ListingEditPageProps) {
+  const [activeTab, setActiveTab] = useState<'basic' | 'photos' | 'unavailability'>('basic')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [initialData, setInitialData] = useState<ListingFormData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -243,15 +246,55 @@ export function ListingEditPage({ listingId }: ListingEditPageProps) {
           <p class="text-base-content/70">Update the details of your apartment.</p>
         </div>
 
+        <div role="tablist" class="tabs tabs-bordered mb-8">
+          <a
+            role="tab"
+            class={`tab tab-lg ${activeTab === 'basic' ? 'tab-active font-semibold' : ''}`}
+            onClick={() => setActiveTab('basic')}
+          >
+            Basic Info
+          </a>
+          <a
+            role="tab"
+            class={`tab tab-lg ${activeTab === 'photos' ? 'tab-active font-semibold' : ''}`}
+            onClick={() => setActiveTab('photos')}
+          >
+            Photos
+          </a>
+          <a
+            role="tab"
+            class={`tab tab-lg ${activeTab === 'unavailability' ? 'tab-active font-semibold' : ''}`}
+            onClick={() => setActiveTab('unavailability')}
+          >
+            Unavailability
+          </a>
+        </div>
+
         {errorMessage ? <div class="alert alert-error mb-6 text-sm">{errorMessage}</div> : null}
 
-        <ListingEditForm
-          listingId={listingId}
-          initialData={initialData}
-          fieldErrors={fieldErrors}
-          onSubmit={handleSubmit}
-          isSubmitting={isSubmitting}
-        />
+        {activeTab === 'basic' && (
+          <div class="animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <ListingEditForm
+              listingId={listingId}
+              initialData={initialData}
+              fieldErrors={fieldErrors}
+              onSubmit={handleSubmit}
+              isSubmitting={isSubmitting}
+            />
+          </div>
+        )}
+
+        {activeTab === 'photos' && (
+          <div class="animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <ListingPhotoUpload listingId={listingId} />
+          </div>
+        )}
+
+        {activeTab === 'unavailability' && (
+          <div class="animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <ListingUnavailabilityCalendar listingId={listingId} />
+          </div>
+        )}
       </div>
     </div>
   )

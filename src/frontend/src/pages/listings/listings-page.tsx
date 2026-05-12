@@ -114,7 +114,9 @@ export function ListingsPage(_: RoutableProps) {
     setIsLoading(true)
     setLoadError(null)
 
-    void getListings(session.token, undefined, session.type)
+    const queryParams = isLandlord ? { ownerId: session.userId } : undefined
+
+    void getListings(session.token, queryParams, session.type)
       .then((items) => {
         if (isMounted) {
           setListings(items)
@@ -137,7 +139,7 @@ export function ListingsPage(_: RoutableProps) {
     return () => {
       isMounted = false
     }
-  }, [session])
+  }, [session, isLandlord])
 
   useEffect(() => {
     if (!isLandlord) {
