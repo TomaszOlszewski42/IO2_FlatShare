@@ -23,8 +23,8 @@ public class BookingsController : ControllerBase
     public async Task<IActionResult> Create([FromBody] BookingRequest rentalRequest)
     {
         var requesterId = _httpAccessor.ParseUserID();
-        var bookingId = _bookingService.CreateBooking(rentalRequest, requesterId);
-        return Ok(bookingId); // TODO: zwracać poprawny obiekt
+        var booking = await _bookingService.CreateBooking(rentalRequest, requesterId);
+        return Created($"api/v1/rentals/{booking.Id}", booking);
     }
 
     [HttpPost("{rentalId}/accept")]
@@ -54,7 +54,6 @@ public class BookingsController : ControllerBase
         await _bookingService.ChangeStatus(rentalId, BookingStatus.Confirmed);
         return Ok();
     }
-
 
     [HttpGet("{rentalId}")]
     public async Task<IActionResult> GetStatus(Guid rentalId)

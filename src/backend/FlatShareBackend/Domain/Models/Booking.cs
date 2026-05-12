@@ -13,8 +13,9 @@ public enum BookingStatus
 
 public class Booking
 {
-    public required Guid Id;
-    public required Guid TenantId;
-    public required Guid ListingId;
-    public required BookingStatus Status;
+    public required Guid Id { get; set; }
+    public required Guid TenantId { get; set; }
+    public required Guid ListingId { get; set; }
+    public required BookingStatus Status { get; set; }
+    public required DateRange Dates { get; set; }
 }

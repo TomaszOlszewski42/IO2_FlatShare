@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using FlatShareBackend.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FlatShareBackend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260512174012_Bookings")]
+    partial class Bookings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -99,37 +102,6 @@ namespace FlatShareBackend.Migrations
                     b.HasIndex("OwnerId");
 
                     b.ToTable("Listings");
-                });
-
-            modelBuilder.Entity("FlatShareBackend.Domain.Models.ListingOpinion", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Comment")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("ListingId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("Rating")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ListingId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ListingOpinions");
                 });
 
             modelBuilder.Entity("FlatShareBackend.Domain.Models.User", b =>
@@ -360,14 +332,10 @@ namespace FlatShareBackend.Migrations
 
                             NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
 
-                            b1.Property<string>("Message")
-                                .IsRequired()
-                                .HasColumnType("text");
-
-                            b1.Property<DateOnly>("Since")
+                            b1.Property<DateOnly>("From")
                                 .HasColumnType("date");
 
-                            b1.Property<DateOnly>("Until")
+                            b1.Property<DateOnly>("To")
                                 .HasColumnType("date");
 
                             b1.HasKey("ListingId", "Id");
@@ -415,25 +383,6 @@ namespace FlatShareBackend.Migrations
                     b.Navigation("Owner");
 
                     b.Navigation("UnavailableDates");
-                });
-
-            modelBuilder.Entity("FlatShareBackend.Domain.Models.ListingOpinion", b =>
-                {
-                    b.HasOne("FlatShareBackend.Domain.Models.Listing", "Listing")
-                        .WithMany()
-                        .HasForeignKey("ListingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FlatShareBackend.Domain.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Listing");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("FlatShareBackend.Domain.Models.UserPreferences", b =>
