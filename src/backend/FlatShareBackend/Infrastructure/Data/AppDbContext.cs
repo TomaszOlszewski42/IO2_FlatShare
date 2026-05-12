@@ -73,6 +73,8 @@ namespace FlatShareBackend.Infrastructure.Data
                 entity.OwnsOne(x => x.Attributes);
 
                 entity.OwnsMany(x => x.UnavailableDates);
+
+                entity.OwnsMany(x => x.BookedDates);
             });
 
             modelBuilder.Entity<UserPreferences>(entity =>
@@ -104,10 +106,12 @@ namespace FlatShareBackend.Infrastructure.Data
             modelBuilder.Entity<Booking>(entity =>
             {
                 entity.HasIndex(x => x.Id).IsUnique();
+                
                 entity.HasOne<User>()
                     .WithMany()
                     .HasForeignKey(x => x.TenantId)
                     .IsRequired();
+
                 entity.HasOne<Listing>()
                     .WithMany()
                     .HasForeignKey(x => x.ListingId)

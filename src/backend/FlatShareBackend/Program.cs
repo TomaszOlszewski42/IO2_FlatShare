@@ -28,6 +28,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Data;
 using System.Reflection.Metadata;
 using System.Text;
+using FlatShareBackend.Infrastructure.Repositories.Bookings;
+using FlatShareBackend.Application.Services.Bookings;
 
 namespace FlatShareBackend
 {
@@ -109,6 +111,8 @@ namespace FlatShareBackend
 
             builder.Services.AddScoped<IListingOpinionRepository, ListingOpinionRepositoryDB>();
             builder.Services.AddScoped<IListingOpinionService, ListingOpinionService>();
+            builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+            builder.Services.AddScoped<IBookingService, BookingService>();
 
             builder.Services.AddSingleton(serviceProvider =>
             {

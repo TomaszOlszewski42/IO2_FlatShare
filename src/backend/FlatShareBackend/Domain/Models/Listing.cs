@@ -29,6 +29,7 @@ public class Listing
     public required State Status { get; set; }
     public required ListingAttributes Attributes { get; set; }
     public List<DateRange> UnavailableDates { get; set; } = [];
+    public List<DateRange> BookedDates { get; set; } = [];
     public List<Guid> Photos { get; set; } = [];
 
     public void EditFromRequest(EditListingRequest request)
