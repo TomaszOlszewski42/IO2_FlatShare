@@ -17,7 +17,7 @@ namespace FlatShareBackend.Middlewares
                 Timestamp = DateTime.UtcNow,
                 Status = statusCode,
                 Error = "InternalServerError",
-                Message = "An unexpected error occurred."
+                Message = exception.Message
             };
 
             switch (exception)
