@@ -28,7 +28,7 @@ public class ListingRepositoryDB : IListingRepository
     public async Task<Listing> Get(Guid listingId)
     {
         return await _dbContext.Listings.FindAsync(listingId) 
-            ?? throw new InvalidCastException("Invalid guid of listing");
+            ?? throw new InvalidIdException("Invalid guid of listing");
     }
 
     public IQueryable<Listing> GetQuery(PagingQueryArgs args)

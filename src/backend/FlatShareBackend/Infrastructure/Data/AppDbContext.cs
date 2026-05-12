@@ -16,7 +16,11 @@ namespace FlatShareBackend.Infrastructure.Data
         public DbSet<Listing> Listings => Set<Listing>();
         public DbSet<UserPreferences> UsersPreferences => Set<UserPreferences>();
         public DbSet<ViolationReport> ViolationReports => Set<ViolationReport>();
+<<<<<<< HEAD
         public DbSet<ListingOpinion> ListingOpinions => Set<ListingOpinion>();
+=======
+        public DbSet<Booking> Bookings => Set<Booking>();
+>>>>>>> 5e9b668 (BookingController mvp)
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -96,6 +100,20 @@ namespace FlatShareBackend.Infrastructure.Data
                     .HasForeignKey(x => x.UserId)
                     .OnDelete(DeleteBehavior.Cascade);
             });
+
+            modelBuilder.Entity<Booking>(entity =>
+            {
+                entity.HasIndex(x => x.Id).IsUnique();
+                entity.HasOne<User>()
+                    .WithMany()
+                    .HasForeignKey(x => x.TenantId)
+                    .IsRequired();
+                entity.HasOne<Listing>()
+                    .WithMany()
+                    .HasForeignKey(x => x.ListingId)
+                    .IsRequired();
+            });
+
         }
 
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
