@@ -58,7 +58,7 @@ describe('ListingUnavailabilityCalendar', () => {
 
   it('renders and fetches unavailabilities on mount', async () => {
     vi.mocked(unavailabilityApi.getListingUnavailability).mockResolvedValue([
-      { id: 'u1', startDate: '2026-06-01T00:00:00Z', endDate: '2026-06-10T00:00:00Z', reason: 'Test Reason' },
+      { id: 'u1', listingId: mockListingId, startDate: '2026-06-01T00:00:00Z', endDate: '2026-06-10T00:00:00Z', reason: 'Test Reason' },
     ])
 
     const container = document.createElement('div')
@@ -88,6 +88,7 @@ describe('ListingUnavailabilityCalendar', () => {
     vi.mocked(unavailabilityApi.getListingUnavailability).mockResolvedValue([])
     vi.mocked(unavailabilityApi.createUnavailability).mockResolvedValue({
       id: 'new-u',
+      listingId: mockListingId,
       startDate: '2026-07-01T00:00:00Z',
       endDate: '2026-07-05T00:00:00Z',
       reason: 'Holiday',
@@ -132,7 +133,7 @@ describe('ListingUnavailabilityCalendar', () => {
 
   it('handles delete action', async () => {
     vi.mocked(unavailabilityApi.getListingUnavailability).mockResolvedValue([
-      { id: 'u1', startDate: '2026-06-01T00:00:00Z', endDate: '2026-06-10T00:00:00Z', reason: 'Test Reason' },
+      { id: 'u1', listingId: mockListingId, startDate: '2026-06-01T00:00:00Z', endDate: '2026-06-10T00:00:00Z', reason: 'Test Reason' },
     ])
     vi.mocked(unavailabilityApi.deleteUnavailability).mockResolvedValue(undefined)
 

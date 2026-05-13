@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'preact/hooks'
+import { useEffect, useState } from 'preact/hooks'
 import { AppButton } from '../ui/app-button'
 import {
   getListingUnavailability,
