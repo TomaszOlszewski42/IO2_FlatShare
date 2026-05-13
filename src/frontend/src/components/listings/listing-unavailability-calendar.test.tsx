@@ -4,7 +4,7 @@ import { act } from 'preact/test-utils'
 import { ListingUnavailabilityCalendar } from './listing-unavailability-calendar'
 import * as unavailabilityApi from '../../services/unavailability-api'
 import * as authSession from '../../services/auth-session'
-import { ErrorHandlerContext } from '../../services/error-handler-context'
+import * as errorHandlerContext from '../../services/error-handler-context'
 
 vi.mock('../../services/unavailability-api', () => ({
   getListingUnavailability: vi.fn(),
@@ -15,6 +15,10 @@ vi.mock('../../services/unavailability-api', () => ({
 
 vi.mock('../../services/auth-session', () => ({
   readAuthSession: vi.fn(),
+}))
+
+vi.mock('../../services/error-handler-context', () => ({
+  useErrorHandler: vi.fn(),
 }))
 
 describe('ListingUnavailabilityCalendar', () => {
@@ -30,25 +34,22 @@ describe('ListingUnavailabilityCalendar', () => {
 
   const renderComponent = (container: HTMLElement) => {
     act(() => {
-      render(
-        <ErrorHandlerContext.Provider
-          value={{
-            handleApiError: vi.fn(),
-            showToast: mockShowToast,
-            clearError: vi.fn(),
-            error: null,
-          }}
-        >
-          <ListingUnavailabilityCalendar listingId={mockListingId} />
-        </ErrorHandlerContext.Provider>,
-        container,
-      )
+      render(<ListingUnavailabilityCalendar listingId={mockListingId} />, container)
     })
   }
 
   beforeEach(() => {
     vi.clearAllMocks()
     vi.mocked(authSession.readAuthSession).mockReturnValue(mockSession as any)
+    vi.mocked(errorHandlerContext.useErrorHandler).mockReturnValue({
+      showToast: mockShowToast,
+      toasts: [],
+      removeToast: vi.fn(),
+      showError: vi.fn(),
+      getFieldErrors: vi.fn(),
+      clearFieldErrors: vi.fn(),
+      setFieldErrors: vi.fn(),
+    })
 
     // Override global confirm to return true for deletes
     global.confirm = vi.fn().mockReturnValue(true)
