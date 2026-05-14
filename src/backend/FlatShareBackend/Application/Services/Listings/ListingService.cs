@@ -24,7 +24,7 @@ public class ListingService : IListingService
 
     public async Task AddUnvailability(Guid listingId, Guid requestingUser, DateRange dates)
     {
-        if (dates.From > dates.To)
+        if (dates.Since > dates.Until)
         {
             throw new ListingValidationException("Period of time 'from' can't be later than 'to'");
         }
