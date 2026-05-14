@@ -186,7 +186,12 @@ namespace FlatShareBackendTests.Controllers
         {
             // Arrange
             var listingId = Guid.NewGuid();
-            var dates = new DateRange { From = new DateOnly(2025, 1, 1), To = new DateOnly(2025, 1, 10) };
+            var dates = new DateRange 
+            { 
+                Since = new DateOnly(2025, 1, 1), 
+                Until = new DateOnly(2025, 1, 10),
+                Message = "Renovation"
+            };
 
             // Act
             var result = await _controller.AddUnavailability(dates, listingId);
