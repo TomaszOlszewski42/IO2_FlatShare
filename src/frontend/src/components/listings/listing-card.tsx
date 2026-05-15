@@ -55,10 +55,10 @@ function formatDescription(description: string): string {
 }
 
 export function ListingCard({ listing, onEdit, onViewDetails }: ListingCardProps) {
-  const { session, isLandlord } = useAuth()
+  const { session, isLandlord, isAdmin } = useAuth()
   const isOwner = session?.userId === listing.ownerId
   const canEdit = isLandlord && isOwner
-  const shouldShowStatus = isLandlord && Boolean(listing.status)
+  const shouldShowStatus = (isLandlord || isAdmin) && Boolean(listing.status)
   const ownerProfileHref = listing.ownerId ? `/users/${encodeURIComponent(listing.ownerId)}` : ''
 
   const featureBadges = [
@@ -130,7 +130,7 @@ export function ListingCard({ listing, onEdit, onViewDetails }: ListingCardProps
           ) : null}
 
           <AppButton variant="outline" className="btn-sm" onClick={() => onViewDetails?.(listing.id)}>
-            {isLandlord ? 'Details' : 'View offer'}
+            {isLandlord || isAdmin ? 'Details' : 'View offer'}
           </AppButton>
         </div>
       </div>

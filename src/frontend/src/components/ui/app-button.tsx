@@ -1,7 +1,7 @@
 import type { ComponentChildren } from 'preact'
 import type { JSX } from 'preact'
 
-type ButtonVariant = 'primary' | 'outline' | 'ghost'
+type ButtonVariant = 'primary' | 'outline' | 'ghost' | 'warning' | 'success'
 
 type AppButtonProps = Omit<
   JSX.HTMLAttributes<HTMLButtonElement>,
@@ -19,6 +19,8 @@ const variantClass: Record<ButtonVariant, string> = {
   primary: 'btn-primary',
   outline: 'btn-outline',
   ghost: 'btn-ghost',
+  warning: 'btn-warning',
+  success: 'btn-success',
 }
 
 export function AppButton({

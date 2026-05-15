@@ -19,7 +19,15 @@ import { AppButton } from '../../components/ui/app-button'
 import { useAuth } from '../../hooks/use-auth'
 import { readAuthSession } from '../../services/auth-session'
 import { useErrorHandler } from '../../services/error-handler-context'
-import { getListingById, getListingPhotoIds } from '../../services/listings-api'
+import {
+  getListingById,
+  getListingPhotoIds,
+  archiveListing,
+  hideListing,
+  publishListing,
+  submitListing,
+  requestFixesListing,
+} from '../../services/listings-api'
 import { createViolationReport } from '../../services/reports-api'
 import type { Listing } from '../../types/listing'
 import type { CreateViolationReportPayload } from '../../types/violation-report'
@@ -34,7 +42,7 @@ type ListingDetailsRouteProps = RoutableProps & {
 
 export function ListingDetailsPage({ listingId }: ListingDetailsRouteProps) {
   const { showToast } = useErrorHandler()
-  const { isLandlord, isTenant } = useAuth()
+  const { isLandlord, isTenant, isAdmin, session: authSession } = useAuth()
 
   const [isLoading, setIsLoading] = useState(true)
   const [listing, setListing] = useState<Listing | null>(null)
@@ -100,6 +108,30 @@ export function ListingDetailsPage({ listingId }: ListingDetailsRouteProps) {
     showToast('The report has been sent to moderation.', 'success')
   }
 
+  async function handleStatusAction(
+    action: (id: string, token: string, type?: string) => Promise<any>,
+    successMessage: string,
+  ) {
+    const session = readAuthSession()
+
+    if (!session || !listingId) {
+      route('/login')
+      return
+    }
+
+    try {
+      await action(listingId, session.token, session.type)
+      showToast(successMessage, 'success')
+
+      // Refresh listing data
+      const updatedListing = await getListingById(listingId, session.token, session.type)
+      setListing(updatedListing)
+    } catch (error) {
+      console.error('Action failed:', error)
+      showToast('Failed to perform action.', 'error')
+    }
+  }
+
   if (isLoading) {
     return <ListingDetailsSkeleton />
   }
@@ -125,7 +157,7 @@ export function ListingDetailsPage({ listingId }: ListingDetailsRouteProps) {
     { label: 'Available from', value: listing.availableFrom ? formatDate(listing.availableFrom) : '-' },
   ]
 
-  if (isLandlord) {
+  if (isLandlord || isAdmin) {
     parameterRows.push({
       label: 'Publication status',
       value: listing.status ? formatStatusLabel(listing.status) : '-',
@@ -142,11 +174,15 @@ export function ListingDetailsPage({ listingId }: ListingDetailsRouteProps) {
     <section class="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-5 px-4 py-6 md:px-6 md:py-8">
       <ListingDetailsHeader
         title={listing.title}
+        status={listing.status}
+        isOwner={authSession?.userId === listing.ownerId}
         onBack={() => route('/listings')}
         onEdit={() => route(`/listings/${listing.id}/edit`)}
-        onArchive={() => {
-          // Placeholder for API action.
-        }}
+        onArchive={() => handleStatusAction(archiveListing, 'Listing archived.')}
+        onHide={() => handleStatusAction(hideListing, 'Listing hidden.')}
+        onSubmitForReview={() => handleStatusAction(submitListing, 'Listing submitted for review.')}
+        onPublish={() => handleStatusAction(publishListing, 'Listing published.')}
+        onRequestFixes={() => handleStatusAction(requestFixesListing, 'Fixes requested.')}
         onReportViolation={() => setIsReportDialogOpen(true)}
       />
 
@@ -197,7 +233,7 @@ export function ListingDetailsPage({ listingId }: ListingDetailsRouteProps) {
       <ListingSection title="Description">
         <p class="text-sm leading-relaxed text-base-content/80">{listing.description}</p>
 
-        {isLandlord ? (
+        {isLandlord || isAdmin ? (
           <div class="mt-3 grid gap-2 md:grid-cols-2">
             <ListingMetaRow label="Contact" value={listing.contact || listing.ownerContact || '-'} />
             <ListingMetaRow label="Phone" value={listing.phone || listing.contactPhone || '-'} />
