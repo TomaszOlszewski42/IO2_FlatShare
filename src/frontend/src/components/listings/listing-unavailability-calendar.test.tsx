@@ -6,11 +6,14 @@ import * as unavailabilityApi from '../../services/unavailability-api'
 import * as authSession from '../../services/auth-session'
 import * as errorHandlerContext from '../../services/error-handler-context'
 
+import * as listingsApi from '../../services/listings-api'
+
 vi.mock('../../services/unavailability-api', () => ({
-  getListingUnavailability: vi.fn(),
   createUnavailability: vi.fn(),
-  updateUnavailability: vi.fn(),
-  deleteUnavailability: vi.fn(),
+}))
+
+vi.mock('../../services/listings-api', () => ({
+  getListingById: vi.fn(),
 }))
 
 vi.mock('../../services/auth-session', () => ({
@@ -57,9 +60,17 @@ describe('ListingUnavailabilityCalendar', () => {
   })
 
   it('renders and fetches unavailabilities on mount', async () => {
-    vi.mocked(unavailabilityApi.getListingUnavailability).mockResolvedValue([
-      { id: 'u1', listingId: mockListingId, startDate: '2026-06-01T00:00:00Z', endDate: '2026-06-10T00:00:00Z', reason: 'Test Reason' },
-    ])
+    vi.mocked(listingsApi.getListingById).mockResolvedValue({
+      id: mockListingId,
+      title: 'test',
+      description: 'test',
+      price: 100,
+      currency: 'PLN',
+      location: { city: 'test' },
+      unavailability: [
+        { since: '2026-06-01T00:00:00Z', until: '2026-06-10T00:00:00Z', message: 'Test Reason' },
+      ],
+    } as any)
 
     const container = document.createElement('div')
     document.body.appendChild(container)
@@ -67,13 +78,15 @@ describe('ListingUnavailabilityCalendar', () => {
     renderComponent(container)
     await flushEffects()
 
-    expect(unavailabilityApi.getListingUnavailability).toHaveBeenCalledWith(mockListingId, 'abc', 'Bearer')
+    expect(listingsApi.getListingById).toHaveBeenCalledWith(mockListingId, 'abc', 'Bearer')
     expect(container.textContent).toContain('Test Reason')
     expect(container.textContent).toContain('Unavailability Calendar')
   })
 
   it('displays a message when no unavailabilities are present', async () => {
-    vi.mocked(unavailabilityApi.getListingUnavailability).mockResolvedValue([])
+    vi.mocked(listingsApi.getListingById).mockResolvedValue({
+      unavailability: []
+    } as any)
 
     const container = document.createElement('div')
     document.body.appendChild(container)
@@ -85,7 +98,9 @@ describe('ListingUnavailabilityCalendar', () => {
   })
 
   it('handles form submission to add unavailability', async () => {
-    vi.mocked(unavailabilityApi.getListingUnavailability).mockResolvedValue([])
+    vi.mocked(listingsApi.getListingById).mockResolvedValue({
+      unavailability: []
+    } as any)
     vi.mocked(unavailabilityApi.createUnavailability).mockResolvedValue({
       id: 'new-u',
       listingId: mockListingId,
@@ -131,27 +146,5 @@ describe('ListingUnavailabilityCalendar', () => {
     expect(mockShowToast).toHaveBeenCalledWith('Unavailability added successfully.', 'success')
   })
 
-  it('handles delete action', async () => {
-    vi.mocked(unavailabilityApi.getListingUnavailability).mockResolvedValue([
-      { id: 'u1', listingId: mockListingId, startDate: '2026-06-01T00:00:00Z', endDate: '2026-06-10T00:00:00Z', reason: 'Test Reason' },
-    ])
-    vi.mocked(unavailabilityApi.deleteUnavailability).mockResolvedValue(undefined)
-
-    const container = document.createElement('div')
-    document.body.appendChild(container)
-
-    renderComponent(container)
-    await flushEffects()
-
-    const deleteBtn = container.querySelector('button.text-error') as HTMLButtonElement
-
-    await act(async () => {
-      deleteBtn.click()
-    })
-    await flushEffects()
-
-    expect(global.confirm).toHaveBeenCalled()
-    expect(unavailabilityApi.deleteUnavailability).toHaveBeenCalledWith(mockListingId, 'u1', 'abc', 'Bearer')
-    expect(mockShowToast).toHaveBeenCalledWith('Unavailability removed.', 'success')
   })
 })

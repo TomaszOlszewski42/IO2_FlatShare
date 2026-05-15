@@ -53,6 +53,7 @@ export function ListingEditPage({ listingId }: ListingEditPageProps) {
   const [activeTab, setActiveTab] = useState<'basic' | 'photos' | 'unavailability'>('basic')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [initialData, setInitialData] = useState<ListingFormData | null>(null)
+  const [listing, setListing] = useState<Listing | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
 
@@ -88,6 +89,7 @@ export function ListingEditPage({ listingId }: ListingEditPageProps) {
           return
         }
 
+        setListing(listing)
         setInitialData(mapListingToFormData(listing))
         setLoadError(null)
       } catch (error) {
@@ -242,7 +244,14 @@ export function ListingEditPage({ listingId }: ListingEditPageProps) {
     <div class="flex w-full flex-1 flex-col py-6">
       <div class="container mx-auto max-w-3xl px-4">
         <div class="mb-6">
-          <h1 class="mb-2 text-3xl font-bold">Edit listing</h1>
+          <div class="flex items-center gap-3 mb-2">
+            <h1 class="text-3xl font-bold">Edit listing</h1>
+            {listing?.status && (
+              <span class={`badge ${listing.status === 'ACTIVE' ? 'badge-success' : 'badge-neutral'}`}>
+                {listing.status}
+              </span>
+            )}
+          </div>
           <p class="text-base-content/70">Update the details of your apartment.</p>
         </div>
 

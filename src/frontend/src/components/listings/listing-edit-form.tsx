@@ -9,7 +9,6 @@ import { ListingFormShell } from './listing-form-shell'
 import { ListingLocationFormSection } from './listing-location-form-section'
 import { ListingPhotoUpload } from './listing-photo-upload'
 import { ListingPricingSection } from './listing-pricing-section'
-import { ListingPublicationSection } from './listing-publication-section'
 import { ListingTenantRequirementsSection } from './listing-tenant-requirements-section'
 import type { FormFieldErrors } from '../../services/form-error-mapper'
 import type { ListingFormData } from './listing-create-form'
@@ -282,7 +281,6 @@ export function ListingEditForm({
       disabled={isSubmitting}
       onUpdate={handleTenantRequirementsUpdate}
     />,
-    <ListingPublicationSection formData={formData} errors={inputErrors} onUpdate={updateField} />,
   ]
 
   return (

@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'preact/hooks'
 import { AppButton } from '../ui/app-button'
 import {
-  getListingUnavailability,
   createUnavailability,
-  updateUnavailability,
-  deleteUnavailability,
 } from '../../services/unavailability-api'
+import { getListingById } from '../../services/listings-api'
 import { readAuthSession } from '../../services/auth-session'
 import type { Unavailability } from '../../types/unavailability'
 import { useErrorHandler } from '../../services/error-handler-context'
@@ -25,8 +23,7 @@ export function ListingUnavailabilityCalendar({ listingId }: ListingUnavailabili
   const [reason, setReason] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  // Edit state
-  const [editingId, setEditingId] = useState<string | null>(null)
+
 
   useEffect(() => {
     fetchUnavailabilities()
@@ -46,8 +43,15 @@ export function ListingUnavailabilityCalendar({ listingId }: ListingUnavailabili
 
     setIsLoading(true)
     try {
-      const data = await getListingUnavailability(listingId, session.token, session.type)
-      setUnavailabilities(data)
+      const listing = await getListingById(listingId, session.token, session.type)
+      const mapped = (listing.unavailability || []).map((u, idx) => ({
+        id: String(idx),
+        listingId,
+        startDate: u.since,
+        endDate: u.until,
+        reason: u.message,
+      }))
+      setUnavailabilities(mapped)
     } catch (error: any) {
       if (error?.status !== 405 && error?.status !== 404) {
         console.error('Failed to fetch unavailabilities:', error)
@@ -77,25 +81,13 @@ export function ListingUnavailabilityCalendar({ listingId }: ListingUnavailabili
     setIsSubmitting(true)
 
     try {
-      if (editingId) {
-        await updateUnavailability(
-          listingId,
-          editingId,
-          { startDate, endDate, reason },
-          session.token,
-          session.type
-        )
-        showToast('Unavailability updated successfully.', 'success')
-        setEditingId(null)
-      } else {
-        await createUnavailability(
-          listingId,
-          { startDate, endDate, reason },
-          session.token,
-          session.type
-        )
-        showToast('Unavailability added successfully.', 'success')
-      }
+      await createUnavailability(
+        listingId,
+        { startDate, endDate, reason },
+        session.token,
+        session.type
+      )
+      showToast('Unavailability added successfully.', 'success')
       
       setStartDate('')
       setEndDate('')
@@ -115,39 +107,7 @@ export function ListingUnavailabilityCalendar({ listingId }: ListingUnavailabili
     }
   }
 
-  async function handleDelete(id: string) {
-    if (!confirm('Are you sure you want to delete this unavailability?')) return
 
-    const session = readAuthSession()
-    if (!session) return
-
-    try {
-      await deleteUnavailability(listingId, id, session.token, session.type)
-      showToast('Unavailability removed.', 'success')
-      await fetchUnavailabilities()
-    } catch (error: any) {
-      console.error('Failed to delete unavailability:', error)
-      if (error?.status === 405 || error?.status === 404) {
-        showToast('Delete not supported by backend yet.', 'warning')
-      } else {
-        showToast('Failed to remove unavailability.', 'error')
-      }
-    }
-  }
-
-  function handleEditClick(item: Unavailability) {
-    setEditingId(item.id)
-    setStartDate(item.startDate.split('T')[0])
-    setEndDate(item.endDate.split('T')[0])
-    setReason(item.reason || '')
-  }
-
-  function cancelEdit() {
-    setEditingId(null)
-    setStartDate('')
-    setEndDate('')
-    setReason('')
-  }
 
   return (
     <div class="card bg-base-100 shadow-sm border border-base-200 mt-8">
@@ -158,7 +118,7 @@ export function ListingUnavailabilityCalendar({ listingId }: ListingUnavailabili
         </p>
 
         <form onSubmit={handleAddOrUpdate} class="bg-base-200 p-4 rounded-lg mb-6">
-          <h3 class="font-medium mb-3">{editingId ? 'Edit Unavailability' : 'Add Unavailability'}</h3>
+          <h3 class="font-medium mb-3">Add Unavailability</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
             <div class="form-control">
               <label class="label">
@@ -210,13 +170,8 @@ export function ListingUnavailabilityCalendar({ listingId }: ListingUnavailabili
           </div>
           <div class="flex gap-2">
             <AppButton type="submit" loading={isSubmitting} variant="primary">
-              {editingId ? 'Save Changes' : 'Add Dates'}
+              Add Dates
             </AppButton>
-            {editingId && (
-              <AppButton type="button" variant="outline" onClick={cancelEdit} disabled={isSubmitting}>
-                Cancel
-              </AppButton>
-            )}
           </div>
         </form>
 
@@ -236,34 +191,14 @@ export function ListingUnavailabilityCalendar({ listingId }: ListingUnavailabili
                   <th>Start Date</th>
                   <th>End Date</th>
                   <th>Reason</th>
-                  <th class="text-right">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {unavailabilities.map((item) => (
-                  <tr key={item.id} class={editingId === item.id ? 'bg-base-200' : ''}>
+                  <tr key={item.id}>
                     <td>{new Date(item.startDate).toLocaleDateString()}</td>
                     <td>{new Date(item.endDate).toLocaleDateString()}</td>
                     <td>{item.reason || '-'}</td>
-                    <td class="text-right">
-                      <div class="flex justify-end gap-2">
-                        <button
-                          type="button"
-                          class="btn btn-sm btn-ghost"
-                          onClick={() => handleEditClick(item)}
-                          disabled={editingId === item.id}
-                        >
-                          Edit
-                        </button>
-                        <button
-                          type="button"
-                          class="btn btn-sm btn-ghost text-error"
-                          onClick={() => handleDelete(item.id)}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </td>
                   </tr>
                 ))}
               </tbody>
