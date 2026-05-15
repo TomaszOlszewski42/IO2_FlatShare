@@ -15,13 +15,16 @@ describe('opinion-api', () => {
   })
 
   describe('getListingOpinions', () => {
-    it('makes an unauthenticated GET request to the opinions endpoint', async () => {
+    it('makes an authenticated GET request to the opinions endpoint', async () => {
       apiRequestMock.mockResolvedValue([])
 
-      await getListingOpinions('listing-1')
+      await getListingOpinions('listing-1', 'token-1')
 
       expect(apiRequestMock).toHaveBeenCalledWith('/listings/listing-1/opinions', {
         method: 'GET',
+        headers: {
+          Authorization: 'Bearer token-1',
+        },
       })
     })
 

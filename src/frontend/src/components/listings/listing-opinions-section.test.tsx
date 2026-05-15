@@ -7,7 +7,7 @@ import * as opinionApi from '../../services/opinion-api'
 import * as authSession from '../../services/auth-session'
 import * as errorHandlerCtx from '../../services/error-handler-context'
 import { ListingOpinionsSection } from './listing-opinions-section'
-import type { ListingOpinion } from '../../services/opinion-api'
+import type { ListingOpinion } from '../../types/opinion'
 
 vi.mock('../../hooks/use-auth', () => ({
   useAuth: vi.fn(),
@@ -111,6 +111,27 @@ describe('ListingOpinionsSection', () => {
     })
 
     expect(container.textContent).toContain('Opinions')
+    expect(opinionApi.getListingOpinions).toHaveBeenCalledWith('listing-1', 'tok', 'Bearer')
+  })
+
+  it('does not fetch opinions if session is missing', async () => {
+    vi.mocked(useAuth).mockReturnValue({
+      isAuthenticated: false,
+      session: null,
+      hasRole: vi.fn(() => false),
+      isTenant: false,
+      isLandlord: false,
+      isAdmin: false,
+    })
+
+    const container = document.createElement('div')
+    document.body.appendChild(container)
+
+    await act(async () => {
+      render(<ListingOpinionsSection listingId="listing-1" />, container)
+    })
+
+    expect(opinionApi.getListingOpinions).not.toHaveBeenCalled()
   })
 
   it('shows a skeleton while opinions are loading', () => {
@@ -128,6 +149,8 @@ describe('ListingOpinionsSection', () => {
     expect(container.querySelector('.skeleton')).not.toBeNull()
   })
 
+  const flushPromises = () => new Promise((resolve) => setTimeout(resolve, 0))
+
   it('shows an empty state message when there are no opinions', async () => {
     mockAsTenant()
     vi.mocked(opinionApi.getListingOpinions).mockResolvedValue([])
@@ -137,6 +160,11 @@ describe('ListingOpinionsSection', () => {
 
     await act(async () => {
       render(<ListingOpinionsSection listingId="listing-1" />, container)
+    })
+    
+    // Wait for the useEffect promise to resolve and state to update
+    await act(async () => {
+      await flushPromises()
     })
 
     expect(container.textContent).toContain('No opinions yet')
@@ -151,6 +179,11 @@ describe('ListingOpinionsSection', () => {
 
     await act(async () => {
       render(<ListingOpinionsSection listingId="listing-1" />, container)
+    })
+
+    // Wait for the useEffect promise to resolve and state to update
+    await act(async () => {
+      await flushPromises()
     })
 
     expect(container.textContent).toContain('Wonderful flat!')

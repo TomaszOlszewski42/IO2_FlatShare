@@ -7,8 +7,8 @@ import { useErrorHandler } from '../../services/error-handler-context'
 import {
   addListingOpinion,
   getListingOpinions,
-  type ListingOpinion,
 } from '../../services/opinion-api'
+import type { ListingOpinion } from '../../types/opinion'
 import { ListingSection } from './listing-section'
 
 type Props = {
@@ -207,14 +207,19 @@ function AddOpinionForm({
 }
 
 export function ListingOpinionsSection({ listingId }: Props) {
-  const { isTenant } = useAuth()
+  const { isTenant, session } = useAuth()
   const [opinions, setOpinions] = useState<ListingOpinion[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
+    if (!session) {
+      setIsLoading(false)
+      return
+    }
+
     let mounted = true
     setIsLoading(true)
-    getListingOpinions(listingId)
+    getListingOpinions(listingId, session.token, session.type)
       .then((data) => {
         if (mounted) setOpinions(data)
       })
@@ -227,7 +232,7 @@ export function ListingOpinionsSection({ listingId }: Props) {
     return () => {
       mounted = false
     }
-  }, [listingId])
+  }, [listingId, session])
 
   function handleOpinionAdded(opinion: ListingOpinion) {
     setOpinions((prev) => [opinion, ...prev])

@@ -1,19 +1,5 @@
 import { apiRequest } from './api-client'
-
-export type ListingOpinion = {
-  id: string
-  listingId: string
-  userId: string
-  rating: number
-  comment: string
-  createdAt: string
-}
-
-export type AddOpinionPayload = {
-  listingId: string
-  rating: number
-  comment: string
-}
+import type { AddOpinionPayload, ListingOpinion } from '../types/opinion'
 
 function getAuthHeaders(token: string, type = 'Bearer'): Record<string, string> {
   return {
@@ -21,9 +7,14 @@ function getAuthHeaders(token: string, type = 'Bearer'): Record<string, string> 
   }
 }
 
-export async function getListingOpinions(listingId: string): Promise<ListingOpinion[]> {
+export async function getListingOpinions(
+  listingId: string,
+  token: string,
+  type = 'Bearer',
+): Promise<ListingOpinion[]> {
   return apiRequest<ListingOpinion[]>(`/listings/${listingId}/opinions`, {
     method: 'GET',
+    headers: getAuthHeaders(token, type),
   })
 }
 
