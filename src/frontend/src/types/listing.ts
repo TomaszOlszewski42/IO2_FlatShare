@@ -16,6 +16,12 @@ export type ListingAttributes = {
   preferredTenantProfile?: string | null
 }
 
+export type UnavailabilityRange = {
+  since: string
+  until: string
+  message: string
+}
+
 export type Listing = {
   id: string
   ownerId?: string
@@ -39,6 +45,7 @@ export type Listing = {
   furnished?: boolean
   location: ListingLocation
   attributes?: ListingAttributes
+  unavailability?: UnavailabilityRange[]
   createdAt?: string
   updatedAt?: string
 }

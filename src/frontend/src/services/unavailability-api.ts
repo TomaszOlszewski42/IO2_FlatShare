@@ -28,9 +28,15 @@ export async function createUnavailability(
   token: string,
   type = 'Bearer',
 ): Promise<Unavailability> {
+  const backendPayload = {
+    since: payload.startDate,
+    until: payload.endDate,
+    message: payload.reason || '',
+  }
+
   return apiRequest<Unavailability>(`/listings/${listingId}/unavailability`, {
     method: 'POST',
-    body: payload,
+    body: backendPayload,
     headers: getAuthHeaders(token, type),
   })
 }

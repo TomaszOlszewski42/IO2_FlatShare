@@ -166,6 +166,25 @@ export function ListingDetailsPage({ listingId }: ListingDetailsRouteProps) {
         </ListingSection>
       </div>
 
+      {listing.unavailability && listing.unavailability.length > 0 && (
+        <ListingSection title="Unavailability Calendar">
+          <div class="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
+            {listing.unavailability.map((u, i) => (
+              <div key={i} class="rounded-lg border border-base-300 p-4 shadow-sm bg-base-100">
+                <div class="flex flex-col gap-1">
+                  <span class="text-sm font-semibold text-primary">
+                    {formatDate(u.since)} - {formatDate(u.until)}
+                  </span>
+                  {u.message ? (
+                    <span class="text-sm text-base-content/80">{u.message}</span>
+                  ) : null}
+                </div>
+              </div>
+            ))}
+          </div>
+        </ListingSection>
+      )}
+
       <ListingGallery listingId={listing.id} photoIds={photoIds} title={listing.title} />
 
       {isTenant ? <ListingTenantContactPanel listing={listing} /> : null}
