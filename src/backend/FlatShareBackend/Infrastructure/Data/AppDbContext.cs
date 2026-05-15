@@ -16,11 +16,8 @@ namespace FlatShareBackend.Infrastructure.Data
         public DbSet<Listing> Listings => Set<Listing>();
         public DbSet<UserPreferences> UsersPreferences => Set<UserPreferences>();
         public DbSet<ViolationReport> ViolationReports => Set<ViolationReport>();
-<<<<<<< HEAD
         public DbSet<ListingOpinion> ListingOpinions => Set<ListingOpinion>();
-=======
         public DbSet<Booking> Bookings => Set<Booking>();
->>>>>>> 5e9b668 (BookingController mvp)
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
