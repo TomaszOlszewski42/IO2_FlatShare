@@ -1,7 +1,12 @@
 import requests
 import random
 import sys
+import io
 from datetime import datetime, timedelta
+
+# Force UTF-8 encoding for stdout to handle Polish characters on Windows
+if sys.stdout.encoding != 'utf-8':
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 BASE_URL = "http://localhost:8080/api/v1"
 
@@ -105,8 +110,10 @@ def create_listing(token, owner_email):
 
 def promote_to_admin(email="admin@admin"):
     import subprocess
-    sql = f'UPDATE "Users" SET "Role" = \'Admin\' WHERE "Email" = \'{email}\';\n'
-    print(f"Promoting {email} to Admin via Docker...")
+    # Lowercase email as backend normalizes it
+    normalized_email = email.lower()
+    sql = f'UPDATE "Users" SET "Role" = \'Admin\' WHERE "Email" = \'{normalized_email}\';\n'
+    print(f"Promoting {normalized_email} to Admin via Docker...")
     try:
         process = subprocess.Popen(
             ["bash", "-c", "docker exec -i postgres psql -U postgres -d FlatShareDB"],
@@ -126,6 +133,55 @@ def promote_to_admin(email="admin@admin"):
         print(f"Exception promoting to admin: {e}")
         return False
 
+def publish_listing(token, listing_id):
+    headers = {"Authorization": f"Bearer {token}"}
+    try:
+        r = requests.patch(f"{BASE_URL}/listings/{listing_id}/publish", headers=headers)
+        if r.status_code == 200:
+            print(f"Published listing {listing_id}")
+            return True
+        else:
+            print(f"Failed to publish listing {listing_id}: {r.status_code} {r.text}")
+            return False
+    except Exception as e:
+        print(f"Exception publishing listing {listing_id}: {e}")
+        return False
+
+def add_opinion(token, listing_id, rating, comment):
+    headers = {"Authorization": f"Bearer {token}"}
+    payload = {
+        "listingId": listing_id,
+        "rating": rating,
+        "comment": comment
+    }
+    try:
+        r = requests.post(f"{BASE_URL}/listings/{listing_id}/opinions", json=payload, headers=headers)
+        if r.status_code in [200, 201]:
+            print(f"Added opinion to listing {listing_id}: {rating}/5")
+            return True
+        else:
+            print(f"Failed to add opinion to listing {listing_id}: {r.status_code} {r.text}")
+            return False
+    except Exception as e:
+        print(f"Exception adding opinion: {e}")
+        return False
+
+def get_listings(token, owner_id=None):
+    headers = {"Authorization": f"Bearer {token}"}
+    params = {}
+    if owner_id:
+        params["OwnerId"] = owner_id
+    try:
+        r = requests.get(f"{BASE_URL}/listings", params=params, headers=headers)
+        if r.status_code == 200:
+            return r.json()
+        else:
+            print(f"Failed to get listings: {r.status_code} {r.text}")
+            return []
+    except Exception as e:
+        print(f"Exception getting listings: {e}")
+        return []
+
 def main():
     success = True
     
@@ -142,8 +198,14 @@ def main():
     # Then promote via db query
     if not promote_to_admin("Admin@Admin"):
         success = False
+    
+    admin_token = login_user("Admin@Admin", "Admin1234")
+    if not admin_token:
+        print("Failed to login as admin")
+        success = False
 
     # 3. Generate Owners (LANDLORD) and listings
+    owner_ids = []
     for i in range(1, 6):
         email = f"Owner{i}@Owner"
         pwd = "Owner1234"
@@ -156,7 +218,47 @@ def main():
             for _ in range(2):
                 if not create_listing(token, email):
                     success = False
+            
+            # Fetch owner ID from a listing (or could fetch from profile if existed)
+            listings = get_listings(token)
+            if listings:
+                owner_ids.append(listings[0]["ownerId"])
         else:
+            success = False
+
+    # 4. Approve first listing from each owner via Admin
+    approved_listing_ids = []
+    if admin_token:
+        for oid in owner_ids:
+            listings = get_listings(admin_token, owner_id=oid)
+            if listings:
+                # Approve the first one
+                first_listing_id = listings[0]["id"]
+                if publish_listing(admin_token, first_listing_id):
+                    approved_listing_ids.append(first_listing_id)
+                else:
+                    success = False
+            else:
+                print(f"No listings found for owner {oid}")
+
+    # 5. Users 3-5 vote on the tasks (approved listings)
+    for i in range(3, 6):
+        email = f"User{i}@User"
+        token = login_user(email, "User1234")
+        if token:
+            for lid in approved_listing_ids:
+                rating = random.randint(3, 5)
+                comment = random.choice([
+                    "Świetna lokalizacja!", 
+                    "Bardzo miły właściciel.", 
+                    "Mieszkanie zgodne z opisem.", 
+                    "Czysto i przytulnie.",
+                    "Polecam to miejsce!"
+                ])
+                if not add_opinion(token, lid, rating, comment):
+                    success = False
+        else:
+            print(f"Failed to login as {email}")
             success = False
 
     if not success:
