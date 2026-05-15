@@ -115,9 +115,9 @@ export function ListingsToolbar({
                 </>
               }
             >
-              <h1 class="text-2xl font-semibold tracking-tight">Manage listings</h1>
+              <h1 class="text-2xl font-semibold tracking-tight">Your listings</h1>
               <p class="text-sm text-base-content/65">
-                Review, manage publication and visibility of offers.
+                Manage publication and visibility of your offers.
               </p>
             </RoleBoundary>
           </div>
