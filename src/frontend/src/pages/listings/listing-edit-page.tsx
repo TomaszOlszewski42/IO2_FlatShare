@@ -285,7 +285,6 @@ export function ListingEditPage({ listingId }: ListingEditPageProps) {
         {activeTab === 'basic' && (
           <div class="animate-in fade-in slide-in-from-bottom-2 duration-300">
             <ListingEditForm
-              listingId={listingId}
               initialData={initialData}
               fieldErrors={fieldErrors}
               onSubmit={handleSubmit}

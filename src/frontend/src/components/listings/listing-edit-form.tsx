@@ -13,7 +13,6 @@ import type { FormFieldErrors } from '../../services/form-error-mapper'
 import type { ListingFormData } from './listing-create-form'
 
 type ListingEditFormProps = {
-  listingId: string
   initialData: ListingFormData
   onSubmit: (data: ListingFormData) => Promise<void>
   isSubmitting?: boolean
@@ -135,7 +134,6 @@ function joinFieldErrors(messages: string[]): string | undefined {
 }
 
 export function ListingEditForm({
-  listingId,
   initialData,
   onSubmit,
   isSubmitting = false,
