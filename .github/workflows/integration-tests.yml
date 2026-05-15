@@ -1,0 +1,39 @@
+name: Integration Tests
+
+on:
+  push:
+    branches: [ master, development ]
+  pull_request:
+    branches: [ master, development ]
+
+jobs:
+  integration-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+
+    - name: Install Python dependencies
+      run: pip install requests
+
+    - name: Start containers
+      run: docker compose up -d
+
+    - name: Wait for backend to be ready
+      run: |
+        echo "Waiting for backend to start responding at http://localhost:8080/api/v1/listings..."
+        timeout 300s bash -c 'until curl -s http://localhost:8080/api/v1/listings > /dev/null; do echo "Still waiting..."; sleep 5; done'
+        echo "Backend is up!"
+
+    - name: Run data generation script
+      run: python generate_data.py
+
+    - name: Stop containers
+      if: always()
+      run: docker compose down
