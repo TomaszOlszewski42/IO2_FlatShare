@@ -71,4 +71,22 @@ describe('ListingsPage', () => {
 
     expect(listingsApi.getListings).toHaveBeenCalledWith('xyz', undefined, 'Bearer')
   })
+
+  it('fetches listings without ownerId if user is admin', async () => {
+    vi.mocked(useAuthHook.useAuth).mockReturnValue({
+      session: { token: 'admin-token', type: 'Bearer', userId: 'admin-123' },
+      isLandlord: false,
+      isAdmin: true,
+    } as any)
+
+    const container = document.createElement('div')
+    document.body.appendChild(container)
+
+    act(() => {
+      render(<ListingsPage />, container)
+    })
+    await flushEffects()
+
+    expect(listingsApi.getListings).toHaveBeenCalledWith('admin-token', undefined, 'Bearer')
+  })
 })

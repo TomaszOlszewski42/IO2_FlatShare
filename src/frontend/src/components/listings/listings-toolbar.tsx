@@ -105,7 +105,7 @@ export function ListingsToolbar({
         <div class="flex flex-wrap items-start justify-between gap-3">
           <div>
             <RoleBoundary
-              requiredRole={UserRole.Landlord}
+              requiredRole={[UserRole.Landlord, UserRole.Admin]}
               fallback={
                 <>
                   <h1 class="text-2xl font-semibold tracking-tight">Find a room</h1>
@@ -115,9 +115,9 @@ export function ListingsToolbar({
                 </>
               }
             >
-              <h1 class="text-2xl font-semibold tracking-tight">Your listings</h1>
+              <h1 class="text-2xl font-semibold tracking-tight">Manage listings</h1>
               <p class="text-sm text-base-content/65">
-                Manage publication and visibility of your offers.
+                Review, manage publication and visibility of offers.
               </p>
             </RoleBoundary>
           </div>
@@ -129,7 +129,7 @@ export function ListingsToolbar({
 
         <div class="flex flex-wrap items-center gap-2 text-sm">
           <RoleBoundary
-            requiredRole={UserRole.Landlord}
+            requiredRole={[UserRole.Landlord, UserRole.Admin]}
             fallback={<span class="badge badge-success badge-soft">Available offers: {totalCount}</span>}
           >
             <span class="badge badge-outline">Total: {totalCount}</span>
@@ -149,7 +149,7 @@ export function ListingsToolbar({
           />
 
           <RoleBoundary
-            requiredRole={UserRole.Landlord}
+            requiredRole={[UserRole.Landlord, UserRole.Admin]}
             fallback={
               <>
                 <NumberInput
@@ -205,7 +205,7 @@ export function ListingsToolbar({
         </div>
 
         <RoleBoundary
-          requiredRole={UserRole.Landlord}
+          requiredRole={[UserRole.Landlord, UserRole.Admin]}
           fallback={
             <div class="rounded-box border border-base-300 bg-base-200/40 px-4 py-3">
               <p class="mb-2 text-sm font-medium">Quick filters</p>

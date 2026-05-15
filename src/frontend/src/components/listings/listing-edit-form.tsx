@@ -7,7 +7,6 @@ import { ListingBasicInfoSection } from './listing-basic-info-section'
 import { ListingContactSection } from './listing-contact-section'
 import { ListingFormShell } from './listing-form-shell'
 import { ListingLocationFormSection } from './listing-location-form-section'
-import { ListingPhotoUpload } from './listing-photo-upload'
 import { ListingPricingSection } from './listing-pricing-section'
 import { ListingTenantRequirementsSection } from './listing-tenant-requirements-section'
 import type { FormFieldErrors } from '../../services/form-error-mapper'
@@ -323,11 +322,6 @@ export function ListingEditForm({
         </div>
       </form>
 
-      <div class="my-8 border-t border-base-300" />
-
-      <ListingFormShell>
-        <ListingPhotoUpload listingId={listingId} />
-      </ListingFormShell>
     </div>
   )
 }

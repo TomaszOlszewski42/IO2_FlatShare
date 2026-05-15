@@ -350,6 +350,39 @@ export async function archiveListing(
   })
 }
 
+export async function publishListing(
+  listingId: string,
+  token: string,
+  type = 'Bearer',
+): Promise<ListingStatusActionResponse> {
+  return apiRequest<ListingStatusActionResponse>(`/listings/${listingId}/publish`, {
+    method: 'PATCH',
+    headers: getAuthHeaders(token, type),
+  })
+}
+
+export async function submitListing(
+  listingId: string,
+  token: string,
+  type = 'Bearer',
+): Promise<ListingStatusActionResponse> {
+  return apiRequest<ListingStatusActionResponse>(`/listings/${listingId}/submit`, {
+    method: 'PATCH',
+    headers: getAuthHeaders(token, type),
+  })
+}
+
+export async function requestFixesListing(
+  listingId: string,
+  token: string,
+  type = 'Bearer',
+): Promise<ListingStatusActionResponse> {
+  return apiRequest<ListingStatusActionResponse>(`/listings/${listingId}/request-fixes`, {
+    method: 'PATCH',
+    headers: getAuthHeaders(token, type),
+  })
+}
+
 export async function uploadPhoto(
   listingId: string,
   photo: File,

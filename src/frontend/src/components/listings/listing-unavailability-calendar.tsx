@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'preact/hooks'
 import { AppButton } from '../ui/app-button'
+import { ListingFormSection } from './listing-form-section'
 import {
   createUnavailability,
 } from '../../services/unavailability-api'
@@ -110,14 +111,11 @@ export function ListingUnavailabilityCalendar({ listingId }: ListingUnavailabili
 
 
   return (
-    <div class="card bg-base-100 shadow-sm border border-base-200 mt-8">
-      <div class="card-body">
-        <h2 class="card-title text-xl mb-4">Unavailability Calendar</h2>
-        <p class="text-sm text-base-content/70 mb-4">
-          Mark specific dates when your listing is unavailable (e.g. for maintenance or personal use).
-        </p>
-
-        <form onSubmit={handleAddOrUpdate} class="bg-base-200 p-4 rounded-lg mb-6">
+    <ListingFormSection
+      title="Unavailability Calendar"
+      description="Mark specific dates when your listing is unavailable (e.g. for maintenance or personal use)."
+    >
+      <form onSubmit={handleAddOrUpdate} class="bg-base-200/30 p-5 rounded-xl border border-base-300 mb-8">
           <h3 class="font-medium mb-3">Add Unavailability</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
             <div class="form-control">
@@ -205,7 +203,6 @@ export function ListingUnavailabilityCalendar({ listingId }: ListingUnavailabili
             </table>
           </div>
         )}
-      </div>
-    </div>
+    </ListingFormSection>
   )
 }

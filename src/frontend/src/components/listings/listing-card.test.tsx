@@ -267,4 +267,31 @@ describe('ListingCard', () => {
 
     expect(container.textContent).not.toContain('Edit')
   })
+
+  it('shows status and Details button for admin', () => {
+    vi.mocked(useAuth).mockReturnValue({
+      isAuthenticated: true,
+      session: {
+        token: 'token',
+        sessionId: 'session-1',
+        type: 'Bearer',
+        roles: ['ADMIN'],
+        userId: 'admin-1',
+      },
+      hasRole: vi.fn((role) => role === 'ADMIN'),
+      isTenant: false,
+      isLandlord: false,
+      isAdmin: true,
+    } as any)
+
+    const container = document.createElement('div')
+    document.body.appendChild(container)
+
+    act(() => {
+      render(<ListingCard listing={baseListing} />, container)
+    })
+
+    expect(container.textContent).toContain('Active')
+    expect(container.textContent).toContain('Details')
+  })
 })
