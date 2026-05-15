@@ -23,6 +23,7 @@ type ListingDto = {
   price: number
   currency: string
   status?: ListingStatus | string | number | null
+  Status?: ListingStatus | string | number | null
   availableFrom?: string | null
   availableSince?: string | null
   ownerContact?: string | null
@@ -86,7 +87,9 @@ const listingStatusByBackendNumber: Record<number, ListingStatus> = {
   5: 'HIDDEN_BY_MODERATION',
 }
 
-function normalizeListingStatus(status: ListingDto['status']): ListingStatus | undefined {
+function normalizeListingStatus(
+  status: ListingStatus | string | number | null | undefined,
+): ListingStatus | undefined {
   if (typeof status === 'number') {
     return listingStatusByBackendNumber[status]
   }
@@ -213,7 +216,7 @@ function mapListingDtoToListing(item: ListingDto, fallbackOwnerId?: string): Lis
     description: item.description,
     price: item.price,
     currency: item.currency,
-    status: normalizeListingStatus(item.status),
+    status: normalizeListingStatus(item.status ?? item.Status),
     availableFrom: item.availableFrom ?? null,
     availableSince: item.availableSince ?? null,
     ownerContact: ownerContactParts.name ?? item.ownerContact ?? null,
