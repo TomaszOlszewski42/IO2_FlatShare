@@ -1,5 +1,6 @@
 import requests
 import random
+import sys
 from datetime import datetime, timedelta
 
 BASE_URL = "http://localhost:8080/api/v1"
@@ -23,23 +24,31 @@ def register_user(email, password, role, first_name="Test", last_name="User"):
         "password": password,
         "role": role
     }
-    r = requests.post(f"{BASE_URL}/users", json=payload)
-    if r.status_code in [200, 201]:
-        print(f"Registered {email} as {role}")
-        return True
-    elif r.status_code == 400 and "already exists" in r.text.lower():
-        print(f"User {email} already exists")
-        return True
-    else:
-        print(f"Failed to register {email}: {r.status_code} {r.text}")
+    try:
+        r = requests.post(f"{BASE_URL}/users", json=payload)
+        if r.status_code in [200, 201]:
+            print(f"Registered {email} as {role}")
+            return True
+        elif r.status_code == 400 and "already exists" in r.text.lower():
+            print(f"User {email} already exists")
+            return True
+        else:
+            print(f"Failed to register {email}: {r.status_code} {r.text}")
+            return False
+    except Exception as e:
+        print(f"Exception registering {email}: {e}")
         return False
 
 def login_user(email, password):
-    r = requests.post(f"{BASE_URL}/sessions", json={"email": email, "password": password})
-    if r.status_code in [200, 201]:
-        return r.json().get("token")
-    else:
-        print(f"Failed to login {email}: {r.status_code} {r.text}")
+    try:
+        r = requests.post(f"{BASE_URL}/sessions", json={"email": email, "password": password})
+        if r.status_code in [200, 201]:
+            return r.json().get("token")
+        else:
+            print(f"Failed to login {email}: {r.status_code} {r.text}")
+            return None
+    except Exception as e:
+        print(f"Exception logging in {email}: {e}")
         return None
 
 def create_listing(token, owner_email):
@@ -82,11 +91,17 @@ def create_listing(token, owner_email):
     }
     
     headers = {"Authorization": f"Bearer {token}"}
-    r = requests.post(f"{BASE_URL}/listings", json=payload, headers=headers)
-    if r.status_code in [200, 201]:
-        print(f"Created listing for {owner_email}: {title}")
-    else:
-        print(f"Failed to create listing for {owner_email}: {r.status_code} {r.text}")
+    try:
+        r = requests.post(f"{BASE_URL}/listings", json=payload, headers=headers)
+        if r.status_code in [200, 201]:
+            print(f"Created listing for {owner_email}: {title}")
+            return True
+        else:
+            print(f"Failed to create listing for {owner_email}: {r.status_code} {r.text}")
+            return False
+    except Exception as e:
+        print(f"Exception creating listing for {owner_email}: {e}")
+        return False
 
 def promote_to_admin(email="admin@admin"):
     import subprocess
@@ -103,35 +118,52 @@ def promote_to_admin(email="admin@admin"):
         out, err = process.communicate(sql)
         if process.returncode == 0:
             print(f"Successfully promoted {email} to Admin.")
+            return True
         else:
             print(f"Failed to promote admin. Output: {out}\nError: {err}")
+            return False
     except Exception as e:
         print(f"Exception promoting to admin: {e}")
+        return False
 
 def main():
+    success = True
+    
     # 1. Generate Users (TENANT)
     for i in range(1, 6):
         email = f"User{i}@User"
-        register_user(email, "User1234", "TENANT", f"User", f"{i}")
+        if not register_user(email, "User1234", "TENANT", f"User", f"{i}"):
+            success = False
         
     # 2. Generate Admin
     # Registering as TENANT first since the endpoint restricts roles
-    register_user("Admin@Admin", "Admin1234", "TENANT", "Admin", "Admin")
+    if not register_user("Admin@Admin", "Admin1234", "TENANT", "Admin", "Admin"):
+        success = False
     # Then promote via db query
-    promote_to_admin("admin@admin")
+    if not promote_to_admin("Admin@Admin"):
+        success = False
 
     # 3. Generate Owners (LANDLORD) and listings
     for i in range(1, 6):
         email = f"Owner{i}@Owner"
         pwd = "Owner1234"
-        # The prompt says: "Owner[1-5]@Owner | Owner123 | 5" (Wait, cnt is 5, but pwd is Owner123 for all)
-        register_user(email, pwd, "LANDLORD", f"Owner", f"{i}")
+        if not register_user(email, pwd, "LANDLORD", f"Owner", f"{i}"):
+            success = False
         
         token = login_user(email, pwd)
         if token:
             # Generate 2 random listings
             for _ in range(2):
-                create_listing(token, email)
+                if not create_listing(token, email):
+                    success = False
+        else:
+            success = False
+
+    if not success:
+        print("\nSome operations failed!")
+        sys.exit(1)
+    else:
+        print("\nAll data generated successfully.")
 
 if __name__ == "__main__":
     main()
