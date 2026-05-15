@@ -145,6 +145,4 @@ describe('ListingUnavailabilityCalendar', () => {
     )
     expect(mockShowToast).toHaveBeenCalledWith('Unavailability added successfully.', 'success')
   })
-
-  })
 })

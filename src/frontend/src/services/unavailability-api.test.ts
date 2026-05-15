@@ -35,7 +35,7 @@ describe('unavailability-api', () => {
   })
 
   describe('createUnavailability', () => {
-    it('maps startDate and endDate to from and to in the backend payload', async () => {
+    it('maps startDate and endDate to since and until in the backend payload', async () => {
       apiRequestMock.mockResolvedValue({ id: 'u-1' })
 
       await createUnavailability(
@@ -51,8 +51,9 @@ describe('unavailability-api', () => {
       expect(apiRequestMock).toHaveBeenCalledWith('/listings/listing-1/unavailability', {
         method: 'POST',
         body: {
-          from: '2026-06-01',
-          to: '2026-06-10',
+          since: '2026-06-01',
+          until: '2026-06-10',
+          message: 'Maintenance',
         },
         headers: {
           Authorization: 'Bearer token-1',
