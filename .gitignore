@@ -1,6 +1,7 @@
 .vscode
 .vscode/
 **/.vscode/
+**.lscache
 # Created by https://www.toptal.com/developers/gitignore/api/visualstudio,csharp,dotnetcore,aspnetcore
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudio,csharp,dotnetcore,aspnetcore
 

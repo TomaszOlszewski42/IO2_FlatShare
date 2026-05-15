@@ -20,8 +20,11 @@ namespace FlatShareBackend.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    TenantId = table.Column<Guid>(type: "uuid", nullable: false),
                     ListingId = table.Column<Guid>(type: "uuid", nullable: false),
-                    TenantId = table.Column<Guid>(type: "uuid", nullable: false)
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    Since = table.Column<DateOnly>(type: "date", nullable: false),
+                    Until = table.Column<DateOnly>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -47,8 +50,9 @@ namespace FlatShareBackend.Migrations
                     ListingId = table.Column<Guid>(type: "uuid", nullable: false),
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    From = table.Column<DateOnly>(type: "date", nullable: false),
-                    To = table.Column<DateOnly>(type: "date", nullable: false)
+                    Since = table.Column<DateOnly>(type: "date", nullable: false),
+                    Until = table.Column<DateOnly>(type: "date", nullable: false),
+                    Message = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -68,8 +72,9 @@ namespace FlatShareBackend.Migrations
                     ListingId = table.Column<Guid>(type: "uuid", nullable: false),
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    From = table.Column<DateOnly>(type: "date", nullable: false),
-                    To = table.Column<DateOnly>(type: "date", nullable: false)
+                    Since = table.Column<DateOnly>(type: "date", nullable: false),
+                    Until = table.Column<DateOnly>(type: "date", nullable: false),
+                    Message = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -118,8 +123,9 @@ namespace FlatShareBackend.Migrations
                     ListingId = table.Column<Guid>(type: "uuid", nullable: false),
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    From = table.Column<DateOnly>(type: "date", nullable: false),
-                    To = table.Column<DateOnly>(type: "date", nullable: false)
+                    Message = table.Column<string>(type: "text", nullable: false),
+                    Since = table.Column<DateOnly>(type: "date", nullable: false),
+                    Until = table.Column<DateOnly>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {
