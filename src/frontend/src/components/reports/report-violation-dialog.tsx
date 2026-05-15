@@ -183,7 +183,7 @@ export function ReportViolationDialog({
           />
 
           <div class="flex items-center justify-between gap-3 text-sm text-base-content/60">
-            <span>Description jest opcjonalny.</span>
+            <span>Description is optional.</span>
             <span>
               {details.length}/{detailsMaxLength}
             </span>

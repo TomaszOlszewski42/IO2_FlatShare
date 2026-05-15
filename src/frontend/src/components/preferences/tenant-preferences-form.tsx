@@ -228,7 +228,7 @@ export function TenantPreferencesForm({
           value={maxPrice}
           min={0}
           step={50}
-          placeholder="np. 1500"
+          placeholder="e.g. 1500"
           errors={getInputErrors('maxPrice', errors.maxPrice)}
           disabled={isSubmitting}
           onInput={(event) => {

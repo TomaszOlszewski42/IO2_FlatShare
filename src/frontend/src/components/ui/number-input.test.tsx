@@ -159,7 +159,7 @@ describe('NumberInput', () => {
           name="price"
           label="Price"
           value=""
-          error="Price jest wymagana"
+          error="Price is required"
           onInput={handleInput}
         />,
         container,
@@ -172,6 +172,6 @@ describe('NumberInput', () => {
     expect(input.classList.contains('input-error')).toBe(true)
     expect(input.getAttribute('aria-invalid')).toBe('true')
     expect(input.getAttribute('aria-describedby')).toBe('price-error')
-    expect(error?.textContent).toBe('Price jest wymagana')
+    expect(error?.textContent).toBe('Price is required')
   })
 })

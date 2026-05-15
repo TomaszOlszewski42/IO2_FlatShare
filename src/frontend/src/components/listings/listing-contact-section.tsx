@@ -28,7 +28,7 @@ export function ListingContactSection({
         id="contact"
         name="contact"
         label="Name/First and Last Name"
-        placeholder="np. Jan Kowalski"
+        placeholder="e.g. Jan Kowalski"
         required
         value={formData.contact}
         error={errors.contact}
@@ -41,9 +41,9 @@ export function ListingContactSection({
       <TextInput
         id="phone"
         name="phone"
-        label="Numer telefonu (opcjonalnie)"
+        label="Phone number (optional)"
         type="text"
-        placeholder="np. +48 123 456 789"
+        placeholder="e.g. +48 123 456 789"
         value={formData.phone || ''}
         error={errors.phone}
         onInput={(e) => {
