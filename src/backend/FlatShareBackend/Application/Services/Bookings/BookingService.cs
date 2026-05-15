@@ -30,7 +30,12 @@ public class BookingService : IBookingService
         )
         {
             var listing = await _listingRepository.Get(booking.ListingId);
-            listing.BookedDates.Remove(booking.Dates);
+            listing.BookedDates.Remove(new DateRange
+            {
+                Since = booking.Since,
+                Until = booking.Until,
+                Message = "Booked"
+            });
             await _listingRepository.SaveChangesAsync();
         }
 
@@ -46,7 +51,8 @@ public class BookingService : IBookingService
             TenantId = requesterId,
             Id = Guid.NewGuid(),
             Status = BookingStatus.PendingApproval,
-            Dates = new DateRange { Since = request.StartDate, Until = request.EndDate, Message = "Booked" }
+            Since = request.StartDate,
+            Until = request.EndDate
         };
 
         if (request.EndDate < request.StartDate)
@@ -79,8 +85,8 @@ public class BookingService : IBookingService
 
         listing.BookedDates.Add(new DateRange
         {
-            Since = booking.Dates.Since,
-            Until = booking.Dates.Until,
+            Since = booking.Since,
+            Until = booking.Until,
             Message = "Booked"
         });
 

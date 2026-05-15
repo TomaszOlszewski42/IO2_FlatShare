@@ -32,8 +32,17 @@ namespace FlatShareBackend.Migrations
                     b.Property<Guid>("ListingId")
                         .HasColumnType("uuid");
 
+                    b.Property<DateOnly>("Since")
+                        .HasColumnType("date");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
                     b.Property<Guid>("TenantId")
                         .HasColumnType("uuid");
+
+                    b.Property<DateOnly>("Until")
+                        .HasColumnType("date");
 
                     b.HasKey("Id");
 
@@ -335,10 +344,14 @@ namespace FlatShareBackend.Migrations
 
                             NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
 
-                            b1.Property<DateOnly>("From")
+                            b1.Property<string>("Message")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<DateOnly>("Since")
                                 .HasColumnType("date");
 
-                            b1.Property<DateOnly>("To")
+                            b1.Property<DateOnly>("Until")
                                 .HasColumnType("date");
 
                             b1.HasKey("ListingId", "Id");
