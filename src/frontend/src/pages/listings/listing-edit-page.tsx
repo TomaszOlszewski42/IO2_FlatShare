@@ -5,6 +5,7 @@ import { useEffect, useState } from 'preact/hooks'
 import { ListingEditForm } from '../../components/listings/listing-edit-form'
 import { ListingPhotoUpload } from '../../components/listings/listing-photo-upload'
 import { ListingUnavailabilityCalendar } from '../../components/listings/listing-unavailability-calendar'
+import { ListingFormShell } from '../../components/listings/listing-form-shell'
 import type { ListingFormData } from '../../components/listings/listing-create-form'
 import { AppButton } from '../../components/ui/app-button'
 import { usePageErrorHandler } from '../../hooks/use-page-error-handler'
@@ -284,7 +285,6 @@ export function ListingEditPage({ listingId }: ListingEditPageProps) {
         {activeTab === 'basic' && (
           <div class="animate-in fade-in slide-in-from-bottom-2 duration-300">
             <ListingEditForm
-              listingId={listingId}
               initialData={initialData}
               fieldErrors={fieldErrors}
               onSubmit={handleSubmit}
@@ -295,13 +295,17 @@ export function ListingEditPage({ listingId }: ListingEditPageProps) {
 
         {activeTab === 'photos' && (
           <div class="animate-in fade-in slide-in-from-bottom-2 duration-300">
-            <ListingPhotoUpload listingId={listingId} />
+            <ListingFormShell>
+              <ListingPhotoUpload listingId={listingId} />
+            </ListingFormShell>
           </div>
         )}
 
         {activeTab === 'unavailability' && (
           <div class="animate-in fade-in slide-in-from-bottom-2 duration-300">
-            <ListingUnavailabilityCalendar listingId={listingId} />
+            <ListingFormShell>
+              <ListingUnavailabilityCalendar listingId={listingId} />
+            </ListingFormShell>
           </div>
         )}
       </div>

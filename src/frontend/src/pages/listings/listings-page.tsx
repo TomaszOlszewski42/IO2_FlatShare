@@ -98,7 +98,8 @@ function getReadableListingsError(error: unknown): string {
 }
 
 export function ListingsPage(_: RoutableProps) {
-  const { session, isLandlord } = useAuth()
+  const { session, isLandlord, isAdmin } = useAuth()
+  const isManagementView = isLandlord || isAdmin
   const resultsTopRef = useRef<HTMLDivElement>(null)
 
   const [isLoading, setIsLoading] = useState(true)
@@ -147,21 +148,21 @@ export function ListingsPage(_: RoutableProps) {
     return () => {
       isMounted = false
     }
-  }, [session, isLandlord])
+  }, [session, isLandlord, isAdmin])
 
   useEffect(() => {
-    if (!isLandlord) {
+    if (!isManagementView) {
       setSelectedStatus('ALL')
     }
-  }, [isLandlord])
+  }, [isManagementView])
 
   useEffect(() => {
     setCurrentPage(1)
   }, [query, selectedStatus, priceMin, priceMax, selectedSort, featureFilters])
 
   const visibleListings = useMemo(() => {
-    return listings.filter((listing) => shouldShowListingInListingsTab(listing, isLandlord))
-  }, [isLandlord, listings])
+    return listings.filter((listing) => shouldShowListingInListingsTab(listing, isManagementView))
+  }, [isManagementView, listings])
 
   const filteredListings = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase()
@@ -169,7 +170,7 @@ export function ListingsPage(_: RoutableProps) {
     return visibleListings.filter((listing) => {
       const searchable = `${listing.title} ${formatLocation(listing.location)}`.toLowerCase()
       const statusMatches =
-        !isLandlord || selectedStatus === 'ALL' || listing.status === selectedStatus
+        !isManagementView || selectedStatus === 'ALL' || listing.status === selectedStatus
       const queryMatches = !normalizedQuery || searchable.includes(normalizedQuery)
       const minPriceMatches = priceMin === '' || listing.price >= priceMin
       const maxPriceMatches = priceMax === '' || listing.price <= priceMax
@@ -187,7 +188,7 @@ export function ListingsPage(_: RoutableProps) {
         nonSmokingMatch
       )
     })
-  }, [query, selectedStatus, visibleListings, isLandlord, priceMin, priceMax, featureFilters])
+  }, [query, selectedStatus, visibleListings, isManagementView, priceMin, priceMax, featureFilters])
 
   const sortedListings = useMemo(() => {
     const items = [...filteredListings]
@@ -242,7 +243,7 @@ export function ListingsPage(_: RoutableProps) {
     priceMax !== '' ||
     selectedSort !== 'NEWEST' ||
     hasFeatureFilters ||
-    (isLandlord && selectedStatus !== 'ALL')
+    (isManagementView && selectedStatus !== 'ALL')
 
   const activeCount = visibleListings.filter(isActiveListing).length
 
@@ -312,7 +313,7 @@ export function ListingsPage(_: RoutableProps) {
           visibleCount={sortedListings.length}
           totalCount={visibleListings.length}
           hasFilters={hasFilters}
-          isLandlord={isLandlord}
+          isLandlord={isManagementView}
           pageStart={pagination.pageStart}
           pageEnd={pagination.pageEnd}
           onClearFilters={clearFilters}

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'preact/hooks'
 import { ListingBackendPhoto } from './listing-backend-photo'
+import { ListingFormSection } from './listing-form-section'
 import { getListingPhotoIds, uploadPhoto, deletePhoto } from '../../services/listings-api'
 import { readAuthSession } from '../../services/auth-session'
 
@@ -71,12 +72,10 @@ export function ListingPhotoUpload({ listingId, onPhotosChange }: ListingPhotoUp
   }
 
   return (
-    <div class="space-y-4 card-body">
-      <div>
-        <h2 class="text-xl font-semibold">Photos</h2>
-        <p class="text-sm text-base-content/65">Add photos of your apartment to attract more interested parties.</p>
-      </div>
-
+    <ListingFormSection
+      title="Photos"
+      description="Add photos of your apartment to attract more interested parties."
+    >
       {error && (
         <div class="alert alert-error text-sm">
           <span>{error}</span>
@@ -127,6 +126,6 @@ export function ListingPhotoUpload({ listingId, onPhotosChange }: ListingPhotoUp
           />
         </label>
       </div>
-    </div>
+    </ListingFormSection>
   )
 }
