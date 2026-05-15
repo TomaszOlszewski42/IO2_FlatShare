@@ -4,6 +4,8 @@ namespace FlatShareBackend.Application.Dtos.Listings;
 
 public class ListingDto
 {
+    public ListingDto() { }
+
     public ListingDto(Listing listing)
     {
         Id = listing.Id;
