@@ -9,6 +9,7 @@ import { ListingFeatureBadges } from '../../components/listings/listing-feature-
 import { ListingGallery } from '../../components/listings/listing-gallery'
 import { ListingLocationSection } from '../../components/listings/listing-location-section'
 import { ListingMetaRow } from '../../components/listings/listing-meta-row'
+import { ListingOpinionsSection } from '../../components/listings/listing-opinions-section'
 import { ListingParametersSection } from '../../components/listings/listing-parameters-section'
 import { ListingSection } from '../../components/listings/listing-section'
 import { ListingTenantContactPanel } from '../../components/listings/listing-tenant-contact-panel'
@@ -240,6 +241,8 @@ export function ListingDetailsPage({ listingId }: ListingDetailsRouteProps) {
           </div>
         ) : null}
       </ListingSection>
+
+      <ListingOpinionsSection listingId={listing.id} />
     </section>
   )
 }
