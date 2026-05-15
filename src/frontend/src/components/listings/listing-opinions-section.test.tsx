@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { render } from 'preact'
 import { act } from 'preact/test-utils'
 
@@ -89,8 +89,7 @@ describe('ListingOpinionsSection', () => {
   beforeEach(() => {
     vi.mocked(errorHandlerCtx.useErrorHandler).mockReturnValue({
       showToast,
-      clearToast: vi.fn(),
-    })
+    } as any)
     showToast.mockReset()
   })
 

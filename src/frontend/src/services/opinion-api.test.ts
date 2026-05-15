@@ -41,7 +41,7 @@ describe('opinion-api', () => {
       ]
       apiRequestMock.mockResolvedValue(mockOpinions)
 
-      const result = await getListingOpinions('listing-1')
+      const result = await getListingOpinions('listing-1', 'token-1')
 
       expect(result).toEqual(mockOpinions)
     })
