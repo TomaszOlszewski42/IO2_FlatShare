@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="FlatShareBackend.IntegrationTests/FlatShareBackend.IntegrationTests.csproj" />
   <Project Path="FlatShareBackend/FlatShareBackend.csproj" />
   <Project Path="FlatShareBackendTests/FlatShareBackendTests.csproj" />
 </Solution>
