@@ -65,6 +65,14 @@ function isHiddenByModeration(listing: Listing): boolean {
   return listing.status === 'HIDDEN_BY_MODERATION'
 }
 
+function isHiddenFromListingsTab(listing: Listing): boolean {
+  return (
+    listing.status === 'HIDDEN' ||
+    listing.status === 'ARCHIVED' ||
+    listing.status === 'HIDDEN_BY_MODERATION'
+  )
+}
+
 function isActiveListing(listing: Listing): boolean {
   return !listing.status || listing.status === 'ACTIVE'
 }
@@ -78,7 +86,7 @@ function shouldShowListingInListingsTab(listing: Listing, isLandlord: boolean): 
     return true
   }
 
-  return isActiveListing(listing)
+  return !isHiddenFromListingsTab(listing)
 }
 
 function getReadableListingsError(error: unknown): string {
