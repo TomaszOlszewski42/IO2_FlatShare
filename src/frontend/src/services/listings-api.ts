@@ -52,6 +52,11 @@ type ListingDto = {
     preferredTenantProfile?: string | null
     profile?: string | null
   }
+  unavailability?: {
+    since: string
+    until: string
+    message: string
+  }[]
   createdAt?: string
   updatedAt?: string
 }
@@ -247,6 +252,7 @@ function mapListingDtoToListing(item: ListingDto, fallbackOwnerId?: string): Lis
             item.attributes.preferredTenantProfile ?? item.attributes.profile ?? null,
         }
       : undefined,
+    unavailability: item.unavailability,
     createdAt: item.createdAt,
     updatedAt: item.updatedAt,
   }
