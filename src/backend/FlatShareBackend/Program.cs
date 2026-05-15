@@ -107,6 +107,9 @@ namespace FlatShareBackend
             builder.Services.AddTransient<IMatchesPagingService, MatchesPagingService>();
             builder.Services.AddTransient<IMatchScoreCalculator, DefaultMatchScoreCalculator>();
 
+            builder.Services.AddScoped<IListingOpinionRepository, ListingOpinionRepositoryDB>();
+            builder.Services.AddScoped<IListingOpinionService, ListingOpinionService>();
+
             builder.Services.AddSingleton(serviceProvider =>
             {
                 var options = serviceProvider.GetRequiredService<IOptions<BlobOptions>>().Value;

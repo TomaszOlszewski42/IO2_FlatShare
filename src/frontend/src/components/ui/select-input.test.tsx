@@ -171,7 +171,7 @@ describe('SelectInput', () => {
           label="City"
           value=""
           options={cityOptions}
-          error="City jest wymagane"
+          error="City is required"
           onChange={handleChange}
         />,
         container,
@@ -184,6 +184,6 @@ describe('SelectInput', () => {
     expect(select.classList.contains('select-error')).toBe(true)
     expect(select.getAttribute('aria-invalid')).toBe('true')
     expect(select.getAttribute('aria-describedby')).toBe('city-error')
-    expect(error?.textContent).toBe('City jest wymagane')
+    expect(error?.textContent).toBe('City is required')
   })
 })

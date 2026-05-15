@@ -33,7 +33,7 @@ export function ListingLocationFormSection({
         id="city"
         name="city"
         label="City/Gmina"
-        placeholder="np. Warsaw"
+        placeholder="e.g. Warsaw"
         required
         value={formData.city}
         error={errors.city}
@@ -74,7 +74,7 @@ export function ListingLocationFormSection({
           id="buildingNumber"
           name="buildingNumber"
           label="Building number (optional)"
-          placeholder="np. 42"
+          placeholder="e.g. 42"
           value={formData.buildingNumber || ''}
           error={errors.buildingNumber}
           onInput={(e) => {
@@ -87,7 +87,7 @@ export function ListingLocationFormSection({
           id="postalCode"
           name="postalCode"
           label="Postal code (optional)"
-          placeholder="np. 00-001"
+          placeholder="e.g. 00-001"
           value={formData.postalCode || ''}
           error={errors.postalCode}
           onInput={(e) => {

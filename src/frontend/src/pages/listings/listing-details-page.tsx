@@ -179,8 +179,8 @@ export function ListingDetailsPage({ listingId }: ListingDetailsRouteProps) {
 
         {isLandlord ? (
           <div class="mt-3 grid gap-2 md:grid-cols-2">
-            <ListingMetaRow label="Kontakt" value={listing.contact || listing.ownerContact || '-'} />
-            <ListingMetaRow label="Telefon" value={listing.phone || listing.contactPhone || '-'} />
+            <ListingMetaRow label="Contact" value={listing.contact || listing.ownerContact || '-'} />
+            <ListingMetaRow label="Phone" value={listing.phone || listing.contactPhone || '-'} />
             <ListingMetaRow label="Status" value={listing.status ? formatStatusLabel(listing.status) : '-'} />
           </div>
         ) : null}

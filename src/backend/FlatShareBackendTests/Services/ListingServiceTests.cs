@@ -123,8 +123,9 @@ namespace FlatShareBackendTests.Services
             var userId = Guid.NewGuid();
             var dates = new DateRange
             {
-                From = new DateOnly(2025, 1, 10),
-                To = new DateOnly(2025, 1, 5) // Invalid
+                Since = new DateOnly(2025, 1, 10),
+                Until = new DateOnly(2025, 1, 5), // Invalid
+                Message = "Renovation"
             };
 
             // Act & Assert
@@ -138,7 +139,12 @@ namespace FlatShareBackendTests.Services
             // Arrange
             var userId = Guid.NewGuid();
             var listing = CreateDummyListing(userId);
-            var dates = new DateRange { From = new DateOnly(2025, 1, 5), To = new DateOnly(2025, 1, 10) };
+            var dates = new DateRange 
+            { 
+                Since = new DateOnly(2025, 1, 5), 
+                Until = new DateOnly(2025, 1, 10),
+                Message = "Renovation" 
+            };
 
             _listingRepositoryMock.Setup(r => r.Get(listing.Id)).ReturnsAsync(listing);
 
