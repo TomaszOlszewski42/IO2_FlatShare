@@ -6,3 +6,5 @@ public class OccupiedDateException(string msg, List<DateRange> dateRanges) : Exc
 {
     public List<DateRange> DateRanges = dateRanges;
 }
+
+public class DateTooEarlyException(string msg) : Exception(msg);
