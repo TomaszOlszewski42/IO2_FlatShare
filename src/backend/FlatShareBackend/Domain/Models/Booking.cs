@@ -17,5 +17,6 @@ public class Booking
     public required Guid TenantId { get; set; }
     public required Guid ListingId { get; set; }
     public required BookingStatus Status { get; set; }
-    public required DateRange Dates { get; set; }
+    public required DateOnly Since { get; set; }
+    public required DateOnly Until { get; set; }
 }
