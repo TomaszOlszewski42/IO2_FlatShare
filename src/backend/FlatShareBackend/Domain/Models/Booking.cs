@@ -1,16 +1,5 @@
 namespace FlatShareBackend.Domain.Models;
 
-public enum BookingStatus
-{
-    PendingApproval,
-    Expired,
-    Rejected,
-    Confirmed,
-    PaymentFailed,
-    PendingPayment,
-    Cancelled
-}
-
 public class Booking
 {
     public required Guid Id { get; set; }
@@ -19,4 +8,7 @@ public class Booking
     public required BookingStatus Status { get; set; }
     public required DateOnly Since { get; set; }
     public required DateOnly Until { get; set; }
+    public required decimal TotalCost { get; set; }
+    public required string Currency { get; set; }
+    //public required string PaymentStatus { get; set; } 
 }
