@@ -1,3 +1,5 @@
+using System.Data.Entity.Core;
+using FlatShareBackend.Application.Dtos;
 using FlatShareBackend.Application.Dtos.Bookings;
 using FlatShareBackend.Domain.Exceptions;
 using FlatShareBackend.Domain.Models;
@@ -11,11 +13,17 @@ public class BookingService : IBookingService
 {
     private readonly IBookingRepository _bookingRepository;
     private readonly IListingRepository _listingRepository;
+    private readonly IBookingStatusTransitionValidator _transitionValidator;
 
-    public BookingService(IBookingRepository bookingRepository, IListingRepository listingRepository)
+    public BookingService(
+        IBookingRepository bookingRepository, 
+        IListingRepository listingRepository,
+        IBookingStatusTransitionValidator transitionValidator
+    )
     {
         _bookingRepository = bookingRepository;
         _listingRepository = listingRepository;
+        _transitionValidator = transitionValidator;
     }
 
     public async Task ChangeStatusByLandlord(Guid bookingId, BookingStatus newStatus, Guid landlordId)
@@ -28,25 +36,18 @@ public class BookingService : IBookingService
             throw new FrobiddednOperationException("Landlord can only change status of bookings of their listings.");
         }
 
-        booking.Status = newStatus; // TODO: Walidacja przejść
-
-        if (newStatus == BookingStatus.Expired 
-            || newStatus == BookingStatus.Rejected 
-            || newStatus == BookingStatus.PaymentFailed
-            || newStatus == BookingStatus.Cancelled
-        )
+        if (!_transitionValidator.IsTransitionLegal(booking.Status, newStatus))
         {
-            listing.BookedDates.Remove(new DateRange
-            {
-                Since = booking.Since,
-                Until = booking.Until,
-                Message = "Booked"
-            });
-            await _listingRepository.SaveChangesAsync();
+            throw new InvalidBookingStateTransition
+                ($"Booking can't transition from state {booking.Status} to {newStatus}");
         }
+
+        booking.Status = newStatus;
+        await RemoveBookedDateIfUnsuccessfulBook(listing, newStatus, booking);
 
         await _bookingRepository.SaveChangesAsync();
     }
+
 
     public async Task ChangeStatusByTenant(Guid bookingId, BookingStatus newStatus, Guid tenantId)
     {
@@ -57,23 +58,15 @@ public class BookingService : IBookingService
             throw new FrobiddednOperationException("Tenant can only change status of their own bookings");
         }
 
-        booking.Status = newStatus; // TODO: Walidacja przejść
-
-        if (newStatus == BookingStatus.Expired 
-            || newStatus == BookingStatus.Rejected 
-            || newStatus == BookingStatus.PaymentFailed
-            || newStatus == BookingStatus.Cancelled
-        )
+        if (!_transitionValidator.IsTransitionLegal(booking.Status, newStatus))
         {
-            var listing = await _listingRepository.Get(booking.ListingId);
-            listing.BookedDates.Remove(new DateRange
-            {
-                Since = booking.Since,
-                Until = booking.Until,
-                Message = "Booked"
-            });
-            await _listingRepository.SaveChangesAsync();
+            throw new InvalidBookingStateTransition
+                ($"Booking can't transition from state {booking.Status} to {newStatus}");
         }
+
+        booking.Status = newStatus;
+        var listing = await _listingRepository.Get(booking.ListingId);
+        await RemoveBookedDateIfUnsuccessfulBook(listing, newStatus, booking);
 
         await _bookingRepository.SaveChangesAsync();
     }
@@ -81,16 +74,12 @@ public class BookingService : IBookingService
     [Authorize(Roles = "Tenant")]
     public async Task<Booking> CreateBooking(BookingRequest request, Guid requesterId)
     {
-        if (request.EndDate < request.StartDate)
-        {
-            throw new Exception("End date can't be before start date");
-        }
+
 
         var listing = await _listingRepository.Get(request.ListingId);
         // ; Source - https://stackoverflow.com/a/4639057
         // ; Posted by Adam Ralph, modified by community. See post 'Timeline' for change history
         // ; Retrieved 2026-05-16, License - CC BY-SA 3.0
-
         var rentDuration = ((request.EndDate.Year - request.StartDate.Year) * 12) 
             + request.EndDate.Month - request.StartDate.Month + 1;
 
@@ -105,6 +94,29 @@ public class BookingService : IBookingService
             Currency = listing.Currency,
             TotalCost = rentDuration * listing.Price
         };
+
+        CheckIfBookingRequestIsValid(request, listing);
+
+        listing.BookedDates.Add(new DateRange
+        {
+            Since = booking.Since,
+            Until = booking.Until,
+            Message = "Booked"
+        });
+
+        // To potencjalnie powinna być jedna transakcja?
+        await _listingRepository.SaveChangesAsync();
+        await _bookingRepository.Add(booking);
+
+        return booking;
+    }
+
+    private static void CheckIfBookingRequestIsValid(BookingRequest request, Listing listing)
+    {
+        if (request.EndDate < request.StartDate)
+        {
+            throw new InvalidDatesException("End date can't be before start date");
+        }
 
         if (request.StartDate < listing.AvailableFrom)
         {
@@ -126,24 +138,33 @@ public class BookingService : IBookingService
         {
             throw new OccupiedDateException("The room is already booked there", [.. colidingDates]);
         }
-
-        listing.BookedDates.Add(new DateRange
-        {
-            Since = booking.Since,
-            Until = booking.Until,
-            Message = "Booked"
-        });
-
-        // To potencjalnie powinna być jedna transakcja?
-        await _listingRepository.SaveChangesAsync();
-        await _bookingRepository.Add(booking);
-
-        return booking;
     }
 
     public async Task<BookingDto> Get(Guid bookingId)
     {
         var booking = await _bookingRepository.Get(bookingId);
         return new(booking);
+    }
+
+    private async Task RemoveBookedDateIfUnsuccessfulBook(
+        Listing listing, 
+        BookingStatus newStatus, 
+        Booking booking
+    )
+    {
+        if (newStatus == BookingStatus.Expired 
+            || newStatus == BookingStatus.Rejected 
+            || newStatus == BookingStatus.PaymentFailed
+            || newStatus == BookingStatus.Cancelled
+        )
+        {
+            listing.BookedDates.Remove(new DateRange
+            {
+                Since = booking.Since,
+                Until = booking.Until,
+                Message = "Booked"
+            });
+            await _listingRepository.SaveChangesAsync();
+        }
     }
 }
