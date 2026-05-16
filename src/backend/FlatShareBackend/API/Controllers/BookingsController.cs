@@ -2,6 +2,7 @@ using FlatShareBackend.Application.Dtos.Bookings;
 using FlatShareBackend.Application.Services.Bookings;
 using FlatShareBackend.Domain.Models;
 using FlatShareBackend.Infrastructure.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlatShareBackend.API.Controllers;
@@ -19,46 +20,63 @@ public class BookingsController : ControllerBase
         _httpAccessor = httpAccessor;
     }
 
+    public record BookingCreatedResponse(Guid BookingId, BookingStatus Status, DateTime CreatedAt, decimal TotalPrice,
+        string Currency, string ResourceLink);
+
+    [Authorize(Roles = "TENANT")]
     [HttpPost()]
     public async Task<IActionResult> Create([FromBody] BookingRequest bookingRequest)
     {
         var requesterId = _httpAccessor.ParseUserID();
         var booking = await _bookingService.CreateBooking(bookingRequest, requesterId);
-        return Created($"api/v1/bookings/{booking.Id}", booking);
+        var createdResourceLink = $"api/v1/bookings/{booking.Id}";
+        // DateTime provider?
+        var answer = new BookingCreatedResponse(booking.Id, booking.Status, DateTime.Now, booking.TotalCost, 
+            booking.Currency, createdResourceLink);
+        return Created(createdResourceLink, answer);
     }
 
+    [Authorize(Roles = "LANDLORD")]
     [HttpPost("{bookingId}/accept")]
     public async Task<IActionResult> Accept(Guid bookingId)
     {
-        await _bookingService.ChangeStatus(bookingId, BookingStatus.PendingPayment);
+        var landlordId = _httpAccessor.ParseUserID();
+        await _bookingService.ChangeStatusByLandlord(bookingId, BookingStatus.Rejected, landlordId);
         return Ok();
     }
 
+    [Authorize(Roles = "LANDLORD")]
     [HttpPost("{bookingId}/reject")]
     public async Task<IActionResult> Reject(Guid bookingId)
     {
-        await _bookingService.ChangeStatus(bookingId, BookingStatus.Rejected);
+        var landlordId = _httpAccessor.ParseUserID();
+        await _bookingService.ChangeStatusByLandlord(bookingId, BookingStatus.Rejected, landlordId);
         return Ok();
     }
 
+    [Authorize(Roles = "TENANT")]
     [HttpPost("{bookingId}/cancel")]
     public async Task<IActionResult> Cancel(Guid bookingId)
     {
-        await _bookingService.ChangeStatus(bookingId, BookingStatus.Cancelled);
+        var tenantId = _httpAccessor.ParseUserID();
+        await _bookingService.ChangeStatusByTenant(bookingId, BookingStatus.Cancelled, tenantId);
         return Ok();
     }
 
+    [Authorize(Roles = "TENANT")]
     [HttpPost("{bookingId}/pay")]
     public async Task<IActionResult> Pay(Guid bookingId)
     {
-        await _bookingService.ChangeStatus(bookingId, BookingStatus.Confirmed);
+        var tenantId = _httpAccessor.ParseUserID();
+        await _bookingService.ChangeStatusByTenant(bookingId, BookingStatus.Confirmed, tenantId);
         return Ok();
     }
 
+    [Authorize()]
     [HttpGet("{bookingId}")]
-    public async Task<IActionResult> GetStatus(Guid bookingId)
+    public async Task<IActionResult> Get(Guid bookingId)
     {
-        var status = await _bookingService.GetStatus(bookingId);
+        var status = await _bookingService.Get(bookingId);
         return Ok(status);
     }
 }
