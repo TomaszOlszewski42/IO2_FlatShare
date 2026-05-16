@@ -8,3 +8,7 @@ public class OccupiedDateException(string msg, List<DateRange> dateRanges) : Exc
 }
 
 public class DateTooEarlyException(string msg) : Exception(msg);
+
+public class InvalidBookingStateTransition(string msg) : Exception(msg);
+
+public class InvalidDatesException(string msg) : Exception(msg);

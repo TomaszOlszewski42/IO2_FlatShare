@@ -113,6 +113,7 @@ namespace FlatShareBackend
             builder.Services.AddScoped<IListingOpinionService, ListingOpinionService>();
             builder.Services.AddScoped<IBookingRepository, BookingRepository>();
             builder.Services.AddScoped<IBookingService, BookingService>();
+            builder.Services.AddScoped<IBookingStatusTransitionValidator, DefaultBookingStatusTransitionValidator>();
 
             builder.Services.AddSingleton(serviceProvider =>
             {
