@@ -72,8 +72,6 @@ public class BookingService : IBookingService
     [Authorize(Roles = "Tenant")]
     public async Task<Booking> CreateBooking(BookingRequest request, Guid requesterId)
     {
-
-
         var listing = await _listingRepository.Get(request.ListingId);
         // ; Source - https://stackoverflow.com/a/4639057
         // ; Posted by Adam Ralph, modified by community. See post 'Timeline' for change history
@@ -177,6 +175,6 @@ public class BookingService : IBookingService
             return [.. (await _bookingRepository.GetLandlords(requesterId)).Select(x => new BookingDto(x))];
         }
 
-        throw new ForbiddenOperationException("Frobidden");
+        throw new ForbiddenOperationException("Forbidden");
     }
 }
