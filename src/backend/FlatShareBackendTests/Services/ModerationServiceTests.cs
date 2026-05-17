@@ -14,6 +14,7 @@ using FlatShareBackend.Domain.Models;
 using FlatShareBackend.Application.Services.Auth;
 using FlatShareBackend.Infrastructure.Repositories.Users;
 using FlatShareBackend.Infrastructure.Repositories.Listings;
+using FlatShareBackend.Infrastructure.Repositories.Bookings;
 
 namespace FlatShareBackendTests.Services
 {
@@ -22,6 +23,7 @@ namespace FlatShareBackendTests.Services
         private readonly Mock<IViolationReportRepository> _reportRepositoryMock;
         private readonly Mock<IUserRepository> _userRepositoryMock;
         private readonly Mock<IListingRepository> _listingRepositoryMock;
+        private readonly Mock<IBookingRepository> _bookingRepositoryMock;
         private readonly Mock<INotificationService> _notificationServiceMock;
         private readonly ModerationService _moderationService;
 
@@ -30,12 +32,14 @@ namespace FlatShareBackendTests.Services
             _reportRepositoryMock = new Mock<IViolationReportRepository>();
             _userRepositoryMock = new Mock<IUserRepository>();
             _listingRepositoryMock = new Mock<IListingRepository>();
+            _bookingRepositoryMock = new Mock<IBookingRepository>();
             _notificationServiceMock = new Mock<INotificationService>();
 
             _moderationService = new ModerationService(
                 _reportRepositoryMock.Object,
                 _userRepositoryMock.Object,
                 _listingRepositoryMock.Object,
+                _bookingRepositoryMock.Object,
                 new List<INotificationService> { _notificationServiceMock.Object });
         }
 
@@ -107,6 +111,7 @@ namespace FlatShareBackendTests.Services
 
             _userRepositoryMock.Setup(r => r.GetByIdAsync(userId, It.IsAny<CancellationToken>())).ReturnsAsync(user);
             _listingRepositoryMock.Setup(r => r.GetByOwnerIdAsync(userId, It.IsAny<CancellationToken>())).ReturnsAsync(listings);
+            _bookingRepositoryMock.Setup(r => r.GetLandlords(userId)).ReturnsAsync(new List<Booking>());
 
             // Act
             await _moderationService.BanUserAsync(adminId, userId, "Repeated violations");
@@ -121,6 +126,7 @@ namespace FlatShareBackendTests.Services
                 _listingRepositoryMock.Verify(r => r.UpdateAsync(listing, It.IsAny<CancellationToken>()), Times.AtLeastOnce);
             }
 
+            _bookingRepositoryMock.Verify(r => r.SaveChangesAsync(), Times.Once);
             _notificationServiceMock.Verify(n => n.SendUserBannedNotificationAsync(userId, "Repeated violations", It.IsAny<CancellationToken>()), Times.Once);
         }
 
