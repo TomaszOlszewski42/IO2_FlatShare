@@ -44,7 +44,6 @@ public class BookingService : IBookingService
 
         booking.Status = newStatus;
         await RemoveBookedDateIfUnsuccessfulBook(listing, newStatus, booking);
-
         await _bookingRepository.SaveChangesAsync();
     }
 
@@ -64,10 +63,9 @@ public class BookingService : IBookingService
                 ($"Booking can't transition from state {booking.Status} to {newStatus}");
         }
 
-        booking.Status = newStatus;
         var listing = await _listingRepository.Get(booking.ListingId);
+        booking.Status = newStatus;
         await RemoveBookedDateIfUnsuccessfulBook(listing, newStatus, booking);
-
         await _bookingRepository.SaveChangesAsync();
     }
 
@@ -166,5 +164,19 @@ public class BookingService : IBookingService
             });
             await _listingRepository.SaveChangesAsync();
         }
+    }
+
+    public async Task<List<BookingDto>> GetAllOfUser(Guid requesterId, string role)
+    {
+        if (role == "TENANT")
+        {
+            return [.. (await _bookingRepository.GetTenants(requesterId)).Select(x => new BookingDto(x))];
+        }
+        if (role == "LANDLORD")
+        {
+            return [.. (await _bookingRepository.GetLandlords(requesterId)).Select(x => new BookingDto(x))];
+        }
+
+        throw new FrobiddednOperationException("Frobidden");
     }
 }

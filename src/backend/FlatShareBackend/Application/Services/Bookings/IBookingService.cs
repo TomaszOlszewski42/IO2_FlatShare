@@ -10,4 +10,5 @@ public interface IBookingService
     public Task ChangeStatusByTenant(Guid bookingId, BookingStatus newStatus, Guid tenantId);
     public Task ChangeStatusByLandlord(Guid bookingId, BookingStatus newStatus, Guid landlordId);
     public Task<BookingDto> Get(Guid bookingId);
+    public Task<List<BookingDto>> GetAllOfUser(Guid requesterId, string role);
 }
