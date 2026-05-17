@@ -42,7 +42,7 @@ public class BookingsController : ControllerBase
     public async Task<IActionResult> Accept(Guid bookingId)
     {
         var landlordId = _httpAccessor.ParseUserID();
-        await _bookingService.ChangeStatusByLandlord(bookingId, BookingStatus.Rejected, landlordId);
+        await _bookingService.ChangeStatusByLandlord(bookingId, BookingStatus.PendingPayment, landlordId);
         return Ok();
     }
 
