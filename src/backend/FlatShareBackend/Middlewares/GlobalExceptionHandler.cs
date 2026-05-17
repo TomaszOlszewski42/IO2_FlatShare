@@ -50,6 +50,24 @@ namespace FlatShareBackend.Middlewares
                     response.Error = "Unauthorized";
                     response.Message = exception.Message;
                     break;
+                case ForbiddenOperationException:
+                    statusCode = StatusCodes.Status403Forbidden;
+                    response.Status = statusCode;
+                    response.Error = "Forbiddedn";
+                    response.Message = exception.Message;
+                    break;
+                case OccupiedDateException:
+                    statusCode = StatusCodes.Status409Conflict;
+                    response.Status = statusCode;
+                    response.Error = "Room already occupied then";
+                    response.Message = exception.Message;
+                    break;
+                case InvalidDatesException or DateTooEarlyException:
+                    statusCode = StatusCodes.Status400BadRequest;
+                    response.Status = statusCode;
+                    response.Error = "Invalid dates";
+                    response.Message = exception.Message;
+                    break;
             }
 
             httpContext.Response.StatusCode = statusCode;

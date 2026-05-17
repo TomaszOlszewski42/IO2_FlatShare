@@ -33,7 +33,7 @@ public class BookingService : IBookingService
         
         if (listing.OwnerId != landlordId)
         {
-            throw new FrobiddednOperationException("Landlord can only change status of bookings of their listings.");
+            throw new ForbiddenOperationException("Landlord can only change status of bookings of their listings.");
         }
 
         if (!_transitionValidator.IsTransitionLegal(booking.Status, newStatus))
@@ -54,7 +54,7 @@ public class BookingService : IBookingService
 
         if (booking.TenantId != tenantId)
         {
-            throw new FrobiddednOperationException("Tenant can only change status of their own bookings");
+            throw new ForbiddenOperationException("Tenant can only change status of their own bookings");
         }
 
         if (!_transitionValidator.IsTransitionLegal(booking.Status, newStatus))
@@ -177,6 +177,6 @@ public class BookingService : IBookingService
             return [.. (await _bookingRepository.GetLandlords(requesterId)).Select(x => new BookingDto(x))];
         }
 
-        throw new FrobiddednOperationException("Frobidden");
+        throw new ForbiddenOperationException("Frobidden");
     }
 }
