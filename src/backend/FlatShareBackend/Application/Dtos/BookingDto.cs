@@ -4,6 +4,8 @@ namespace FlatShareBackend.Application.Dtos;
 
 public record class BookingDto
 {
+    public BookingDto() { }
+
     public BookingDto(Booking booking)
     {
         Id = booking.Id;
