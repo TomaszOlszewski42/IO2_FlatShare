@@ -1,7 +1,10 @@
 using FlatShareBackend.Application.Dtos.Auth;
 using FlatShareBackend.Application.Dtos.Users;
+using FlatShareBackend.Domain.Models;
+using FlatShareBackend.Models;
 using FlatShareBackend.Infrastructure.Data;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Identity;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -29,18 +32,40 @@ namespace FlatShareBackend.IntegrationTests.Infrastructure
         {
             var password = "SecurePassword123!";
             
-            // Register
-            var registerRequest = new RegisterUserRequest
+            if (role == "ADMIN")
             {
-                FirstName = "Test",
-                LastName = "User",
-                Email = email,
-                Password = password,
-                Role = role
-            };
-            await Client.PostAsJsonAsync("/api/v1/users", registerRequest);
+                // We add ADMIN user manually
+                var hasher = Scope.ServiceProvider.GetRequiredService<IPasswordHasher<User>>();
+                var admin = new User
+                {
+                    Id = Guid.NewGuid(),
+                    FirstName = "Admin",
+                    LastName = "User",
+                    Email = email.ToLowerInvariant(),
+                    Role = UserRole.Admin,
+                    Status = UserStatus.Active,
+                    CreatedAtUtc = DateTime.UtcNow
+                };
+                admin.PasswordHash = hasher.HashPassword(admin, password);
+                
+                DbContext.Users.Add(admin);
+                await DbContext.SaveChangesAsync();
+            }
+            else
+            {
+                // Register via API for regular roles
+                var registerRequest = new RegisterUserRequest
+                {
+                    FirstName = "Test",
+                    LastName = "User",
+                    Email = email,
+                    Password = password,
+                    Role = role
+                };
+                await Client.PostAsJsonAsync("/api/v1/users", registerRequest);
+            }
 
-            // Login
+            // Login to get token
             var loginRequest = new LoginRequest
             {
                 Email = email,
