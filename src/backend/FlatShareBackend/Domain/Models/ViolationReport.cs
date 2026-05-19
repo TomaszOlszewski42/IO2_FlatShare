@@ -1,5 +1,9 @@
+using System.Text.Json.Serialization;
+using FlatShareBackend.Application.Converters;
+
 namespace FlatShareBackend.Domain.Models;
 
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ViolationReportStatus
 {
     Open,
@@ -8,6 +12,7 @@ public enum ViolationReportStatus
     ClosedNoAction
 }
 
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ViolationTargetType
 {
     LISTING,

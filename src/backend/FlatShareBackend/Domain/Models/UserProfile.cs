@@ -6,7 +6,7 @@ using FlatShareBackend.Application.Converters;
 namespace FlatShareBackend.AgregationClasses;
 
 [JsonConverter(typeof(JsonEnumMemberConverter<UserProfile>))]
-[TypeConverter(typeof(StringEnumCoverter))]
+[TypeConverter(typeof(JsonStringEnumConverter))]
 public enum UserProfile
 {
     [EnumMember(Value = "student")]

@@ -7,7 +7,6 @@ using FlatShareBackend.Domain.Exceptions;
 using FlatShareBackend.Domain.Models;
 using FlatShareBackend.Infrastructure.Repositories.Listings;
 using FlatShareBackend.Infrastructure.Repositories.Users;
-using FlatShareBackend.Models;
 using Microsoft.AspNetCore.Http;
 using Moq;
 

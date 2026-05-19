@@ -1,7 +1,6 @@
 using FlatShareBackend.Application.Dtos.Auth;
 using FlatShareBackend.Application.Dtos.Users;
 using FlatShareBackend.Domain.Models;
-using FlatShareBackend.Models;
 using FlatShareBackend.Infrastructure.Data;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;

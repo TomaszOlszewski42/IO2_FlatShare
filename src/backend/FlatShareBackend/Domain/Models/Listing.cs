@@ -1,9 +1,12 @@
-﻿using FlatShareBackend.Application.Dtos.Listings;
+﻿using System.Text.Json.Serialization;
+using FlatShareBackend.Application.Converters;
+using FlatShareBackend.Application.Dtos.Listings;
 
 namespace FlatShareBackend.Domain.Models;
 
 public class Listing
 {
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum State
     {
         ACTIVE,
