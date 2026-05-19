@@ -1,6 +1,5 @@
 using FlatShareBackend.AgregationClasses;
 using FlatShareBackend.Dtos.Reports;
-using FlatShareBackend.Models;
 using FlatShareBackend.Exceptions;
 using FlatShareBackend.Infrastructure.Repositories;
 using FlatShareBackend.Application.Dtos.Matches;

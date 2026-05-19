@@ -1,10 +1,13 @@
-﻿namespace FlatShareBackend.Models
+﻿using System.Text.Json.Serialization;
+using FlatShareBackend.Application.Converters;
+
+namespace FlatShareBackend.Domain.Models;
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum UserStatus
 {
-    public enum UserStatus
-    {
-        Active,
-        Blocked,
-        Deleted,
-        ResetRequested
-    }
+    Active,
+    Blocked,
+    Deleted,
+    ResetRequested
 }
