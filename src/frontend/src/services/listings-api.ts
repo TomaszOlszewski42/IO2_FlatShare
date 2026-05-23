@@ -210,11 +210,11 @@ function buildQueryString(params?: ListingListQuery): string {
     searchParams.set('OwnerId', params.ownerId)
   }
 
-  if (params.minPrice !== undefined && params.minPrice !== null && params.minPrice !== '') {
+  if (params.minPrice !== undefined && params.minPrice !== null) {
     searchParams.set('MinPrice', String(params.minPrice))
   }
 
-  if (params.maxPrice !== undefined && params.maxPrice !== null && params.maxPrice !== '') {
+  if (params.maxPrice !== undefined && params.maxPrice !== null) {
     searchParams.set('MaxPrice', String(params.maxPrice))
   }
 
