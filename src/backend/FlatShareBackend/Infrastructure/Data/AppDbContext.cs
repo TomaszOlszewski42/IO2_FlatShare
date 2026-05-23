@@ -113,8 +113,17 @@ namespace FlatShareBackend.Infrastructure.Data
                     .WithMany()
                     .HasForeignKey(x => x.ListingId)
                     .IsRequired();
+                
+                entity.OwnsOne(x => x.Payment, sa =>
+                {
+                    sa.Property(p => p.Currency).HasColumnName("Payment_Currency");
+                    sa.Property(p => p.TotalValue).HasColumnName("Payment_TotalValue");
+                    sa.Property(p => p.Status).HasColumnName("Payment_Status");
+                    sa.Property(p => p.Id).HasColumnName("Payment_Id");
+                })
+                    .HasIndex(x => x.Id)
+                    .IsUnique();
             });
-
         }
 
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)

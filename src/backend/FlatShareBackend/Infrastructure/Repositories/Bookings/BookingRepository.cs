@@ -1,3 +1,4 @@
+using FlatShareBackend.Application.Dtos;
 using FlatShareBackend.Domain.Exceptions;
 using FlatShareBackend.Domain.Models;
 using FlatShareBackend.Infrastructure.Data;
@@ -41,5 +42,13 @@ public class BookingRepository : IBookingRepository
         var query = _dbContext.Listings.Where(x => x.OwnerId == landlordId).Select(x => x.Id);
         var bookings = await _dbContext.Bookings.Where(x => query.Contains(x.ListingId)).ToListAsync();
         return bookings;
+    }
+
+    public async Task<Booking> GetByPaymentId(Guid paymentId)
+    {
+        var booking = await _dbContext.Bookings
+            .Where(x => x.Payment != null && x.Payment.Id == paymentId)
+            .FirstAsync(); 
+        return booking;
     }
 }

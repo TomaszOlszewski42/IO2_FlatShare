@@ -10,5 +10,5 @@ public class Booking
     public required DateOnly Until { get; set; }
     public required decimal TotalCost { get; set; }
     public required string Currency { get; set; }
-    //public required string PaymentStatus { get; set; } 
+    public Payment? Payment { get; set; }
 }

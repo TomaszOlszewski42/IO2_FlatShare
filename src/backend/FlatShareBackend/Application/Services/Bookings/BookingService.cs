@@ -177,4 +177,29 @@ public class BookingService : IBookingService
 
         throw new ForbiddenOperationException("Forbidden");
     }
+
+    public async Task<PaymentDto> GetPaymentByPaymentId(Guid paymentId)
+    {
+        var booking = await _bookingRepository.GetByPaymentId(paymentId);
+        return new(booking);
+    }
+
+    public async Task<PaymentDto> GetPaymentByBookingId(Guid bookingId)
+    {
+        var booking = await _bookingRepository.Get(bookingId);
+        return new(booking);
+    }
+
+    public async Task CreatePayment(CreatePaymentRequest request)
+    {
+        var booking = await _bookingRepository.Get(request.BookingId);
+        booking.Payment = new Payment
+        {
+            Id = Guid.NewGuid(),
+            Status = PaymentStatus.Initiated,
+            TotalValue = request.TotalValue,
+            Currency = request.Currency
+        };
+        await _bookingRepository.SaveChangesAsync();
+    }
 }

@@ -11,4 +11,7 @@ public interface IBookingService
     public Task ChangeStatusByLandlord(Guid bookingId, BookingStatus newStatus, Guid landlordId);
     public Task<BookingDto> Get(Guid bookingId);
     public Task<List<BookingDto>> GetAllOfUser(Guid requesterId, string role);
+    public Task<PaymentDto> GetPaymentByPaymentId(Guid paymentId);
+    public Task<PaymentDto> GetPaymentByBookingId(Guid bookingId);
+    public Task CreatePayment(CreatePaymentRequest request);
 }
