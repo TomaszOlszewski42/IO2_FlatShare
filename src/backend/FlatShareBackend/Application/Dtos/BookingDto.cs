@@ -16,14 +16,10 @@ public record class BookingDto
         Until = booking.Until;
         TotalCost = booking.TotalCost;
         Currency = booking.Currency;
-        PaymentStatus = "";
-        if (booking.Status == BookingStatus.Confirmed)
+        PaymentId = "";
+        if (booking.Payment != null)
         {
-            PaymentStatus = "SUCCEEDED";
-        }
-        else
-        {
-            PaymentStatus = "PENDING";
+            PaymentId = booking.Payment.Id.ToString();
         }
     }
 
@@ -35,5 +31,5 @@ public record class BookingDto
     public DateOnly Until { get; set; }
     public decimal TotalCost { get; set; }
     public string Currency { get; set; }
-    public string PaymentStatus { get; set; }
+    public string PaymentId { get; set; }
 }
