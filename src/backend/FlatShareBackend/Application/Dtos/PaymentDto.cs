@@ -1,3 +1,4 @@
+using FlatShareBackend.Domain.Exceptions;
 using FlatShareBackend.Domain.Models;
 
 namespace FlatShareBackend.Application.Dtos;
@@ -6,7 +7,8 @@ public class PaymentDto
 {
     public PaymentDto(Booking booking)
     {
-        var payment = booking.Payment ?? throw new NullReferenceException();
+        var payment = booking.Payment 
+            ?? throw new NullPaymentException("Currently there is no payment for this booking");
         PaymentId = payment.Id;
         BookingId = booking.Id;
         Status = payment.Status;
