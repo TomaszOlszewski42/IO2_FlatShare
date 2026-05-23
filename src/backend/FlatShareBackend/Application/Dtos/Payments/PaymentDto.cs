@@ -1,7 +1,7 @@
 using FlatShareBackend.Domain.Exceptions;
 using FlatShareBackend.Domain.Models;
 
-namespace FlatShareBackend.Application.Dtos;
+namespace FlatShareBackend.Application.Dtos.Payments;
 
 public class PaymentDto
 {

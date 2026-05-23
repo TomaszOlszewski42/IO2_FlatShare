@@ -1,6 +1,7 @@
 using System.Data.Entity.Core;
 using FlatShareBackend.Application.Dtos;
 using FlatShareBackend.Application.Dtos.Bookings;
+using FlatShareBackend.Application.Dtos.Payments;
 using FlatShareBackend.Domain.Exceptions;
 using FlatShareBackend.Domain.Models;
 using FlatShareBackend.Infrastructure.Repositories.Bookings;
