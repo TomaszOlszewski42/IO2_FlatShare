@@ -1,5 +1,6 @@
 using FlatShareBackend.Application.Dtos;
 using FlatShareBackend.Application.Dtos.Bookings;
+using FlatShareBackend.Application.Dtos.Payments;
 using FlatShareBackend.Domain.Models;
 
 namespace FlatShareBackend.Application.Services.Bookings;
