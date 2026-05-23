@@ -82,7 +82,7 @@ public class BookingsController : ControllerBase
     }
 
     [Authorize(Roles = "TENANT, LANDLORD")]
-    [HttpGet("mine")]
+    [HttpGet("me")]
     public async Task<IActionResult> Mine()
     {
         var context = _httpAccessor.HttpContext ?? throw new ArgumentNullException("HttpContext is null!");
