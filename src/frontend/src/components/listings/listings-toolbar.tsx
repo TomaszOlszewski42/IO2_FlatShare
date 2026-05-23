@@ -11,7 +11,7 @@ import { ListingsSurface } from './listings-surface'
 
 type ListingFilterValue = ListingStatus | 'ALL'
 type PriceFilterValue = number | ''
-type ListingSortValue = 'NEWEST' | 'PRICE_ASC' | 'PRICE_DESC'
+type ListingSortValue = 'RELEVANCY' | 'NEWEST' | 'PRICE_ASC' | 'PRICE_DESC'
 
 type TenantFeatureFilters = {
   petsAllowed: boolean
@@ -60,6 +60,7 @@ const statusOptions = [
 }))
 
 const sortOptions = [
+  { value: 'RELEVANCY', label: 'Relevancy' },
   { value: 'NEWEST', label: 'Newest first' },
   { value: 'PRICE_ASC', label: 'Cheapest first' },
   { value: 'PRICE_DESC', label: 'Most expensive first' },
