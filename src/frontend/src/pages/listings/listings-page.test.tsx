@@ -52,7 +52,7 @@ describe('ListingsPage', () => {
     })
     await flushEffects()
 
-    expect(listingsApi.getListings).toHaveBeenCalledWith('abc', { ownerId: 'owner-123' }, 'Bearer')
+    expect(listingsApi.getListings).toHaveBeenCalledWith('abc', { ownerId: 'owner-123' }, 'Bearer', false)
   })
 
   it('fetches listings without ownerId if user is not landlord', async () => {
@@ -69,7 +69,14 @@ describe('ListingsPage', () => {
     })
     await flushEffects()
 
-    expect(listingsApi.getListings).toHaveBeenCalledWith('xyz', undefined, 'Bearer')
+    expect(listingsApi.getListings).toHaveBeenCalledWith('xyz', {
+      minPrice: undefined,
+      maxPrice: undefined,
+      petsAllowed: undefined,
+      nonSmokingOnly: undefined,
+      page: 0,
+      size: 100,
+    }, 'Bearer', true)
   })
 
   it('fetches listings without ownerId if user is admin', async () => {
@@ -87,6 +94,13 @@ describe('ListingsPage', () => {
     })
     await flushEffects()
 
-    expect(listingsApi.getListings).toHaveBeenCalledWith('admin-token', undefined, 'Bearer')
+    expect(listingsApi.getListings).toHaveBeenCalledWith('admin-token', {
+      minPrice: undefined,
+      maxPrice: undefined,
+      petsAllowed: undefined,
+      nonSmokingOnly: undefined,
+      page: 0,
+      size: 100,
+    }, 'Bearer', true)
   })
 })

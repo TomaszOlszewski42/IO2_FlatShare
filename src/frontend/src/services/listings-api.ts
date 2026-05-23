@@ -12,10 +12,19 @@ export type ListingListQuery = {
   street?: string
   aptNumber?: string
   ownerId?: string
+  minPrice?: number
+  maxPrice?: number
+  petsAllowed?: boolean
+  nonSmokingOnly?: boolean
+  closeToShops?: boolean
+  minArea?: number
+  maxArea?: number
+  startDate?: string
 }
 
 type ListingDto = {
   id: string
+  listingId?: string
   ownerId?: string | null
   OwnerId?: string | null
   title: string
@@ -51,6 +60,7 @@ type ListingDto = {
     nonSmokingOnly?: boolean
     preferredTenantProfile?: string | null
     profile?: string | null
+    closeToShops?: boolean
   }
   unavailability?: {
     since: string
@@ -59,6 +69,7 @@ type ListingDto = {
   }[]
   createdAt?: string
   updatedAt?: string
+  matchScore?: number
 }
 
 export type CreateListingResponse = {
@@ -199,6 +210,38 @@ function buildQueryString(params?: ListingListQuery): string {
     searchParams.set('OwnerId', params.ownerId)
   }
 
+  if (params.minPrice !== undefined && params.minPrice !== null && params.minPrice !== '') {
+    searchParams.set('MinPrice', String(params.minPrice))
+  }
+
+  if (params.maxPrice !== undefined && params.maxPrice !== null && params.maxPrice !== '') {
+    searchParams.set('MaxPrice', String(params.maxPrice))
+  }
+
+  if (params.petsAllowed !== undefined) {
+    searchParams.set('PetsAllowed', String(params.petsAllowed))
+  }
+
+  if (params.nonSmokingOnly !== undefined) {
+    searchParams.set('NonSmokingOnly', String(params.nonSmokingOnly))
+  }
+
+  if (params.closeToShops !== undefined) {
+    searchParams.set('CloseToShops', String(params.closeToShops))
+  }
+
+  if (params.minArea !== undefined) {
+    searchParams.set('MinArea', String(params.minArea))
+  }
+
+  if (params.maxArea !== undefined) {
+    searchParams.set('MaxArea', String(params.maxArea))
+  }
+
+  if (params.startDate) {
+    searchParams.set('StartDate', params.startDate)
+  }
+
   const queryString = searchParams.toString()
   return queryString ? `?${queryString}` : ''
 }
@@ -213,9 +256,10 @@ function mapListingDtoToListing(item: ListingDto, fallbackOwnerId?: string): Lis
   const ownerContactParts = splitOwnerContact(item.ownerContact)
   const resolvedContact = item.contact ?? ownerContactParts.name ?? item.ownerContact ?? null
   const resolvedPhone = item.phone ?? item.contactPhone ?? ownerContactParts.phone ?? null
+  const id = item.id ?? item.listingId
 
   return {
-    id: item.id,
+    id: id,
     ownerId: item.ownerId ?? item.OwnerId ?? fallbackOwnerId,
     title: item.title,
     description: item.description,
@@ -262,13 +306,20 @@ export async function getListings(
   token: string,
   query?: ListingListQuery,
   type = 'Bearer',
+  isRelevancySort = false,
 ): Promise<Listing[]> {
-  const items = await apiRequest<ListingDto[]>(`/listings${buildQueryString(query)}`, {
+  const path = isRelevancySort ? '/matches' : '/listings'
+  const items = await apiRequest<any>(`${path}${buildQueryString(query)}`, {
     method: 'GET',
     headers: getAuthHeaders(token, type),
   })
 
-  return items.map((item) => mapListingDtoToListing(item, query?.ownerId))
+  const results = Array.isArray(items) ? items : items?.content ?? []
+
+  return results.map((item: any) => {
+    const listingDto = item.listing || item.Listing || item
+    return mapListingDtoToListing(listingDto, query?.ownerId)
+  })
 }
 
 export async function getListingById(

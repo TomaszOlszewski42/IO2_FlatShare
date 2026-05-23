@@ -19,7 +19,7 @@ import { getPaginatedItems } from '../../utils/pagination'
 
 type ListingFilterValue = ListingStatus | 'ALL'
 type PriceFilterValue = number | ''
-type ListingSortValue = 'NEWEST' | 'PRICE_ASC' | 'PRICE_DESC'
+type ListingSortValue = 'RELEVANCY' | 'NEWEST' | 'PRICE_ASC' | 'PRICE_DESC'
 
 type TenantFeatureFilters = {
   petsAllowed: boolean
@@ -109,7 +109,9 @@ export function ListingsPage(_: RoutableProps) {
   const [selectedStatus, setSelectedStatus] = useState<ListingFilterValue>('ALL')
   const [priceMin, setPriceMin] = useState<PriceFilterValue>('')
   const [priceMax, setPriceMax] = useState<PriceFilterValue>('')
-  const [selectedSort, setSelectedSort] = useState<ListingSortValue>('NEWEST')
+  const [selectedSort, setSelectedSort] = useState<ListingSortValue>(
+    isLandlord ? 'NEWEST' : 'RELEVANCY',
+  )
   const [featureFilters, setFeatureFilters] = useState<TenantFeatureFilters>(emptyFeatureFilters)
   const [currentPage, setCurrentPage] = useState(getInitialPage)
 
@@ -123,9 +125,18 @@ export function ListingsPage(_: RoutableProps) {
     setIsLoading(true)
     setLoadError(null)
 
-    const queryParams = isLandlord ? { ownerId: session.userId } : undefined
+    const queryParams: ListingListQuery = isLandlord
+      ? { ownerId: session.userId }
+      : {
+          minPrice: priceMin === '' ? undefined : priceMin,
+          maxPrice: priceMax === '' ? undefined : priceMax,
+          petsAllowed: featureFilters.petsAllowed || undefined,
+          nonSmokingOnly: featureFilters.nonSmoking || undefined,
+          page: 0, // Backend uses 0-indexed pages
+          size: 100, // Fetch more for local pagination/filtering if needed, or adjust to match
+        }
 
-    void getListings(session.token, queryParams, session.type)
+    void getListings(session.token, queryParams, session.type, selectedSort === 'RELEVANCY')
       .then((items) => {
         if (isMounted) {
           setListings(items)
@@ -148,7 +159,16 @@ export function ListingsPage(_: RoutableProps) {
     return () => {
       isMounted = false
     }
-  }, [session, isLandlord, isAdmin])
+  }, [
+    session,
+    isLandlord,
+    isAdmin,
+    selectedSort,
+    priceMin,
+    priceMax,
+    featureFilters.petsAllowed,
+    featureFilters.nonSmoking,
+  ])
 
   useEffect(() => {
     if (!isManagementView) {
@@ -192,6 +212,10 @@ export function ListingsPage(_: RoutableProps) {
 
   const sortedListings = useMemo(() => {
     const items = [...filteredListings]
+
+    if (selectedSort === 'RELEVANCY') {
+      return items
+    }
 
     if (selectedSort === 'PRICE_ASC') {
       return items.sort((first, second) => first.price - second.price)
@@ -241,7 +265,7 @@ export function ListingsPage(_: RoutableProps) {
     query.trim().length > 0 ||
     priceMin !== '' ||
     priceMax !== '' ||
-    selectedSort !== 'NEWEST' ||
+    (selectedSort !== 'NEWEST' && selectedSort !== 'RELEVANCY') ||
     hasFeatureFilters ||
     (isManagementView && selectedStatus !== 'ALL')
 
