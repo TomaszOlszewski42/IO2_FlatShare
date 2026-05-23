@@ -85,9 +85,7 @@ public class BookingsController : ControllerBase
     [HttpGet("me")]
     public async Task<IActionResult> Mine()
     {
-        var context = _httpAccessor.HttpContext ?? throw new ArgumentNullException("HttpContext is null!");
-        var role = (context.User.FindFirst(ClaimTypes.Role) 
-            ?? throw new ArgumentNullException("No role in Token")).Value;
+        var role = _httpAccessor.ParserUserRole();
         var requesterId = _httpAccessor.ParseUserID();
         var bookings = await _bookingService.GetAllOfUser(requesterId, role);
         return Ok(bookings);

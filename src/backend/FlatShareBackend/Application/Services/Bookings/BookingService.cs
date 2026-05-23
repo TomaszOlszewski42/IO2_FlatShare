@@ -178,15 +178,17 @@ public class BookingService : IBookingService
         throw new ForbiddenOperationException("Forbidden");
     }
 
-    public async Task<PaymentDto> GetPaymentByPaymentId(Guid paymentId)
+    public async Task<PaymentDto> GetPaymentByPaymentId(Guid paymentId, Guid requesterId, string requesterRole)
     {
         var booking = await _bookingRepository.GetByPaymentId(paymentId);
+        VerifyPaymentAccess(booking, requesterId, requesterRole);
         return new(booking);
     }
 
-    public async Task<PaymentDto> GetPaymentByBookingId(Guid bookingId)
+    public async Task<PaymentDto> GetPaymentByBookingId(Guid bookingId, Guid requesterId, string requesterRole)
     {
         var booking = await _bookingRepository.Get(bookingId);
+        VerifyPaymentAccess(booking, requesterId, requesterRole);
         return new(booking);
     }
 
@@ -201,5 +203,13 @@ public class BookingService : IBookingService
             Currency = request.Currency
         };
         await _bookingRepository.SaveChangesAsync();
+    }
+
+    private static void VerifyPaymentAccess(Booking booking, Guid requesterId, string requesterRole)
+    {
+        if ((requesterRole != "ADMIN") && (requesterRole != "TENANT" || booking.TenantId != requesterId))
+        {
+            throw new ForbiddenOperationException("Forbidden");
+        }
     }
 }
