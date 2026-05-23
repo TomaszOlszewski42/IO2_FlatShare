@@ -10,7 +10,7 @@ import { ListingsResultsSummary } from '../../components/listings/listings-resul
 import { ListingsSkeleton } from '../../components/listings/listings-skeleton'
 import { ListingsToolbar } from '../../components/listings/listings-toolbar'
 import { useAuth } from '../../hooks/use-auth'
-import { getListings } from '../../services/listings-api'
+import { getListings, type ListingListQuery } from '../../services/listings-api'
 import type { Listing } from '../../types/listing'
 import type { ListingStatus } from '../../types/listing-status'
 import { formatLocation } from '../../utils/format-location'
