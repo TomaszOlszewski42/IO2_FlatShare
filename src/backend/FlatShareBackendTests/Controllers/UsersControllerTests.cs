@@ -3,7 +3,6 @@ using FlatShareBackend.Application.Dtos.Users;
 using FlatShareBackend.Application.Services.Users;
 using FlatShareBackend.Controllers;
 using FlatShareBackend.Domain.Exceptions;
-using FlatShareBackend.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using System;
