@@ -1,7 +1,6 @@
 using FlatShareBackend.AgregationClasses;
 using FlatShareBackend.Dtos.Reports;
 using FlatShareBackend.Services;
-using FlatShareBackend.Exceptions;
 using Moq;
 using System;
 using System.Collections.Generic;
