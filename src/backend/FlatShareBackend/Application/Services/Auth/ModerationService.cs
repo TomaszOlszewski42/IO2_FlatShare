@@ -1,5 +1,4 @@
 using FlatShareBackend.Dtos.Reports;
-using FlatShareBackend.Exceptions;
 using FlatShareBackend.Infrastructure.Repositories;
 using FlatShareBackend.Application.Dtos.Matches;
 using FlatShareBackend.Domain.Models;
@@ -7,6 +6,7 @@ using FlatShareBackend.Services;
 using FlatShareBackend.Infrastructure.Repositories.Users;
 using FlatShareBackend.Infrastructure.Repositories.Listings;
 using FlatShareBackend.Infrastructure.Repositories.Bookings;
+using FlatShareBackend.Domain.Exceptions;
 
 namespace FlatShareBackend.Application.Services.Auth;
 

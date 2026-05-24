@@ -1,6 +1,3 @@
-namespace FlatShareBackend.Exceptions;
+namespace FlatShareBackend.Domain.Exceptions;
 
-public class UserNotFoundException : Exception
-{
-    public UserNotFoundException(Guid userId) : base($"User with ID {userId} not found.") { }
-}
+public class UserNotFoundException(Guid userId) : Exception($"User with ID {userId} not found.");
