@@ -1,5 +1,3 @@
-using FlatShareBackend.AgregationClasses;
-
 namespace FlatShareBackend.Domain.Models;
 
 public class ListingAttributes

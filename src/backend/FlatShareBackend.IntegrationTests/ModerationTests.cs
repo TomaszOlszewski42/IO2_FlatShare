@@ -5,7 +5,6 @@ using FlatShareBackend.IntegrationTests.Infrastructure;
 using FlatShareBackend.Application.Dtos.Users;
 using FlatShareBackend.Application.Dtos.Auth;
 using FlatShareBackend.Application.Dtos;
-using FlatShareBackend.AgregationClasses;
 using FlatShareBackend.API.Controllers;
 using FluentAssertions;
 using System;

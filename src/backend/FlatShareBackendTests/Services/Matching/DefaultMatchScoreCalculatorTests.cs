@@ -1,4 +1,3 @@
-using FlatShareBackend.AgregationClasses;
 using FlatShareBackend.Application.Services.Matching;
 using FlatShareBackend.Domain.Models;
 using Xunit;
