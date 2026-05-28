@@ -1,4 +1,3 @@
-using FlatShareBackend.AgregationClasses;
 using FlatShareBackend.Application.Dtos.Listings;
 using FlatShareBackend.Domain.Models;
 using FlatShareBackend.IntegrationTests.Infrastructure;

@@ -1,5 +1,4 @@
-﻿using FlatShareBackend.AgregationClasses;
-using FlatShareBackend.Application.Dtos.Listings;
+﻿using FlatShareBackend.Application.Dtos.Listings;
 using FlatShareBackend.Application.Services;
 using FlatShareBackend.Application.Services.FilesManagment;
 using FlatShareBackend.Application.Services.Listings;

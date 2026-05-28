@@ -1,5 +1,4 @@
-﻿using FlatShareBackend.AgregationClasses;
-using FlatShareBackend.Domain.Models;
+﻿using FlatShareBackend.Domain.Models;
 using FlatShareBackend.Models;
 using Microsoft.EntityFrameworkCore;
 

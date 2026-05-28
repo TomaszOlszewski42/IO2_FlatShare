@@ -58,7 +58,7 @@ public class BookingsServiceTest
                 PetsAllowed = false,
                 NonSmokingOnly = true,
                 CloseToShops = false,
-                Profile = FlatShareBackend.AgregationClasses.UserProfile.Student
+                Profile = UserProfile.Student
             }
         };
     }
