@@ -21,14 +21,26 @@ function isTenant(): boolean {
   return session.roles.includes('TENANT')
 }
 
+function isBookingUser(): boolean {
+  const session = readAuthSession()
+
+  if (!session) {
+    return false
+  }
+
+  return session.roles.includes('TENANT') || session.roles.includes('LANDLORD')
+}
+
 export function TopBar() {
   const [authenticated, setAuthenticated] = useState<boolean>(isAuthenticated)
   const [tenant, setTenant] = useState<boolean>(isTenant)
+  const [bookingUser, setBookingUser] = useState<boolean>(isBookingUser)
 
   useEffect(() => {
     const handleChange = () => {
       setAuthenticated(isAuthenticated())
       setTenant(isTenant())
+      setBookingUser(isBookingUser())
     }
 
     window.addEventListener('storage', handleChange)
@@ -52,6 +64,12 @@ export function TopBar() {
             <a class="link link-hover text-sm" href="/listings">
               Listings
             </a>
+
+            {bookingUser ? (
+              <a class="link link-hover text-sm" href="/bookings">
+                Bookings
+              </a>
+            ) : null}
 
             <RoleBoundary requiredRole={UserRole.Admin}>
               <a class="link link-hover text-sm" href="/admin/reports">
