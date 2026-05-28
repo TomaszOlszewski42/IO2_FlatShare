@@ -1,4 +1,3 @@
-using FlatShareBackend.AgregationClasses;
 using FlatShareBackend.Dtos.Reports;
 using FlatShareBackend.Exceptions;
 using FlatShareBackend.Infrastructure.Repositories;

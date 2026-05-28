@@ -1,4 +1,3 @@
-using FlatShareBackend.AgregationClasses;
 using FlatShareBackend.Application.Dtos.Matches;
 using FlatShareBackend.Application.Services.Auth;
 using FlatShareBackend.Domain.Models;
