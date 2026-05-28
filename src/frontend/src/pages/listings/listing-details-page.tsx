@@ -2,6 +2,7 @@ import type { RoutableProps } from 'preact-router'
 import { route } from 'preact-router'
 import { useEffect, useState } from 'preact/hooks'
 
+import { BookingRequestPanel } from '../../components/bookings/booking-request-panel'
 import { EmptyStateContent } from '../../components/common/empty-state-content'
 import { ListingDetailsHeader } from '../../components/listings/listing-details-header'
 import { ListingDetailsSkeleton } from '../../components/listings/listing-details-skeleton'
@@ -18,6 +19,7 @@ import { ReportViolationDialog } from '../../components/reports/report-violation
 import { AppButton } from '../../components/ui/app-button'
 import { useAuth } from '../../hooks/use-auth'
 import { readAuthSession } from '../../services/auth-session'
+import { createBooking } from '../../services/bookings-api'
 import { useErrorHandler } from '../../services/error-handler-context'
 import {
   getListingById,
@@ -29,6 +31,7 @@ import {
   requestFixesListing,
 } from '../../services/listings-api'
 import { createViolationReport } from '../../services/reports-api'
+import type { BookingCreatedResponse, CreateBookingPayload } from '../../types/booking'
 import type { Listing } from '../../types/listing'
 import type { CreateViolationReportPayload } from '../../types/violation-report'
 import { formatArea } from '../../utils/format-area'
@@ -108,6 +111,23 @@ export function ListingDetailsPage({ listingId }: ListingDetailsRouteProps) {
     showToast('The report has been sent to moderation.', 'success')
   }
 
+  async function handleCreateBookingRequest(
+    payload: CreateBookingPayload,
+  ): Promise<BookingCreatedResponse> {
+    const session = readAuthSession()
+
+    if (!session) {
+      route('/login')
+      throw new Error('To request a booking, please log in again.')
+    }
+
+    const response = await createBooking(payload, session.token, session.type)
+
+    showToast('Booking request sent to the owner.', 'success')
+
+    return response
+  }
+
   async function handleStatusAction(
     action: (id: string, token: string, type?: string) => Promise<any>,
     successMessage: string,
@@ -123,7 +143,6 @@ export function ListingDetailsPage({ listingId }: ListingDetailsRouteProps) {
       await action(listingId, session.token, session.type)
       showToast(successMessage, 'success')
 
-      // Refresh listing data
       const updatedListing = await getListingById(listingId, session.token, session.type)
       setListing(updatedListing)
     } catch (error) {
@@ -151,6 +170,16 @@ export function ListingDetailsPage({ listingId }: ListingDetailsRouteProps) {
     )
   }
 
+  const isCurrentUserOwner = authSession?.userId === listing.ownerId
+  const isListingActive = listing.status === 'ACTIVE' || !listing.status
+  const canRequestBooking = isTenant && isListingActive && !isCurrentUserOwner
+
+  const bookingDisabledReason = !isListingActive
+    ? 'Booking requests are available only for active listings.'
+    : isCurrentUserOwner
+      ? 'You cannot request a booking for your own listing.'
+      : undefined
+
   const parameterRows = [
     { label: 'Price', value: `${formatPrice(listing.price)} / month`, icon: listing.currency },
     { label: 'Area', value: listing.area ? formatArea(listing.area) : '-', icon: 'm2' },
@@ -175,7 +204,7 @@ export function ListingDetailsPage({ listingId }: ListingDetailsRouteProps) {
       <ListingDetailsHeader
         title={listing.title}
         status={listing.status}
-        isOwner={authSession?.userId === listing.ownerId}
+        isOwner={isCurrentUserOwner}
         onBack={() => route('/listings')}
         onEdit={() => route(`/listings/${listing.id}/edit`)}
         onArchive={() => handleStatusAction(archiveListing, 'Listing archived.')}
@@ -223,6 +252,20 @@ export function ListingDetailsPage({ listingId }: ListingDetailsRouteProps) {
       )}
 
       <ListingGallery listingId={listing.id} photoIds={photoIds} title={listing.title} />
+
+      {isTenant ? (
+        <BookingRequestPanel
+          listingId={listing.id}
+          listingTitle={listing.title}
+          price={listing.price}
+          currency={listing.currency}
+          availableFrom={listing.availableFrom}
+          unavailableRanges={listing.unavailability ?? []}
+          isDisabled={!canRequestBooking}
+          disabledReason={bookingDisabledReason}
+          onCreateBooking={handleCreateBookingRequest}
+        />
+      ) : null}
 
       {isTenant ? <ListingTenantContactPanel listing={listing} /> : null}
 
