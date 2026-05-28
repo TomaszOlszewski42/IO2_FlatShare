@@ -25,6 +25,22 @@ vi.mock('../../hooks/use-auth', () => ({
   useAuth: vi.fn(),
 }))
 
+const tenantSession = {
+  token: 'tenant-token',
+  sessionId: 'tenant-session',
+  type: 'Bearer',
+  roles: [UserRole.Tenant],
+  userId: 'tenant-1',
+}
+
+const landlordSession = {
+  token: 'landlord-token',
+  sessionId: 'landlord-session',
+  type: 'Bearer',
+  roles: [UserRole.Landlord],
+  userId: 'landlord-1',
+}
+
 function mockUseAuthAsGuest() {
   vi.mocked(useAuth).mockReturnValue({
     isAuthenticated: false,
@@ -44,6 +60,17 @@ function mockUseAuthAsAdmin() {
     isTenant: false,
     isLandlord: false,
     isAdmin: true,
+  })
+}
+
+function mockUseAuthAsLandlord() {
+  vi.mocked(useAuth).mockReturnValue({
+    isAuthenticated: true,
+    session: landlordSession,
+    hasRole: (role: UserRole) => role === UserRole.Landlord,
+    isTenant: false,
+    isLandlord: true,
+    isAdmin: false,
   })
 }
 
@@ -83,6 +110,35 @@ describe('TopBar', () => {
 
     expect(container.querySelector('[data-test-id="current-user-badge"]')).not.toBeNull()
     expect(container.querySelector('[data-test-id="auth-controls"]')).not.toBeNull()
+  })
+
+  it('does not render bookings link for guests', () => {
+    const container = renderTopBar()
+
+    expect(container.querySelector('a[href="/bookings"]')).toBeNull()
+  })
+
+  it('renders bookings link for tenant users', () => {
+    vi.mocked(readAuthSession).mockReturnValue(tenantSession)
+
+    const container = renderTopBar()
+
+    const bookingsLink = container.querySelector('a[href="/bookings"]')
+
+    expect(bookingsLink).not.toBeNull()
+    expect(bookingsLink?.textContent).toBe('Bookings')
+  })
+
+  it('renders bookings link for landlord users', () => {
+    vi.mocked(readAuthSession).mockReturnValue(landlordSession)
+    mockUseAuthAsLandlord()
+
+    const container = renderTopBar()
+
+    const bookingsLink = container.querySelector('a[href="/bookings"]')
+
+    expect(bookingsLink).not.toBeNull()
+    expect(bookingsLink?.textContent).toBe('Bookings')
   })
 
   it('does not render dashboard link for non-admin users', () => {
