@@ -4,7 +4,6 @@ using FlatShareBackend.Dtos.Reports;
 using FlatShareBackend.IntegrationTests.Infrastructure;
 using FlatShareBackend.Application.Dtos.Users;
 using FlatShareBackend.Application.Dtos.Auth;
-using FlatShareBackend.Application.Dtos;
 using FlatShareBackend.API.Controllers;
 using FluentAssertions;
 using System;
@@ -12,6 +11,7 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Xunit;
+using FlatShareBackend.Application.Dtos.Bookings;
 
 namespace FlatShareBackend.IntegrationTests
 {

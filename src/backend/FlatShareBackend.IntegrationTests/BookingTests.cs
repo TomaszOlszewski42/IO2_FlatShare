@@ -1,4 +1,3 @@
-using FlatShareBackend.Application.Dtos;
 using FlatShareBackend.Application.Dtos.Bookings;
 using FlatShareBackend.Application.Dtos.Listings;
 using FlatShareBackend.Domain.Models;

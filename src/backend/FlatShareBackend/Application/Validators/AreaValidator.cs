@@ -5,11 +5,11 @@ namespace FlatShareBackend.Application.Validators;
 
 public class AreaValidator : IListingRuleValidator
 {
-    public void Validate(Listing listing)
+    public void Validate(Listing listing, List<(string field, string message)> vialotions)
     {
         if (listing.Area < 3)
         {
-            throw new ListingValidationException("Invalid area (it should be in square meters)");
+            vialotions.Add(("area", "Nonsensical area size, its below 3 sqr meters."));
         }
     }
 }

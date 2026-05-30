@@ -4,6 +4,7 @@ using FlatShareBackend.Domain.Exceptions;
 using FlatShareBackend.Domain.Models;
 using FlatShareBackend.Infrastructure.Repositories.Listings;
 using FlatShareBackend.Infrastructure.Repositories.Users;
+
 namespace FlatShareBackend.Application.Services.Listings;
 
 public class ListingService : IListingService
@@ -13,7 +14,9 @@ public class ListingService : IListingService
     private readonly IUserRepository _userRepository;
     public readonly IFilesService _fileService;
 
-    public ListingService(IListingRepository repository, IListingValidator listingValidator, IFilesService fileService, IUserRepository userRepository)
+    public ListingService(IListingRepository repository, IListingValidator listingValidator, 
+        IFilesService fileService, IUserRepository userRepository
+    )
     {
         _repository = repository;
         _listingValidator = listingValidator;
@@ -25,7 +28,7 @@ public class ListingService : IListingService
     {
         if (dates.Since > dates.Until)
         {
-            throw new ListingValidationException("Period of time 'from' can't be later than 'to'");
+            throw new UnavailabilityErrorException("Period of time 'from' can't be later than 'to'");
         }
 
         var listing = await _repository.Get(listingId)
@@ -61,7 +64,7 @@ public class ListingService : IListingService
         await _repository.SaveChangesAsync();
     }
 
-    public async Task<Guid> Create(CreateListingRequest request, Guid userId)
+    public async Task<Listing> Create(CreateListingRequest request, Guid userId)
     {
         var guid = Guid.NewGuid();
         var listing = new Listing
@@ -84,7 +87,7 @@ public class ListingService : IListingService
         _listingValidator.Validate(listing);
 
         await _repository.Add(listing);
-        return guid;
+        return listing;
     }
 
     public async Task Edit(Guid listingId, Guid requestingUser, EditListingRequest editRequest)

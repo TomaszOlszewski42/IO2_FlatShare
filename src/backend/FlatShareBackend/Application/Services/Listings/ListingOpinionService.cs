@@ -22,7 +22,7 @@ public class ListingOpinionService : IListingOpinionService
     {
         if (request.Rating < 1 || request.Rating > 5)
         {
-            throw new ListingValidationException("Star rating must be between 1 and 5.");
+            throw new ListingOpinionException("Star rating must be between 1 and 5.");
         }
 
         var opinion = new ListingOpinion

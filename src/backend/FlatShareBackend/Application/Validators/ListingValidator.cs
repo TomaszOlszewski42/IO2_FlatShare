@@ -14,9 +14,15 @@ public class ListingValidator : IListingValidator
 
     public void Validate(Listing listing)
     {
+        List<(string field, string message)> violations = [];
         foreach (var rule in _rules)
         {
-            rule.Validate(listing);
+            rule.Validate(listing, violations);
+        }
+
+        if (violations.Count != 0)
+        {
+            
         }
     }
 }
