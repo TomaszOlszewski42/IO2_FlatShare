@@ -170,8 +170,8 @@ public class BookingsServiceTest
             TenantId = tenantId,
             ListingId = listing.Id,
             Status = BookingStatus.PendingApproval,
-            Since = new(2025, 10, 3),
-            Until = new(2026, 10, 13),
+            Since = new(2075, 10, 3),
+            Until = new(2076, 10, 13),
             TotalCost = 1000.0m,
             Currency = "PLN"
         };

@@ -63,7 +63,7 @@ public class ListingOpinionServiceTests
         };
 
         // Act & Assert
-        await Assert.ThrowsAsync<ListingValidationException>(() => _service.AddOpinionAsync(userId, request));
+        await Assert.ThrowsAsync<ListingOpinionException>(() => _service.AddOpinionAsync(userId, request));
         _repositoryMock.Verify(r => r.AddOpinionAsync(It.IsAny<ListingOpinion>()), Times.Never);
     }
 
