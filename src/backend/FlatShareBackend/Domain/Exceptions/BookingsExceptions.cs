@@ -12,3 +12,5 @@ public class DateTooEarlyException(string msg) : Exception(msg);
 public class InvalidBookingStateTransition(string msg) : Exception(msg);
 
 public class InvalidDatesException(string msg) : Exception(msg);
+
+public class CantCancellException(string msg) : Exception(msg);

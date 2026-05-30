@@ -48,25 +48,39 @@ public class BookingsController : ControllerBase
 
     [Authorize(Roles = "LANDLORD")]
     [HttpPost("{bookingId}/reject")]
-    public async Task<IActionResult> Reject(Guid bookingId)
+    public async Task<IActionResult> Reject(Guid bookingId, [FromBody] RejectBookingRequest request)
     {
         var landlordId = _httpAccessor.ParseUserID();
         await _bookingService.ChangeStatusByLandlord(bookingId, BookingStatus.Rejected, landlordId);
-        return Ok();
+        var answer = new BookingRejectionAnswer
+        {
+            BookingId = bookingId,
+            Status = BookingStatus.Rejected,
+            RejectedAt = DateTime.Now,
+            Reason = request.Reason
+        };
+        return Ok(answer);
     }
 
     [Authorize(Roles = "TENANT")]
     [HttpPost("{bookingId}/cancel")]
-    public async Task<IActionResult> Cancel(Guid bookingId)
+    public async Task<IActionResult> Cancel(Guid bookingId, [FromBody] CancelBookingRequest request)
     {
         var tenantId = _httpAccessor.ParseUserID();
         await _bookingService.ChangeStatusByTenant(bookingId, BookingStatus.Cancelled, tenantId);
-        return Ok();
+        var answer = new BookingCancelAnswer
+        {
+            BookingId = bookingId,
+            Status = BookingStatus.Cancelled,
+            CancelledAt = DateTime.Now,
+            RefundStatus = "NOT_APLICABLE"
+        };
+        return Ok(answer);
     }
 
     [Authorize(Roles = "TENANT")]
     [HttpPost("{bookingId}/pay")]
-    public async Task<IActionResult> Pay(Guid bookingId)
+    public async Task<IActionResult> Pay(Guid bookingId, [FromBody] PaymentRequest request)
     {
         var tenantId = _httpAccessor.ParseUserID();
         await _bookingService.ChangeStatusByTenant(bookingId, BookingStatus.Confirmed, tenantId);

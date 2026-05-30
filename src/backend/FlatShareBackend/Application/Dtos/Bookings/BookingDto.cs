@@ -1,6 +1,6 @@
 using FlatShareBackend.Domain.Models;
 
-namespace FlatShareBackend.Application.Dtos;
+namespace FlatShareBackend.Application.Dtos.Bookings;
 
 public record class BookingDto
 {
