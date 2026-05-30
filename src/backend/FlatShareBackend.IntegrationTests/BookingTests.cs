@@ -80,7 +80,13 @@ namespace FlatShareBackend.IntegrationTests
 
             // 5. Tenant Pays
             Client.DefaultRequestHeaders.Authorization = tenantToken;
-            var payResponse = await Client.PostAsync($"/api/v1/bookings/{bookingId}/pay", null);
+            var payResponse = await Client.PostAsJsonAsync($"/api/v1/bookings/{bookingId}/pay", 
+                new PaymentRequest
+                {
+                    PaymentMethod = PaymentMethod.CARD,
+                    ReturnUrl = "url",
+                    CancelUrl = "url"
+                });
             payResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
             // 6. Verify Status is Confirmed
@@ -129,7 +135,11 @@ namespace FlatShareBackend.IntegrationTests
 
             // 3. Landlord Rejects Booking
             Client.DefaultRequestHeaders.Authorization = landlordToken;
-            var rejectResponse = await Client.PostAsync($"/api/v1/bookings/{bookingId}/reject", null);
+            var rejectResponse = await Client.PostAsJsonAsync($"/api/v1/bookings/{bookingId}/reject", 
+                new CancelBookingRequest
+                {
+                    Reason = "Bo tak"
+                });
             rejectResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
             // 4. Verify Status is Rejected

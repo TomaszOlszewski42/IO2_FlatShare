@@ -68,7 +68,28 @@ namespace FlatShareBackendTests.Controllers
             };
             var expectedGuid = Guid.NewGuid();
 
-            _listingServiceMock.Setup(s => s.Create(request, It.IsAny<Guid>())).ReturnsAsync(expectedGuid);
+            _listingServiceMock.Setup(s => s.Create(request, It.IsAny<Guid>())).ReturnsAsync(new Listing
+            {
+                Id = expectedGuid,
+                OwnerId = new(),
+                Title = "title",
+                Description = "desc",
+                Price = 123.0m,
+                Currency = "PLN",
+                AvailableFrom = new(2026, 12, 12),
+                AvailableSince = new(2027, 12, 12),
+                OwnerContact = "contact",
+                Area = 12.2m,
+                Location = new Address { City = "C", District = "D", Street = "S", AptNumber = "A" },
+                Status = Listing.State.ACTIVE,
+                Attributes = new ListingAttributes
+                {
+                    PetsAllowed = true,
+                    NonSmokingOnly = true,
+                    CloseToShops = false,
+                    Profile = UserProfile.Student
+                }
+            });
 
             // Act
             var result = await _controller.Create(request);

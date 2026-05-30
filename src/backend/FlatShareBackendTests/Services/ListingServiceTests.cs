@@ -101,7 +101,7 @@ namespace FlatShareBackendTests.Services
             var result = await _listingService.Create(request, userId);
 
             // Assert
-            Assert.NotEqual(Guid.Empty, result);
+            Assert.NotEqual(Guid.Empty, result.Id);
             _listingValidatorMock.Verify(v => v.Validate(It.IsAny<Listing>()), Times.Once);
             _listingRepositoryMock.Verify(r => r.Add(It.Is<Listing>(l =>
                 l.OwnerId == userId &&
@@ -127,7 +127,7 @@ namespace FlatShareBackendTests.Services
             };
 
             // Act & Assert
-            await Assert.ThrowsAsync<ListingValidationException>(() =>
+            await Assert.ThrowsAsync<UnavailabilityErrorException>(() =>
                 _listingService.AddUnvailability(listingId, userId, dates));
         }
 
