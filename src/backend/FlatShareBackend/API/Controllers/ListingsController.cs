@@ -26,14 +26,14 @@ public class ListingsController : ControllerBase
     public async Task<IActionResult> Create([FromBody] CreateListingRequest request)
     {
         // TODO: Add try catch, probably add another error for unauthorized access
-        var createdGuid = await _listingService.Create(request, _userGuid);
+        var listing = await _listingService.Create(request, _userGuid);
         var createdResult = new
         {
-            listingId = createdGuid,
-            status = "Active", // czy może być jakiś inny?
+            listingId = listing.Id,
+            status = listing.Status, // czy może być jakiś inny?
             createdAt = DateTime.Now
         };
-        return Created($"api/v1/listings/{createdGuid}", createdResult);
+        return Created($"api/v1/listings/{listing.Id}", createdResult);
     }
 
     [Authorize()]
@@ -133,7 +133,7 @@ public class ListingsController : ControllerBase
     {
         var result = new
         {
-            listingId = listingId,
+            listingId,
             photos = await _listingService.GetAllPhotosId(listingId)
         };
         return Ok(result);

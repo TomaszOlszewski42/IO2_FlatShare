@@ -4,5 +4,5 @@ namespace FlatShareBackend.Application.Validators;
 
 public interface IListingRuleValidator
 {
-    public void Validate(Listing listing);
+    public void Validate(Listing listing, List<(string field, string message)> violations);
 }

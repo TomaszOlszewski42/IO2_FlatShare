@@ -73,10 +73,13 @@ public class GlobalExceptionHandler : IExceptionHandler
                 response.Error = "Id not found";
                 response.Message = null;
                 break;
-            case ListingValidationException:
+            case ListingValidationException ex:
                 statusCode = StatusCodes.Status400BadRequest;
                 response.Error = "Validation error";
                 response.Message = exception.Message;
+                response.FieldErrors = [.. ex.FieldErrors
+                    .Select(x => new ApiFieldError { Field = x.field, Message = x.message })
+                    ];
                 break;
             case InvalidPageNumberException:
                 statusCode = StatusCodes.Status400BadRequest;
@@ -101,18 +104,27 @@ public class GlobalExceptionHandler : IExceptionHandler
                     message = exception.Message,
                     bookingStatus = BookingStatus.Confirmed
                 };
-                httpContext.Response.StatusCode = StatusCodes.Status409Conflict;
-                httpContext.Response.ContentType = "application/json";
-                await httpContext.Response.WriteAsJsonAsync(cancellationResponse, cancellationToken: cancellationToken);
+                await FinalizeAnswer(cancellationResponse, StatusCodes.Status409Conflict, httpContext, cancellationToken);
                 return true;
+            case UnavailabilityErrorException or ListingOpinionException:
+                statusCode = StatusCodes.Status400BadRequest;
+                response.Error = "Validation error";
+                response.Message = exception.Message;
+                break;
         }
 
         response.Status = statusCode;
-        httpContext.Response.StatusCode = statusCode;
-        httpContext.Response.ContentType = "application/json";
-
-        await httpContext.Response.WriteAsJsonAsync(response, cancellationToken: cancellationToken);
+        await FinalizeAnswer(response, statusCode, httpContext, cancellationToken);
 
         return true;
+    }
+
+    private static async Task FinalizeAnswer<T>(
+        T response, int statusCode, HttpContext httpContext, CancellationToken token
+    )
+    {
+        httpContext.Response.StatusCode = statusCode;
+        httpContext.Response.ContentType = "application/json";
+        await httpContext.Response.WriteAsJsonAsync(response, cancellationToken: token);
     }
 }

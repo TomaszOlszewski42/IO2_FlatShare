@@ -54,5 +54,17 @@ namespace FlatShareBackend.Controllers
             var response = await _authService.RefreshAsync(sessionId, tokenUserId, cancellationToken);
             return Created($"/api/v1/sessions/{response.SessionId}", response);
         }
+
+        [Authorize]
+        [HttpGet("{sessionId}")]
+        public async Task<IActionResult> Get(Guid sessionId, IHttpContextAccessor accessor)
+        {
+            var userId = accessor.ParseUserID();
+            return Ok(new
+            {
+                sessionId,
+                userId
+            });
+        }
     }
 }

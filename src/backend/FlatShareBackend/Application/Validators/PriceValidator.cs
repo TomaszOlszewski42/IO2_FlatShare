@@ -5,16 +5,16 @@ namespace FlatShareBackend.Application.Validators;
 
 public class PriceValidator : IListingRuleValidator
 {
-    public void Validate(Listing listing)
+    public void Validate(Listing listing, List<(string field, string message)> violations)
     {
         if (listing.Price <= 0)
         {
-            throw new ListingValidationException("Price must be greater than 0");
+            violations.Add(("price", "Price must be greater than 0"));
         }
 
         if (listing.Price * 100 != Math.Truncate(listing.Price * 100))
         {
-            throw new ListingValidationException("Invalid decimal places of a price");
+            violations.Add(("price", "Invalid decimal places of a price"));
         }
     }
 }
