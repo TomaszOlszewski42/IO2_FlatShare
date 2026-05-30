@@ -142,6 +142,7 @@ describe('BookingsPage', () => {
   })
 
   afterEach(() => {
+    vi.restoreAllMocks()
     document.body.innerHTML = ''
   })
 
@@ -191,7 +192,16 @@ describe('BookingsPage', () => {
 
     await waitForCondition(() => vi.mocked(payBooking).mock.calls.length === 1)
 
-    expect(payBooking).toHaveBeenCalledWith('booking-1', 'tenant-token', 'Bearer')
+    expect(payBooking).toHaveBeenCalledWith(
+      'booking-1',
+      {
+        paymentMethod: 0,
+        returnUrl: `${window.location.origin}/bookings`,
+        cancelUrl: `${window.location.origin}/bookings`,
+      },
+      'tenant-token',
+      'Bearer',
+    )
     expect(mocks.showToast).toHaveBeenCalledWith('Booking paid and confirmed.', 'success')
   })
 
@@ -214,9 +224,36 @@ describe('BookingsPage', () => {
       await Promise.resolve()
     })
 
+    // Dialog should now be open
+    await waitForCondition(() => container.querySelector('[role="dialog"]') !== null)
+
+    const reasonInput = container.querySelector('textarea') as HTMLTextAreaElement
+    expect(reasonInput).not.toBeNull()
+
+    // Fill in the reason
+    await act(async () => {
+      reasonInput.value = 'Changed plans'
+      reasonInput.dispatchEvent(new Event('input', { bubbles: true }))
+      await Promise.resolve()
+    })
+
+    // Click the dialog confirm button (should be the last button in the dialog)
+    const dialogButtons = Array.from(container.querySelectorAll('[role="dialog"] button'))
+    const confirmButton = dialogButtons[dialogButtons.length - 1] as HTMLButtonElement
+
+    await act(async () => {
+      confirmButton.click()
+      await Promise.resolve()
+    })
+
     await waitForCondition(() => vi.mocked(cancelBooking).mock.calls.length === 1)
 
-    expect(cancelBooking).toHaveBeenCalledWith('booking-1', 'tenant-token', 'Bearer')
+    expect(cancelBooking).toHaveBeenCalledWith(
+      'booking-1',
+      { reason: 'Changed plans' },
+      'tenant-token',
+      'Bearer',
+    )
     expect(mocks.showToast).toHaveBeenCalledWith('Booking cancelled.', 'success')
   })
 
@@ -279,9 +316,36 @@ describe('BookingsPage', () => {
       await Promise.resolve()
     })
 
+    // Dialog should now be open
+    await waitForCondition(() => container.querySelector('[role="dialog"]') !== null)
+
+    const reasonInput = container.querySelector('textarea') as HTMLTextAreaElement
+    expect(reasonInput).not.toBeNull()
+
+    // Fill in the reason
+    await act(async () => {
+      reasonInput.value = 'Not suitable'
+      reasonInput.dispatchEvent(new Event('input', { bubbles: true }))
+      await Promise.resolve()
+    })
+
+    // Click the dialog confirm button (should be the last button in the dialog)
+    const dialogButtons = Array.from(container.querySelectorAll('[role="dialog"] button'))
+    const confirmButton = dialogButtons[dialogButtons.length - 1] as HTMLButtonElement
+
+    await act(async () => {
+      confirmButton.click()
+      await Promise.resolve()
+    })
+
     await waitForCondition(() => vi.mocked(rejectBooking).mock.calls.length === 1)
 
-    expect(rejectBooking).toHaveBeenCalledWith('booking-2', 'landlord-token', 'Bearer')
+    expect(rejectBooking).toHaveBeenCalledWith(
+      'booking-2',
+      { reason: 'Not suitable' },
+      'landlord-token',
+      'Bearer',
+    )
     expect(mocks.showToast).toHaveBeenCalledWith('Booking request rejected.', 'success')
   })
 })

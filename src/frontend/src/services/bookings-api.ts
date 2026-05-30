@@ -1,9 +1,12 @@
 import { apiRequest } from './api-client'
 import {
   BookingStatus,
+  type CancelBookingPayload,
   type Booking,
   type BookingCreatedResponse,
+  type PayBookingPayload,
   type CreateBookingPayload,
+  type RejectBookingPayload,
 } from '../types/booking'
 
 type BackendBookingStatus = BookingStatus | string | number | null | undefined
@@ -152,22 +155,32 @@ export async function getMyBookings(token: string, type = 'Bearer'): Promise<Boo
 
 export async function cancelBooking(
   bookingId: string,
+  payload: CancelBookingPayload,
   token: string,
   type = 'Bearer',
 ): Promise<void> {
   await apiRequest<void>(`/bookings/${bookingId}/cancel`, {
     method: 'POST',
+    body: {
+      reason: payload.reason.trim(),
+    },
     headers: getAuthHeaders(token, type),
   })
 }
 
 export async function payBooking(
   bookingId: string,
+  payload: PayBookingPayload,
   token: string,
   type = 'Bearer',
 ): Promise<void> {
   await apiRequest<void>(`/bookings/${bookingId}/pay`, {
     method: 'POST',
+    body: {
+      paymentMethod: payload.paymentMethod,
+      returnUrl: payload.returnUrl,
+      cancelUrl: payload.cancelUrl,
+    },
     headers: getAuthHeaders(token, type),
   })
 }
@@ -185,11 +198,15 @@ export async function acceptBooking(
 
 export async function rejectBooking(
   bookingId: string,
+  payload: RejectBookingPayload,
   token: string,
   type = 'Bearer',
 ): Promise<void> {
   await apiRequest<void>(`/bookings/${bookingId}/reject`, {
     method: 'POST',
+    body: {
+      reason: payload.reason.trim(),
+    },
     headers: getAuthHeaders(token, type),
   })
 }
