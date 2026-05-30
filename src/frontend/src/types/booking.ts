@@ -10,6 +10,12 @@ export const BookingStatus = {
 
 export type BookingStatus = (typeof BookingStatus)[keyof typeof BookingStatus]
 
+
+export const PaymentMethod = {
+  Card: 0,
+} as const
+
+export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod]
 export type CreateBookingPayload = {
   listingId: string
   startDate: string
@@ -23,6 +29,20 @@ export type BookingCreatedResponse = {
   totalPrice: number
   currency: string
   resourceLink?: string
+}
+
+export type CancelBookingPayload = {
+  reason: string
+}
+
+export type RejectBookingPayload = {
+  reason: string
+}
+
+export type PayBookingPayload = {
+  paymentMethod: PaymentMethod
+  returnUrl: string
+  cancelUrl: string
 }
 
 export type Booking = {

@@ -9,7 +9,7 @@ import {
   payBooking,
   rejectBooking,
 } from './bookings-api'
-import { BookingStatus } from '../types/booking'
+import { BookingStatus, PaymentMethod } from '../types/booking'
 
 vi.mock('./api-client', () => ({
   apiRequest: vi.fn(),
@@ -118,10 +118,13 @@ describe('bookings-api', () => {
   it('sends reject booking request', async () => {
     apiRequestMock.mockResolvedValue(undefined)
 
-    await rejectBooking('booking-1', 'token-1')
+    await rejectBooking('booking-1', { reason: 'No longer needed' }, 'token-1')
 
     expect(apiRequestMock).toHaveBeenCalledWith('/bookings/booking-1/reject', {
       method: 'POST',
+      body: {
+        reason: 'No longer needed',
+      },
       headers: {
         Authorization: 'Bearer token-1',
       },
@@ -131,10 +134,13 @@ describe('bookings-api', () => {
   it('sends cancel booking request', async () => {
     apiRequestMock.mockResolvedValue(undefined)
 
-    await cancelBooking('booking-1', 'token-1')
+    await cancelBooking('booking-1', { reason: 'Changed plans' }, 'token-1')
 
     expect(apiRequestMock).toHaveBeenCalledWith('/bookings/booking-1/cancel', {
       method: 'POST',
+      body: {
+        reason: 'Changed plans',
+      },
       headers: {
         Authorization: 'Bearer token-1',
       },
@@ -144,10 +150,23 @@ describe('bookings-api', () => {
   it('sends pay booking request', async () => {
     apiRequestMock.mockResolvedValue(undefined)
 
-    await payBooking('booking-1', 'token-1')
+    await payBooking(
+      'booking-1',
+      {
+        paymentMethod: PaymentMethod.Card,
+        returnUrl: 'https://example.com/bookings',
+        cancelUrl: 'https://example.com/bookings',
+      },
+      'token-1',
+    )
 
     expect(apiRequestMock).toHaveBeenCalledWith('/bookings/booking-1/pay', {
       method: 'POST',
+      body: {
+        paymentMethod: PaymentMethod.Card,
+        returnUrl: 'https://example.com/bookings',
+        cancelUrl: 'https://example.com/bookings',
+      },
       headers: {
         Authorization: 'Bearer token-1',
       },
