@@ -19,7 +19,7 @@ export function BookingReasonDialog({
   onCancel,
 }: BookingReasonDialogProps) {
   const [reason, setReason] = useState('')
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string | undefined>(undefined)
 
   const actionLabel = action === 'cancel' ? 'Cancel booking' : 'Reject booking'
   const actionPrompt =
@@ -41,20 +41,20 @@ export function BookingReasonDialog({
     }
 
     setReason('')
-    setError(null)
+    setError(undefined)
     onConfirm(trimmedReason)
   }
 
   function handleCancel() {
     setReason('')
-    setError(null)
+    setError(undefined)
     onCancel()
   }
 
   function handleInputChange(event: JSX.TargetedEvent<HTMLTextAreaElement>) {
     const target = event.currentTarget as HTMLTextAreaElement
     setReason(target.value)
-    setError(null)
+    setError(undefined)
   }
 
   if (!isOpen) {
@@ -80,6 +80,7 @@ export function BookingReasonDialog({
           <TextArea
             id="booking-reason-input"
             name="reason"
+            label="Reason"
             placeholder="Enter reason..."
             value={reason}
             disabled={isLoading}
