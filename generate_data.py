@@ -166,6 +166,27 @@ def add_opinion(token, listing_id, rating, comment):
         print(f"Exception adding opinion: {e}")
         return False
 
+def create_booking(token, listing_id, start_date, end_date):
+    headers = {"Authorization": f"Bearer {token}"}
+    payload = {
+        "listingId": listing_id,
+        "startDate": start_date,
+        "endDate": end_date
+    }
+    try:
+        r = requests.post(f"{BASE_URL}/bookings", json=payload, headers=headers)
+        if r.status_code in [200, 201]:
+            response = r.json() if r.headers.get("content-type", "").startswith("application/json") else {}
+            booking_id = response.get("bookingId") or response.get("BookingId") or "unknown"
+            print(f"Created booking {booking_id} for listing {listing_id} ({start_date} -> {end_date})")
+            return True
+        else:
+            print(f"Failed to create booking for listing {listing_id}: {r.status_code} {r.text}")
+            return False
+    except Exception as e:
+        print(f"Exception creating booking: {e}")
+        return False
+
 def get_listings(token, owner_id=None):
     headers = {"Authorization": f"Bearer {token}"}
     params = {}
@@ -228,6 +249,7 @@ def main():
 
     # 4. Approve first listing from each owner via Admin
     approved_listing_ids = []
+    approved_listings = []
     if admin_token:
         for oid in owner_ids:
             listings = get_listings(admin_token, owner_id=oid)
@@ -236,12 +258,34 @@ def main():
                 first_listing_id = listings[0]["id"]
                 if publish_listing(admin_token, first_listing_id):
                     approved_listing_ids.append(first_listing_id)
+                    approved_listings.append(listings[0])
                 else:
                     success = False
             else:
                 print(f"No listings found for owner {oid}")
 
-    # 5. Users 3-5 vote on the tasks (approved listings)
+    # 5. Create one booking for the first tenant on the first approved listing
+    if approved_listings:
+        user1_token = login_user("User1@User", "User1234")
+        if user1_token:
+            first_listing = approved_listings[0]
+            available_from = first_listing.get("availableFrom") or first_listing.get("AvailableFrom")
+
+            if available_from:
+                available_from_date = datetime.strptime(str(available_from)[:10], "%Y-%m-%d")
+                booking_start = available_from_date.strftime("%Y-%m-%d")
+                booking_end = (available_from_date + timedelta(days=30)).strftime("%Y-%m-%d")
+
+                if not create_booking(user1_token, first_listing["id"], booking_start, booking_end):
+                    success = False
+            else:
+                print(f"Skipping booking seed because listing {first_listing['id']} has no availableFrom value")
+                success = False
+        else:
+            print("Failed to login as User1 for booking seed")
+            success = False
+
+    # 6. Users 3-5 vote on the tasks (approved listings)
     for i in range(3, 6):
         email = f"User{i}@User"
         token = login_user(email, "User1234")

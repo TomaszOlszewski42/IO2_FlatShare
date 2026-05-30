@@ -2,6 +2,7 @@ import type { RoutableProps } from 'preact-router'
 import { route } from 'preact-router'
 import { useEffect, useMemo, useState } from 'preact/hooks'
 
+import { BookingReasonDialog } from '../../components/bookings/booking-reason-dialog'
 import { EmptyStateContent } from '../../components/common/empty-state-content'
 import { AppButton } from '../../components/ui/app-button'
 import { useAuth } from '../../hooks/use-auth'
@@ -13,7 +14,14 @@ import {
   rejectBooking,
 } from '../../services/bookings-api'
 import { useErrorHandler } from '../../services/error-handler-context'
-import { BookingStatus, type Booking } from '../../types/booking'
+import {
+  BookingStatus,
+  PaymentMethod,
+  type Booking,
+  type CancelBookingPayload,
+  type PayBookingPayload,
+  type RejectBookingPayload,
+} from '../../types/booking'
 import { formatDate } from '../../utils/format-date'
 import { formatPrice } from '../../utils/format-price'
 
@@ -90,6 +98,16 @@ function canLandlordDecide(booking: Booking): boolean {
   return booking.status === BookingStatus.PendingApproval
 }
 
+function buildPaymentPayload(): PayBookingPayload {
+  const bookingUrl = `${window.location.origin}/bookings`
+
+  return {
+    paymentMethod: PaymentMethod.Card,
+    returnUrl: bookingUrl,
+    cancelUrl: bookingUrl,
+  }
+}
+
 export function BookingsPage(_: RoutableProps) {
   const { session, isTenant, isLandlord } = useAuth()
   const { showToast } = useErrorHandler()
@@ -98,6 +116,9 @@ export function BookingsPage(_: RoutableProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [pendingActionKey, setPendingActionKey] = useState<string | null>(null)
+  const [reasonDialogOpen, setReasonDialogOpen] = useState(false)
+  const [reasonDialogAction, setReasonDialogAction] = useState<'cancel' | 'reject' | null>(null)
+  const [reasonDialogBookingId, setReasonDialogBookingId] = useState<string | null>(null)
 
   const sortedBookings = useMemo(() => {
     return [...bookings].sort((first, second) => {
@@ -142,6 +163,27 @@ export function BookingsPage(_: RoutableProps) {
       return
     }
 
+    // For actions that require a reason, show the dialog instead
+    if (action === 'reject' || action === 'cancel') {
+      setReasonDialogBookingId(bookingId)
+      setReasonDialogAction(action)
+      setReasonDialogOpen(true)
+      return
+    }
+
+    await executeBookingAction(bookingId, action, null)
+  }
+
+  async function executeBookingAction(
+    bookingId: string,
+    action: BookingAction,
+    reason: string | null,
+  ) {
+    if (!session) {
+      route('/login')
+      return
+    }
+
     const actionKey = `${bookingId}-${action}`
     setPendingActionKey(actionKey)
 
@@ -152,17 +194,19 @@ export function BookingsPage(_: RoutableProps) {
       }
 
       if (action === 'reject') {
-        await rejectBooking(bookingId, session.token, session.type)
+        const payload: RejectBookingPayload = { reason: reason || '' }
+        await rejectBooking(bookingId, payload, session.token, session.type)
         showToast('Booking request rejected.', 'success')
       }
 
       if (action === 'cancel') {
-        await cancelBooking(bookingId, session.token, session.type)
+        const payload: CancelBookingPayload = { reason: reason || '' }
+        await cancelBooking(bookingId, payload, session.token, session.type)
         showToast('Booking cancelled.', 'success')
       }
 
       if (action === 'pay') {
-        await payBooking(bookingId, session.token, session.type)
+        await payBooking(bookingId, buildPaymentPayload(), session.token, session.type)
         showToast('Booking paid and confirmed.', 'success')
       }
 
@@ -173,6 +217,24 @@ export function BookingsPage(_: RoutableProps) {
     } finally {
       setPendingActionKey(null)
     }
+  }
+
+  function handleReasonDialogConfirm(reason: string) {
+    setReasonDialogOpen(false)
+    const bookingId = reasonDialogBookingId
+    const action = reasonDialogAction
+    setReasonDialogBookingId(null)
+    setReasonDialogAction(null)
+
+    if (bookingId && action) {
+      void executeBookingAction(bookingId, action, reason)
+    }
+  }
+
+  function handleReasonDialogCancel() {
+    setReasonDialogOpen(false)
+    setReasonDialogBookingId(null)
+    setReasonDialogAction(null)
   }
 
   const pageDescription = isLandlord
@@ -341,6 +403,14 @@ export function BookingsPage(_: RoutableProps) {
           })}
         </div>
       )}
+
+      <BookingReasonDialog
+        isOpen={reasonDialogOpen}
+        action={reasonDialogAction ?? 'cancel'}
+        isLoading={reasonDialogBookingId ? reasonDialogBookingId === pendingActionKey?.split('-')[0] : false}
+        onConfirm={handleReasonDialogConfirm}
+        onCancel={handleReasonDialogCancel}
+      />
     </section>
   )
 }
