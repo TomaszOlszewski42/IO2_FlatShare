@@ -1,4 +1,5 @@
 using System.Data.Entity.Core;
+using FlatShareBackend.API.Controllers;
 using FlatShareBackend.Application.Dtos;
 using FlatShareBackend.Application.Dtos.Bookings;
 using FlatShareBackend.Application.Dtos.Payments;
@@ -62,6 +63,11 @@ public class BookingService : IBookingService
         {
             throw new InvalidBookingStateTransition
                 ($"Booking can't transition from state {booking.Status} to {newStatus}");
+        }
+
+        if (newStatus == BookingStatus.Cancelled && booking.Since <= DateOnly.FromDateTime(DateTime.Now))
+        {
+            throw new CantCancellException("Nie można anulować rezerwacji po rozpoczęciu okresu najmu.");
         }
 
         var listing = await _listingRepository.Get(booking.ListingId);

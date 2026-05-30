@@ -1,5 +1,7 @@
+using FlatShareBackend.API.Controllers;
 using FlatShareBackend.Application.Dtos.Common;
 using FlatShareBackend.Domain.Exceptions;
+using FlatShareBackend.Domain.Models;
 using Microsoft.AspNetCore.Diagnostics;
 
 namespace FlatShareBackend.Middlewares;
@@ -91,6 +93,18 @@ public class GlobalExceptionHandler : IExceptionHandler
                 response.Error = "No user with this id";
                 response.Message = exception.Message;
                 break;
+            case CantCancellException:
+                var cancellationResponse = new
+                {
+                    error = "CancellationNotAllowed",
+                    timestamp = DateTime.Now,
+                    message = exception.Message,
+                    bookingStatus = BookingStatus.Confirmed
+                };
+                httpContext.Response.StatusCode = StatusCodes.Status409Conflict;
+                httpContext.Response.ContentType = "application/json";
+                await httpContext.Response.WriteAsJsonAsync(cancellationResponse, cancellationToken: cancellationToken);
+                return true;
         }
 
         response.Status = statusCode;
