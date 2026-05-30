@@ -1,4 +1,5 @@
 using FlatShareBackend.Application.Services;
+using FlatShareBackend.Domain.Exceptions;
 using FlatShareBackend.Domain.Models;
 
 namespace FlatShareBackend.Application.Validators;
@@ -22,7 +23,7 @@ public class ListingValidator : IListingValidator
 
         if (violations.Count != 0)
         {
-            
+            throw new ListingValidationException("Validation errorr", violations);
         }
     }
 }
