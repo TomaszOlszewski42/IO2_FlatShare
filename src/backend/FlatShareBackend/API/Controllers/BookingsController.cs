@@ -2,6 +2,7 @@ using System.Security.Claims;
 using FlatShareBackend.Application.Dtos.Bookings;
 using FlatShareBackend.Application.Services.Bookings;
 using FlatShareBackend.Domain.Models;
+using FlatShareBackend.Application.Services.Payments;
 using FlatShareBackend.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +15,13 @@ public class BookingsController : ControllerBase
 {
     private readonly IBookingService _bookingService;
     private readonly IHttpContextAccessor _httpAccessor;
+    private readonly IPaymentService _paymentService;
 
-    public BookingsController(IBookingService bookingService, IHttpContextAccessor httpAccessor)
+    public BookingsController(IBookingService bookingService, IHttpContextAccessor httpAccessor, IPaymentService paymentService)
     {
         _bookingService = bookingService;
         _httpAccessor = httpAccessor;
+        _paymentService = paymentService;
     }
 
     public record BookingCreatedResponse(Guid BookingId, BookingStatus Status, DateTime CreatedAt, decimal TotalPrice,
@@ -80,11 +83,17 @@ public class BookingsController : ControllerBase
 
     [Authorize(Roles = "TENANT")]
     [HttpPost("{bookingId}/pay")]
-    public async Task<IActionResult> Pay(Guid bookingId, [FromBody] PaymentRequest request)
+    public async Task<IActionResult> Pay(Guid bookingId)
     {
         var tenantId = _httpAccessor.ParseUserID();
-        await _bookingService.ChangeStatusByTenant(bookingId, BookingStatus.Confirmed, tenantId);
-        return Ok();
+        var result = await _paymentService.PayForRentalAsync(bookingId, tenantId);
+        
+        return Ok(new
+        {
+            paymentId = result.PaymentId,
+            status = result.Status.ToString(),
+            checkoutUrl = result.CheckoutUrl
+        });
     }
 
     [Authorize()]

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using FlatShareBackend.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FlatShareBackend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260531203826_AddStripePaymentFields")]
+    partial class AddStripePaymentFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -146,53 +149,6 @@ namespace FlatShareBackend.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("ListingOpinions");
-                });
-
-            modelBuilder.Entity("FlatShareBackend.Domain.Models.Payment", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("numeric");
-
-                    b.Property<Guid>("BookingId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Currency")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Provider")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ProviderPaymentIntentId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ProviderSessionId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BookingId")
-                        .IsUnique();
-
-                    b.HasIndex("Id")
-                        .IsUnique();
-
-                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("FlatShareBackend.Domain.Models.User", b =>
@@ -348,6 +304,59 @@ namespace FlatShareBackend.Migrations
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.OwnsOne("FlatShareBackend.Domain.Models.Payment", "Payment", b1 =>
+                        {
+                            b1.Property<Guid>("BookingId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<DateTime>("CreatedAt")
+                                .HasColumnType("timestamp with time zone")
+                                .HasColumnName("Payment_CreatedAt");
+
+                            b1.Property<string>("Currency")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("Payment_Currency");
+
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("Payment_Id");
+
+                            b1.Property<string>("Provider")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("Payment_Provider");
+
+                            b1.Property<int>("Status")
+                                .HasColumnType("integer")
+                                .HasColumnName("Payment_Status");
+
+                            b1.Property<string>("StripePaymentIntentId")
+                                .HasColumnType("text")
+                                .HasColumnName("Payment_StripePaymentIntentId");
+
+                            b1.Property<string>("StripeSessionId")
+                                .HasColumnType("text")
+                                .HasColumnName("Payment_StripeSessionId");
+
+                            b1.Property<decimal>("TotalValue")
+                                .HasColumnType("numeric")
+                                .HasColumnName("Payment_TotalValue");
+
+                            b1.Property<DateTime>("UpdatedAt")
+                                .HasColumnType("timestamp with time zone")
+                                .HasColumnName("Payment_UpdatedAt");
+
+                            b1.HasKey("BookingId");
+
+                            b1.ToTable("Bookings");
+
+                            b1.WithOwner()
+                                .HasForeignKey("BookingId");
+                        });
+
+                    b.Navigation("Payment");
                 });
 
             modelBuilder.Entity("FlatShareBackend.Domain.Models.Listing", b =>
@@ -503,14 +512,6 @@ namespace FlatShareBackend.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("FlatShareBackend.Domain.Models.Payment", b =>
-                {
-                    b.HasOne("FlatShareBackend.Domain.Models.Booking", null)
-                        .WithOne("Payment")
-                        .HasForeignKey("FlatShareBackend.Domain.Models.Payment", "BookingId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("FlatShareBackend.Domain.Models.UserPreferences", b =>
                 {
                     b.HasOne("FlatShareBackend.Domain.Models.User", "Owner")
@@ -548,11 +549,6 @@ namespace FlatShareBackend.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("FlatShareBackend.Domain.Models.Booking", b =>
-                {
-                    b.Navigation("Payment");
                 });
 
             modelBuilder.Entity("FlatShareBackend.Domain.Models.User", b =>

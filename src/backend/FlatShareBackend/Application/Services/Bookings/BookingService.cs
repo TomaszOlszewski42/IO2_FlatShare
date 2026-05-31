@@ -199,19 +199,6 @@ public class BookingService : IBookingService
         return new(booking);
     }
 
-    public async Task CreatePayment(CreatePaymentRequest request)
-    {
-        var booking = await _bookingRepository.Get(request.BookingId);
-        booking.Payment = new Payment
-        {
-            Id = Guid.NewGuid(),
-            Status = PaymentStatus.Initiated,
-            TotalValue = request.TotalValue,
-            Currency = request.Currency
-        };
-        await _bookingRepository.SaveChangesAsync();
-    }
-
     private static void VerifyPaymentAccess(Booking booking, Guid requesterId, string requesterRole)
     {
         if ((requesterRole != "ADMIN") && (requesterRole != "TENANT" || booking.TenantId != requesterId))

@@ -14,5 +14,4 @@ public interface IBookingService
     public Task<List<BookingDto>> GetAllOfUser(Guid requesterId, string role);
     public Task<PaymentDto> GetPaymentByPaymentId(Guid paymentId, Guid requesterId, string requesterRole);
     public Task<PaymentDto> GetPaymentByBookingId(Guid bookingId, Guid requesterId, string requesterRole);
-    public Task CreatePayment(CreatePaymentRequest request);
 }
