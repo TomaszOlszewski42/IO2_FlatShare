@@ -1,4 +1,4 @@
-﻿using FlatShareBackend.Domain.Models;
+using FlatShareBackend.Domain.Models;
 using FlatShareBackend.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +17,7 @@ namespace FlatShareBackend.Infrastructure.Data
         public DbSet<ViolationReport> ViolationReports => Set<ViolationReport>();
         public DbSet<ListingOpinion> ListingOpinions => Set<ListingOpinion>();
         public DbSet<Booking> Bookings => Set<Booking>();
+        public DbSet<Payment> Payments => Set<Payment>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -113,15 +114,17 @@ namespace FlatShareBackend.Infrastructure.Data
                     .HasForeignKey(x => x.ListingId)
                     .IsRequired();
                 
-                entity.OwnsOne(x => x.Payment, sa =>
-                {
-                    sa.Property(p => p.Currency).HasColumnName("Payment_Currency");
-                    sa.Property(p => p.TotalValue).HasColumnName("Payment_TotalValue");
-                    sa.Property(p => p.Status).HasColumnName("Payment_Status");
-                    sa.Property(p => p.Id).HasColumnName("Payment_Id");
-                })
-                    .HasIndex(x => x.Id)
-                    .IsUnique();
+                entity.HasOne(x => x.Payment)
+                    .WithOne()
+                    .HasForeignKey<Payment>(x => x.BookingId)
+                    .IsRequired(false)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<Payment>(entity =>
+            {
+                entity.HasIndex(x => x.Id).IsUnique();
+                entity.Property(x => x.Status).HasConversion<string>();
             });
         }
 

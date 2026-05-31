@@ -1,0 +1,8 @@
+namespace FlatShareBackend.API.Options;
+
+public class FrontendOptions
+{
+    public const string SectionName = "Frontend";
+
+    public string BaseUrl { get; set; } = string.Empty;
+}

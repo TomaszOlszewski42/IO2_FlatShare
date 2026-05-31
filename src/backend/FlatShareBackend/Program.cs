@@ -17,7 +17,12 @@ using FlatShareBackend.Infrastructure.Repositories.Preferences;
 using FlatShareBackend.Infrastructure.Repositories.Sessions;
 using FlatShareBackend.Infrastructure.Repositories.Users;
 using FlatShareBackend.Options;
+using FlatShareBackend.API.Options;
+using FlatShareBackend.Application.Ports;
+using FlatShareBackend.Application.Services.Payments;
+using FlatShareBackend.Infrastructure.Stripe;
 using FlatShareBackend.Repositories;
+using Stripe;
 using FlatShareBackend.Middlewares;
 using LinqKit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -120,6 +125,18 @@ namespace FlatShareBackend
                 var options = serviceProvider.GetRequiredService<IOptions<BlobOptions>>().Value;
                 return new BlobContainerClient(options.ConnectionString, options.ContainerName);
             });
+
+            builder.Services.Configure<StripeOptions>(builder.Configuration.GetSection(StripeOptions.SectionName));
+            builder.Services.Configure<FrontendOptions>(builder.Configuration.GetSection(FrontendOptions.SectionName));
+
+            var stripeOptions = builder.Configuration.GetSection(StripeOptions.SectionName).Get<StripeOptions>();
+            if (stripeOptions != null && !string.IsNullOrEmpty(stripeOptions.SecretKey))
+            {
+                StripeConfiguration.ApiKey = stripeOptions.SecretKey;
+            }
+
+            builder.Services.AddScoped<IPaymentGateway, StripePaymentGateway>();
+            builder.Services.AddScoped<IPaymentService, PaymentService>();
 
             var app = builder.Build();
 
