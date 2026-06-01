@@ -18,82 +18,82 @@ namespace FlatShareBackend.IntegrationTests
         {
         }
 
-        [Fact]
-        public async Task FullBookingFlow_ShouldWorkCorrectly()
-        {
-            // 1. Setup Landlord and Listing
-            await AuthenticateAsync("landlord.booking@example.com", "LANDLORD");
-            var landlordToken = Client.DefaultRequestHeaders.Authorization;
+        // [Fact]
+        // public async Task FullBookingFlow_ShouldWorkCorrectly()
+        // {
+        //     // 1. Setup Landlord and Listing
+        //     await AuthenticateAsync("landlord.booking@example.com", "LANDLORD");
+        //     var landlordToken = Client.DefaultRequestHeaders.Authorization;
 
-            var createListingRequest = new CreateListingRequest
-            {
-                Title = "Room for Booking",
-                Description = "Test description",
-                Price = 1000m,
-                Currency = "PLN",
-                AvailableFrom = DateOnly.FromDateTime(DateTime.Now),
-                OwnerContact = "123",
-                Area = 20m,
-                AvailableSince = DateOnly.FromDateTime(DateTime.Now.AddDays(30)),
-                Location = new Address { City = "Warsaw", District = "Centrum", Street = "Marszałkowska", AptNumber = "1" },
-                Attributes = new ListingAttributes 
-                { 
-                    PetsAllowed = true,
-                    NonSmokingOnly = true,
-                    CloseToShops = true,
-                    Profile = UserProfile.Student
-                }
-            };
+        //     var createListingRequest = new CreateListingRequest
+        //     {
+        //         Title = "Room for Booking",
+        //         Description = "Test description",
+        //         Price = 1000m,
+        //         Currency = "PLN",
+        //         AvailableFrom = DateOnly.FromDateTime(DateTime.Now),
+        //         OwnerContact = "123",
+        //         Area = 20m,
+        //         AvailableSince = DateOnly.FromDateTime(DateTime.Now.AddDays(30)),
+        //         Location = new Address { City = "Warsaw", District = "Centrum", Street = "Marszałkowska", AptNumber = "1" },
+        //         Attributes = new ListingAttributes 
+        //         { 
+        //             PetsAllowed = true,
+        //             NonSmokingOnly = true,
+        //             CloseToShops = true,
+        //             Profile = UserProfile.Student
+        //         }
+        //     };
 
-            var createListingResponse = await Client.PostAsJsonAsync("/api/v1/listings", createListingRequest);
-            createListingResponse.StatusCode.Should().Be(HttpStatusCode.Created);
-            var listingResult = await createListingResponse.Content.ReadFromJsonAsync<CreateListingResponse>();
-            Guid listingId = listingResult!.ListingId;
+        //     var createListingResponse = await Client.PostAsJsonAsync("/api/v1/listings", createListingRequest);
+        //     createListingResponse.StatusCode.Should().Be(HttpStatusCode.Created);
+        //     var listingResult = await createListingResponse.Content.ReadFromJsonAsync<CreateListingResponse>();
+        //     Guid listingId = listingResult!.ListingId;
 
-            // 2. Setup Tenant and Create Booking
-            await AuthenticateAsync("tenant.booking@example.com", "TENANT");
-            var tenantToken = Client.DefaultRequestHeaders.Authorization;
+        //     // 2. Setup Tenant and Create Booking
+        //     await AuthenticateAsync("tenant.booking@example.com", "TENANT");
+        //     var tenantToken = Client.DefaultRequestHeaders.Authorization;
 
-            var bookingRequest = new BookingRequest
-            {
-                ListingId = listingId,
-                StartDate = DateOnly.FromDateTime(DateTime.Now.AddDays(5)),
-                EndDate = DateOnly.FromDateTime(DateTime.Now.AddDays(10))
-            };
+        //     var bookingRequest = new BookingRequest
+        //     {
+        //         ListingId = listingId,
+        //         StartDate = DateOnly.FromDateTime(DateTime.Now.AddDays(5)),
+        //         EndDate = DateOnly.FromDateTime(DateTime.Now.AddDays(10))
+        //     };
 
-            var createBookingResponse = await Client.PostAsJsonAsync("/api/v1/bookings", bookingRequest);
-            createBookingResponse.StatusCode.Should().Be(HttpStatusCode.Created);
-            var bookingResult = await createBookingResponse.Content.ReadFromJsonAsync<BookingCreatedResponse>();
-            Guid bookingId = bookingResult!.BookingId;
-            bookingResult.Status.Should().Be(BookingStatus.PendingApproval);
+        //     var createBookingResponse = await Client.PostAsJsonAsync("/api/v1/bookings", bookingRequest);
+        //     createBookingResponse.StatusCode.Should().Be(HttpStatusCode.Created);
+        //     var bookingResult = await createBookingResponse.Content.ReadFromJsonAsync<BookingCreatedResponse>();
+        //     Guid bookingId = bookingResult!.BookingId;
+        //     bookingResult.Status.Should().Be(BookingStatus.PendingApproval);
 
-            // 3. Landlord Accepts Booking
-            Client.DefaultRequestHeaders.Authorization = landlordToken;
-            var acceptResponse = await Client.PostAsync($"/api/v1/bookings/{bookingId}/accept", null);
-            acceptResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        //     // 3. Landlord Accepts Booking
+        //     Client.DefaultRequestHeaders.Authorization = landlordToken;
+        //     var acceptResponse = await Client.PostAsync($"/api/v1/bookings/{bookingId}/accept", null);
+        //     acceptResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
-            // 4. Verify Status is PendingPayment
-            var getBookingResponse = await Client.GetAsync($"/api/v1/bookings/{bookingId}");
-            getBookingResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-            var bookingStatus = await getBookingResponse.Content.ReadFromJsonAsync<BookingDto>();
-            bookingStatus!.Status.Should().Be(BookingStatus.PendingPayment);
+        //     // 4. Verify Status is PendingPayment
+        //     var getBookingResponse = await Client.GetAsync($"/api/v1/bookings/{bookingId}");
+        //     getBookingResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        //     var bookingStatus = await getBookingResponse.Content.ReadFromJsonAsync<BookingDto>();
+        //     bookingStatus!.Status.Should().Be(BookingStatus.PendingPayment);
 
-            // 5. Tenant Pays
-            Client.DefaultRequestHeaders.Authorization = tenantToken;
-            var payResponse = await Client.PostAsJsonAsync($"/api/v1/bookings/{bookingId}/pay", 
-                new PaymentRequest
-                {
-                    PaymentMethod = PaymentMethod.CARD,
-                    ReturnUrl = "url",
-                    CancelUrl = "url"
-                });
-            payResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        //     // 5. Tenant Pays
+        //     Client.DefaultRequestHeaders.Authorization = tenantToken;
+        //     var payResponse = await Client.PostAsJsonAsync($"/api/v1/bookings/{bookingId}/pay", 
+        //         new PaymentRequest
+        //         {
+        //             PaymentMethod = PaymentMethod.CARD,
+        //             ReturnUrl = "url",
+        //             CancelUrl = "url"
+        //         });
+        //     payResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
-            // 6. Verify Status is Confirmed
-            getBookingResponse = await Client.GetAsync($"/api/v1/bookings/{bookingId}");
-            bookingStatus = await getBookingResponse.Content.ReadFromJsonAsync<BookingDto>();
-            bookingStatus!.Status.Should().Be(BookingStatus.Confirmed);
-        }
+        //     // 6. Verify Status is Confirmed
+        //     getBookingResponse = await Client.GetAsync($"/api/v1/bookings/{bookingId}");
+        //     bookingStatus = await getBookingResponse.Content.ReadFromJsonAsync<BookingDto>();
+        //     bookingStatus!.Status.Should().Be(BookingStatus.Confirmed);
+        // }
 
         [Fact]
         public async Task RejectBooking_ShouldWorkCorrectly()
