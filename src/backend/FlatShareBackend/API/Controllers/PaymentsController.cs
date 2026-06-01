@@ -49,4 +49,17 @@ public class PaymentsController : ControllerBase
 
         return Ok();
     }
+
+    [HttpPost("confirm")]
+    [Authorize(Roles = "TENANT")]
+    public async Task<IActionResult> ConfirmPayment([FromQuery] string sessionId)
+    {
+        var result = await _paymentService.ConfirmPaymentBySessionIdAsync(sessionId);
+        return Ok(new
+        {
+            paymentId = result.PaymentId,
+            status = result.Status.ToString(),
+            bookingId = result.BookingId
+        });
+    }
 }

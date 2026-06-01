@@ -7,6 +7,7 @@ import {
   type PayBookingPayload,
   type CreateBookingPayload,
   type RejectBookingPayload,
+  type PaymentResponse,
 } from '../types/booking'
 
 type BackendBookingStatus = BookingStatus | string | number | null | undefined
@@ -173,8 +174,8 @@ export async function payBooking(
   payload: PayBookingPayload,
   token: string,
   type = 'Bearer',
-): Promise<void> {
-  await apiRequest<void>(`/bookings/${bookingId}/pay`, {
+): Promise<PaymentResponse> {
+  const response = await apiRequest<PaymentResponse>(`/bookings/${bookingId}/pay`, {
     method: 'POST',
     body: {
       paymentMethod: payload.paymentMethod,
@@ -183,6 +184,8 @@ export async function payBooking(
     },
     headers: getAuthHeaders(token, type),
   })
+
+  return response
 }
 
 export async function acceptBooking(

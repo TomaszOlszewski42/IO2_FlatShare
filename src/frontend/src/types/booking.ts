@@ -56,3 +56,9 @@ export type Booking = {
   currency: string
   paymentId?: string | null
 }
+
+export type PaymentResponse = {
+  paymentId: string
+  status: string
+  checkoutUrl: string
+}

@@ -12,6 +12,8 @@ import { ListingEditPage } from './pages/listings/listing-edit-page'
 import { ListingDetailsPage } from './pages/listings/listing-details-page'
 import { ListingsPage } from './pages/listings/listings-page'
 import { PublicUserProfilePage } from './pages/users/public-user-profile-page'
+import { PaymentSuccessPage } from './pages/payments/payment-success-page'
+import { PaymentCancelPage } from './pages/payments/payment-cancel-page'
 import { RegisterPage } from './pages/register-page'
 import { readAuthSession } from './services/auth-session'
 import { refreshSessionOnAppLoad } from './services/auth-bootstrap'
@@ -72,6 +74,8 @@ export function App() {
         <ProtectedRoute path="/listings/:listingId/edit" component={ListingEditPage} requiredRole={UserRole.Landlord} />
         <PublicUserProfilePage path="/users/:userId" />
         <ListingDetailsPage path="/listings/:listingId" />
+        <PaymentSuccessPage path="/payments/success" />
+        <PaymentCancelPage path="/payments/cancel" />
         <LoginPage path="/login" />
         <RegisterPage path="/register" />
         <PasswordResetRequestPage path="/password-reset/request" />

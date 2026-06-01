@@ -12,6 +12,7 @@
     "test:ci": "vitest run --reporter=junit --outputFile=./test-results/junit.xml"
   },
   "dependencies": {
+    "@stripe/stripe-js": "^4.0.0",
     "@tailwindcss/vite": "^4.2.1",
     "daisyui": "^5.5.19",
     "preact": "^10.28.4",

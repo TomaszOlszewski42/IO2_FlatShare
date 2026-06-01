@@ -150,4 +150,43 @@ public class PaymentService : IPaymentService
             await _dbContext.SaveChangesAsync(ct);
         }
     }
+
+    public async Task<ConfirmPaymentResult> ConfirmPaymentBySessionIdAsync(string sessionId, CancellationToken ct = default)
+    {
+        var payment = await _dbContext.Payments
+            .FirstOrDefaultAsync(p => p.ProviderSessionId == sessionId, ct)
+            ?? throw new InvalidOperationException("Payment not found");
+
+        // If already confirmed, return current status
+        if (payment.Status == PaymentStatus.Succeeded)
+        {
+            return new ConfirmPaymentResult(payment.Id, payment.Status, payment.BookingId);
+        }
+
+        // Query Stripe to verify the session status
+        var sessionService = new Stripe.Checkout.SessionService();
+        var session = await sessionService.GetAsync(sessionId, cancellationToken: ct);
+
+        if (session?.PaymentStatus == "paid")
+        {
+            // Payment confirmed in Stripe, update local state
+            payment.Status = PaymentStatus.Succeeded;
+            payment.ProviderPaymentIntentId = session.PaymentIntentId;
+            payment.UpdatedAt = DateTime.UtcNow;
+
+            var booking = await _dbContext.Bookings
+                .FirstOrDefaultAsync(b => b.Id == payment.BookingId, ct);
+            
+            if (booking != null)
+            {
+                booking.Status = BookingStatus.Confirmed;
+            }
+
+            await _dbContext.SaveChangesAsync(ct);
+
+            return new ConfirmPaymentResult(payment.Id, payment.Status, payment.BookingId);
+        }
+
+        throw new InvalidOperationException("Payment is not confirmed in Stripe");
+    }
 }
