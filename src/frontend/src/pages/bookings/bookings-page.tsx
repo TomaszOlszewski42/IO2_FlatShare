@@ -206,7 +206,12 @@ export function BookingsPage(_: RoutableProps) {
       }
 
       if (action === 'pay') {
-        await payBooking(bookingId, buildPaymentPayload(), session.token, session.type)
+        const paymentResult = await payBooking(bookingId, buildPaymentPayload(), session.token, session.type)
+        if (paymentResult && paymentResult.checkoutUrl) {
+          // Redirect to Stripe checkout
+          window.location.href = paymentResult.checkoutUrl
+          return // Don't reload bookings since we're leaving the page
+        }
         showToast('Booking paid and confirmed.', 'success')
       }
 

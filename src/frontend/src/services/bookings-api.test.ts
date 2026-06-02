@@ -148,9 +148,14 @@ describe('bookings-api', () => {
   })
 
   it('sends pay booking request', async () => {
-    apiRequestMock.mockResolvedValue(undefined)
+    const mockPaymentResponse = {
+      paymentId: 'payment-1',
+      status: 'Redirected',
+      checkoutUrl: 'https://stripe.com/checkout/session/123',
+    }
+    apiRequestMock.mockResolvedValue(mockPaymentResponse)
 
-    await payBooking(
+    const result = await payBooking(
       'booking-1',
       {
         paymentMethod: PaymentMethod.Card,
@@ -160,6 +165,7 @@ describe('bookings-api', () => {
       'token-1',
     )
 
+    expect(result).toEqual(mockPaymentResponse)
     expect(apiRequestMock).toHaveBeenCalledWith('/bookings/booking-1/pay', {
       method: 'POST',
       body: {

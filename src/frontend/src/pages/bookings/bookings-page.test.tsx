@@ -173,7 +173,11 @@ describe('BookingsPage', () => {
 
   it('allows tenant to pay pending payment booking', async () => {
     vi.mocked(getMyBookings).mockResolvedValue([pendingPaymentBooking])
-    vi.mocked(payBooking).mockResolvedValue(undefined)
+    vi.mocked(payBooking).mockResolvedValue({
+      paymentId: 'payment-1',
+      status: 'succeeded',
+      checkoutUrl: '',
+    })
 
     const container = await renderBookingsPage()
 
