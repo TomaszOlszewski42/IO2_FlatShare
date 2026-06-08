@@ -14,10 +14,10 @@ public class ListingDto
         Description = listing.Description;
         Price = listing.Price;
         Currency = listing.Currency;
-        AvailableFrom = listing.AvailableFrom;
+        AvailableSince = listing.AvailableSince;
         OwnerContact = listing.OwnerContact;
         Area = listing.Area;
-        AvailableSince = listing.AvailableSince;
+        AvailableUntil = listing.AvailableUntil;
         Location = listing.Location;
         Attributes = listing.Attributes;
         Status = listing.Status;
@@ -29,10 +29,10 @@ public class ListingDto
     public string Description { get; set; }
     public decimal Price { get; set; }
     public string Currency { get; set; }
-    public DateOnly AvailableFrom { get; set; }
+    public DateOnly AvailableSince { get; set; }
     public string OwnerContact { get; set; }
     public decimal Area { get; set; }
-    public DateOnly AvailableSince { get; set; }
+    public DateOnly AvailableUntil { get; set; }
     public Address Location { get; set; }
     public ListingAttributes Attributes { get; set; }
     public Listing.State Status { get; set; }

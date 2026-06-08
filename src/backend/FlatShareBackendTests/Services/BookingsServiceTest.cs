@@ -41,8 +41,8 @@ public class BookingsServiceTest
             Description = "Niesamowity opis",
             Price = 1000.0m,
             Currency = "PLN",
-            AvailableSince = new(2016, 5, 1),
-            AvailableFrom = new(2016, 3, 3),
+            AvailableUntil = new(2016, 5, 1),
+            AvailableSince = new(2016, 3, 3),
             OwnerContact = "Nie",
             Area = 5000.0m,
             Location = new Address

@@ -24,7 +24,7 @@ const baseListing: Listing = {
   price: 1500,
   currency: 'PLN',
   status: 'ACTIVE',
-  availableFrom: '2025-05-01',
+  availableSince: '2025-05-01',
   area: 18,
   rooms: 2,
   bathrooms: 1,

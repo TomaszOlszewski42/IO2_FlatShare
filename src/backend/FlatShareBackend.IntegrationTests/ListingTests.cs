@@ -29,10 +29,10 @@ namespace FlatShareBackend.IntegrationTests
                 Description = "A very nice and sunny room in the heart of the city.",
                 Price = 1200.00m,
                 Currency = "PLN",
-                AvailableFrom = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
+                AvailableSince = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
                 OwnerContact = "555-123-456",
                 Area = 15.5m,
-                AvailableSince = DateOnly.FromDateTime(DateTime.Now.AddDays(365)),
+                AvailableUntil = DateOnly.FromDateTime(DateTime.Now.AddDays(365)),
                 Location = new Address
                 {
                     City = "Warsaw",
@@ -71,10 +71,10 @@ namespace FlatShareBackend.IntegrationTests
                 Description = "This should fail because I am a tenant.",
                 Price = 500m,
                 Currency = "PLN",
-                AvailableFrom = DateOnly.FromDateTime(DateTime.Now),
+                AvailableSince = DateOnly.FromDateTime(DateTime.Now),
                 OwnerContact = "123",
                 Area = 10m,
-                AvailableSince = DateOnly.FromDateTime(DateTime.Now),
+                AvailableUntil = DateOnly.FromDateTime(DateTime.Now),
                 Location = new Address { City = "X", District = "Y", Street = "Z", AptNumber = "1" },
                 Attributes = new ListingAttributes
                 {
@@ -104,10 +104,10 @@ namespace FlatShareBackend.IntegrationTests
                 Description = "Test description",
                 Price = 1000m,
                 Currency = "PLN",
-                AvailableFrom = DateOnly.FromDateTime(DateTime.Now),
+                AvailableSince = DateOnly.FromDateTime(DateTime.Now),
                 OwnerContact = "123",
                 Area = 20m,
-                AvailableSince = DateOnly.FromDateTime(DateTime.Now.AddDays(30)),
+                AvailableUntil = DateOnly.FromDateTime(DateTime.Now.AddDays(30)),
                 Location = new Address { City = "Kraków", District = "Stare Miasto", Street = "Floriańska", AptNumber = "5" },
                 Attributes = new ListingAttributes 
                 { 

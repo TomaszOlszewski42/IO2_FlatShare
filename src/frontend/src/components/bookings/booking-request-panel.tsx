@@ -19,7 +19,7 @@ type BookingRequestPanelProps = {
   listingTitle: string
   price: number
   currency: string
-  availableFrom?: string | null
+  availableSince?: string | null
   unavailableRanges?: BookingUnavailableRange[]
   isDisabled?: boolean
   disabledReason?: string
@@ -90,13 +90,13 @@ export function BookingRequestPanel({
   listingTitle,
   price,
   currency,
-  availableFrom,
+  availableSince,
   unavailableRanges = [],
   isDisabled = false,
   disabledReason,
   onCreateBooking,
 }: BookingRequestPanelProps) {
-  const availableFromDate = toDateInputValue(availableFrom)
+  const availableFromDate = toDateInputValue(availableSince)
   const minimumStartDate = getLaterDateValue(getTodayDateInputValue(), availableFromDate)
 
   const [startDate, setStartDate] = useState('')

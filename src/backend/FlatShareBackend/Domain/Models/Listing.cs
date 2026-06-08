@@ -24,10 +24,10 @@ public class Listing
     public required string Description { get; set; }
     public required decimal Price { get; set; }
     public required string Currency { get; set; }
-    public required DateOnly AvailableFrom { get; set; }
+    public required DateOnly AvailableSince { get; set; }
     public required string OwnerContact { get; set; }
     public required decimal Area { get; set; }
-    public required DateOnly AvailableSince { get; set; }
+    public required DateOnly AvailableUntil { get; set; }
     public required Address Location { get; set; }
     public required State Status { get; set; }
     public required ListingAttributes Attributes { get; set; }
@@ -41,10 +41,10 @@ public class Listing
         Description = request.Description ?? Description;
         Price = request.Price ?? Price;
         Currency = request.Currency ?? Currency;
-        AvailableFrom = request.AvailableFrom ?? AvailableFrom;
+        AvailableSince = request.AvailableSince ?? AvailableSince;
         OwnerContact = request.OwnerContact ?? OwnerContact;
         Area = request.Area ?? Area;
-        AvailableSince = request.AvailableSince ?? AvailableSince;
+        AvailableUntil = request.AvailableUntil ?? AvailableUntil;
         Location = request.Location ?? Location;
         // TODO: Podejrzane: teraz da się tym zasdaniczo dodać datę mimo że jest do tego oddzielny endpoint
         UnavailableDates = request.UnavailableDates ?? UnavailableDates; 
@@ -62,8 +62,8 @@ public class Listing
             Description = Description,
             Price = Price,
             Currency = Currency,
-            AvailableFrom = AvailableFrom,
             AvailableSince = AvailableSince,
+            AvailableUntil = AvailableUntil,
             OwnerContact = OwnerContact,
             Area = Area,
             Location = addressCopy,

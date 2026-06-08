@@ -121,7 +121,7 @@ public class BookingService : IBookingService
             throw new InvalidDatesException("End date can't be before start date");
         }
 
-        if (request.StartDate < listing.AvailableFrom)
+        if (request.StartDate < listing.AvailableSince)
         {
             throw new DateTooEarlyException("Request date is earlier than room is available from");
         }

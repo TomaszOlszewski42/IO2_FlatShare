@@ -44,7 +44,7 @@ describe('BookingRequestPanel', () => {
           listingTitle="Bright room"
           price={1200}
           currency="PLN"
-          availableFrom="2099-01-01"
+          availableSince="2099-01-01"
           onCreateBooking={vi.fn()}
         />,
         container,
@@ -70,7 +70,7 @@ describe('BookingRequestPanel', () => {
           listingTitle="Bright room"
           price={1200}
           currency="PLN"
-          availableFrom="2099-01-01"
+          availableSince="2099-01-01"
           onCreateBooking={handleCreateBooking}
         />,
         container,
@@ -101,7 +101,7 @@ describe('BookingRequestPanel', () => {
           listingTitle="Bright room"
           price={1200}
           currency="PLN"
-          availableFrom="2099-01-01"
+          availableSince="2099-01-01"
           unavailableRanges={[
             {
               since: '2099-03-10',
@@ -157,7 +157,7 @@ describe('BookingRequestPanel', () => {
           listingTitle="Bright room"
           price={1200}
           currency="PLN"
-          availableFrom="2099-01-01"
+          availableSince="2099-01-01"
           onCreateBooking={handleCreateBooking}
         />,
         container,

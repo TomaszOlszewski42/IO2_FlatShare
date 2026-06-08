@@ -51,7 +51,7 @@ function normalizeListingCreateDraft(value: unknown): Partial<ListingFormData> |
     areaSqm: normalizeNumber(value.areaSqm, 0),
     rooms: normalizePositiveInteger(value.rooms, 1),
     bathrooms: normalizePositiveInteger(value.bathrooms, 1),
-    availableFrom: normalizeDate(value.availableFrom),
+    availableSince: normalizeDate(value.availableSince),
     city: normalizeString(value.city),
     district: normalizeString(value.district),
     street: normalizeString(value.street),
