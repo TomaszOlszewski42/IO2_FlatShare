@@ -33,8 +33,8 @@ type ListingDto = {
   currency: string
   status?: ListingStatus | string | number | null
   Status?: ListingStatus | string | number | null
-  availableFrom?: string | null
   availableSince?: string | null
+  availableUntil?: string | null
   ownerContact?: string | null
   contact?: string | null
   contactEmail?: string | null
@@ -266,8 +266,8 @@ function mapListingDtoToListing(item: ListingDto, fallbackOwnerId?: string): Lis
     price: item.price,
     currency: item.currency,
     status: normalizeListingStatus(item.status ?? item.Status),
-    availableFrom: item.availableFrom ?? null,
     availableSince: item.availableSince ?? null,
+    availableUntil: item.availableUntil ?? null,
     ownerContact: ownerContactParts.name ?? item.ownerContact ?? null,
     contact: resolvedContact,
     contactEmail: item.contactEmail ?? null,

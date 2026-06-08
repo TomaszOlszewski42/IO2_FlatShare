@@ -183,7 +183,7 @@ export function ListingDetailsPage({ listingId }: ListingDetailsRouteProps) {
   const parameterRows = [
     { label: 'Price', value: `${formatPrice(listing.price)} / month`, icon: listing.currency },
     { label: 'Area', value: listing.area ? formatArea(listing.area) : '-', icon: 'm2' },
-    { label: 'Available from', value: listing.availableFrom ? formatDate(listing.availableFrom) : '-' },
+    { label: 'Available from', value: listing.availableSince ? formatDate(listing.availableSince) : '-' },
   ]
 
   if (isLandlord || isAdmin) {
@@ -259,7 +259,7 @@ export function ListingDetailsPage({ listingId }: ListingDetailsRouteProps) {
           listingTitle={listing.title}
           price={listing.price}
           currency={listing.currency}
-          availableFrom={listing.availableFrom}
+          availableSince={listing.availableSince}
           unavailableRanges={listing.unavailability ?? []}
           isDisabled={!canRequestBooking}
           disabledReason={bookingDisabledReason}

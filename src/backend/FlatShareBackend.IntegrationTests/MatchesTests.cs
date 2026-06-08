@@ -66,10 +66,10 @@ namespace FlatShareBackend.IntegrationTests
                 Description = "A nice room for matches test",
                 Price = 1000m,
                 Currency = "PLN",
-                AvailableFrom = DateOnly.FromDateTime(DateTime.Now),
+                AvailableSince = DateOnly.FromDateTime(DateTime.Now),
                 OwnerContact = "111-222-333",
                 Area = 18m,
-                AvailableSince = DateOnly.FromDateTime(DateTime.Now.AddDays(30)),
+                AvailableUntil = DateOnly.FromDateTime(DateTime.Now.AddDays(30)),
                 Location = new Address { City = "Warsaw", District = "Mokotów", Street = "Woronicza", AptNumber = "5" },
                 Attributes = new ListingAttributes { PetsAllowed = true, NonSmokingOnly = true, CloseToShops = true, Profile = UserProfile.Student }
             };
@@ -83,10 +83,10 @@ namespace FlatShareBackend.IntegrationTests
                 Description = "Not a good match",
                 Price = 2000m,
                 Currency = "PLN",
-                AvailableFrom = DateOnly.FromDateTime(DateTime.Now),
+                AvailableSince = DateOnly.FromDateTime(DateTime.Now),
                 OwnerContact = "111-222-333",
                 Area = 15m,
-                AvailableSince = DateOnly.FromDateTime(DateTime.Now.AddDays(30)),
+                AvailableUntil = DateOnly.FromDateTime(DateTime.Now.AddDays(30)),
                 Location = new Address { City = "Warsaw", District = "Ursynów", Street = "Roentgena", AptNumber = "1" },
                 Attributes = new ListingAttributes { PetsAllowed = false, NonSmokingOnly = true, CloseToShops = false, Profile = UserProfile.Student }
             };

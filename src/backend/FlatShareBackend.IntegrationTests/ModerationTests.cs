@@ -47,10 +47,10 @@ namespace FlatShareBackend.IntegrationTests
                 Description = "This listing will be hidden",
                 Price = 1000m,
                 Currency = "PLN",
-                AvailableFrom = DateOnly.FromDateTime(DateTime.Now),
+                AvailableSince = DateOnly.FromDateTime(DateTime.Now),
                 OwnerContact = "123",
                 Area = 10m,
-                AvailableSince = DateOnly.FromDateTime(DateTime.Now.AddDays(10)),
+                AvailableUntil = DateOnly.FromDateTime(DateTime.Now.AddDays(10)),
                 Location = new Address { City = "City", District = "Dist", Street = "Str", AptNumber = "1" },
                 Attributes = new ListingAttributes { PetsAllowed = true, NonSmokingOnly = true, CloseToShops = true, Profile = UserProfile.Student }
             };

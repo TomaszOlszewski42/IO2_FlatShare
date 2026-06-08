@@ -30,8 +30,8 @@ export type Listing = {
   price: number
   currency: string
   status?: ListingStatus
-  availableFrom?: string | null
   availableSince?: string | null
+  availableUntil?: string | null
   ownerContact?: string | null
   contact?: string | null
   contactEmail?: string | null

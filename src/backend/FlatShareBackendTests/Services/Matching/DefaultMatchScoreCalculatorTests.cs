@@ -35,8 +35,8 @@ public class DefaultMatchScoreCalculatorTests
             Description = "Test",
             Price = 1400,
             Currency = "PLN",
-            AvailableFrom = DateOnly.FromDateTime(DateTime.Now),
             AvailableSince = DateOnly.FromDateTime(DateTime.Now),
+            AvailableUntil = DateOnly.FromDateTime(DateTime.Now),
             OwnerContact = "123",
             Area = 20,
             Location = new Address { City = "Warszawa", District = "Mokotów", Street = "Test", AptNumber = "1" },
@@ -81,8 +81,8 @@ public class DefaultMatchScoreCalculatorTests
             Description = "Test",
             Price = 99999, // Cena kosmiczna, ale preferencji brakuje
             Currency = "USD",
-            AvailableFrom = DateOnly.FromDateTime(DateTime.Now),
             AvailableSince = DateOnly.FromDateTime(DateTime.Now),
+            AvailableUntil = DateOnly.FromDateTime(DateTime.Now),
             OwnerContact = "123",
             Area = 20,
             Location = new Address { City = "Warszawa", District = "Daleko", Street = "Test", AptNumber = "1" },
@@ -128,8 +128,8 @@ public class DefaultMatchScoreCalculatorTests
             Description = "Test",
             Price = 2000, // Zbyt wysoka (traci 0.4)
             Currency = "PLN",
-            AvailableFrom = DateOnly.FromDateTime(DateTime.Now),
             AvailableSince = DateOnly.FromDateTime(DateTime.Now),
+            AvailableUntil = DateOnly.FromDateTime(DateTime.Now),
             OwnerContact = "123",
             Area = 20,
             Location = new Address { City = "Warszawa", District = "Śródmieście", Street = "Test", AptNumber = "1" }, // Zły dystrykt (traci 0.2)
@@ -174,8 +174,8 @@ public class DefaultMatchScoreCalculatorTests
             Description = "Test",
             Price = 1500, // Dobre (0.4)
             Currency = "PLN",
-            AvailableFrom = DateOnly.FromDateTime(DateTime.Now),
             AvailableSince = DateOnly.FromDateTime(DateTime.Now),
+            AvailableUntil = DateOnly.FromDateTime(DateTime.Now),
             OwnerContact = "123",
             Area = 20,
             Location = new Address { City = "Warszawa", District = "Mokotów", Street = "Test", AptNumber = "1" }, // Dobre (0.2)

@@ -31,10 +31,10 @@ namespace FlatShareBackend.IntegrationTests
         //         Description = "Test description",
         //         Price = 1000m,
         //         Currency = "PLN",
-        //         AvailableFrom = DateOnly.FromDateTime(DateTime.Now),
+        //         AvailableSince = DateOnly.FromDateTime(DateTime.Now),
         //         OwnerContact = "123",
         //         Area = 20m,
-        //         AvailableSince = DateOnly.FromDateTime(DateTime.Now.AddDays(30)),
+        //         AvailableUntil = DateOnly.FromDateTime(DateTime.Now.AddDays(30)),
         //         Location = new Address { City = "Warsaw", District = "Centrum", Street = "Marszałkowska", AptNumber = "1" },
         //         Attributes = new ListingAttributes 
         //         { 
@@ -108,10 +108,10 @@ namespace FlatShareBackend.IntegrationTests
                 Description = "Test description",
                 Price = 800m,
                 Currency = "PLN",
-                AvailableFrom = DateOnly.FromDateTime(DateTime.Now),
+                AvailableSince = DateOnly.FromDateTime(DateTime.Now),
                 OwnerContact = "123",
                 Area = 15m,
-                AvailableSince = DateOnly.FromDateTime(DateTime.Now.AddDays(30)),
+                AvailableUntil = DateOnly.FromDateTime(DateTime.Now.AddDays(30)),
                 Location = new Address { City = "Warsaw", District = "Wola", Street = "Prosta", AptNumber = "2" },
                 Attributes = new ListingAttributes { PetsAllowed = false, NonSmokingOnly = true, CloseToShops = true, Profile = UserProfile.Student }
             };
@@ -161,10 +161,10 @@ namespace FlatShareBackend.IntegrationTests
                 Description = "Test description",
                 Price = 800m,
                 Currency = "PLN",
-                AvailableFrom = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
+                AvailableSince = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
                 OwnerContact = "123",
                 Area = 15m,
-                AvailableSince = DateOnly.FromDateTime(DateTime.Now.AddDays(30)),
+                AvailableUntil = DateOnly.FromDateTime(DateTime.Now.AddDays(30)),
                 Location = new Address { City = "Warsaw", District = "Wola", Street = "Prosta", AptNumber = "4" },
                 Attributes = new ListingAttributes { PetsAllowed = false, NonSmokingOnly = true, CloseToShops = true, Profile = UserProfile.Student }
             };
@@ -208,10 +208,10 @@ namespace FlatShareBackend.IntegrationTests
                 Description = "Test description",
                 Price = 850m,
                 Currency = "PLN",
-                AvailableFrom = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
+                AvailableSince = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
                 OwnerContact = "123",
                 Area = 15m,
-                AvailableSince = DateOnly.FromDateTime(DateTime.Now.AddDays(30)),
+                AvailableUntil = DateOnly.FromDateTime(DateTime.Now.AddDays(30)),
                 Location = new Address { City = "Warsaw", District = "Wola", Street = "Prosta", AptNumber = "5" },
                 Attributes = new ListingAttributes { PetsAllowed = false, NonSmokingOnly = true, CloseToShops = true, Profile = UserProfile.Student }
             };
@@ -256,10 +256,10 @@ namespace FlatShareBackend.IntegrationTests
                 Description = "Test description",
                 Price = 850m,
                 Currency = "PLN",
-                AvailableFrom = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
+                AvailableSince = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
                 OwnerContact = "123",
                 Area = 15m,
-                AvailableSince = DateOnly.FromDateTime(DateTime.Now.AddDays(30)),
+                AvailableUntil = DateOnly.FromDateTime(DateTime.Now.AddDays(30)),
                 Location = new Address { City = "Warsaw", District = "Wola", Street = "Prosta", AptNumber = "6" },
                 Attributes = new ListingAttributes { PetsAllowed = false, NonSmokingOnly = true, CloseToShops = true, Profile = UserProfile.Student }
             };

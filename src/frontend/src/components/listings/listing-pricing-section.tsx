@@ -9,7 +9,7 @@ type ListingPricingSectionProps = {
     areaSqm: number
     rooms: number
     bathrooms: number
-    availableFrom: string
+    availableSince: string
     furnished: boolean
     allowPets: boolean
     allowSmoking: boolean
@@ -20,7 +20,7 @@ type ListingPricingSectionProps = {
       | 'areaSqm'
       | 'rooms'
       | 'bathrooms'
-      | 'availableFrom'
+      | 'availableSince'
       | 'furnished'
       | 'allowPets'
       | 'allowSmoking'
@@ -108,15 +108,15 @@ export function ListingPricingSection({
       </div>
 
       <DateInput
-        id="availableFrom"
-        name="availableFrom"
+        id="availableSince"
+        name="availableSince"
         label="Available from"
         required
-        value={formData.availableFrom}
-        error={errors.availableFrom}
+        value={formData.availableSince}
+        error={errors.availableSince}
         onInput={(e) => {
           const value = (e.currentTarget as HTMLInputElement).value
-          onUpdate('availableFrom', value)
+          onUpdate('availableSince', value)
         }}
       />
 

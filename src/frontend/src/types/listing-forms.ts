@@ -17,10 +17,10 @@ export type CreateListingPayload = {
   description: string
   price: number
   currency: string
-  availableFrom: string
+  availableSince: string
   ownerContact: string
   area: number
-  availableSince: string
+  availableUntil: string
   location: ListingLocationPayload
   attributes: ListingAttributesPayload
 }

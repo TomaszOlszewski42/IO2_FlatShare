@@ -44,7 +44,7 @@ public class ListingRepositoryDB : IListingRepository
             .WhereIf(args.PetsAllowed.HasValue, x => x.Attributes.PetsAllowed == args.PetsAllowed!.Value)
             .WhereIf(args.CloseToShops.HasValue, x => x.Attributes.CloseToShops == args.CloseToShops!.Value)
             .WhereIf(args.Profile.HasValue, x => x.Attributes.Profile == args.Profile)
-            .WhereIf(args.StartDate.HasValue, x => x.AvailableFrom == args.StartDate!.Value);
+            .WhereIf(args.StartDate.HasValue, x => x.AvailableSince == args.StartDate!.Value);
 
         return query;
     }

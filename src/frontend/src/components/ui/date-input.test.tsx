@@ -17,8 +17,8 @@ describe('DateInput', () => {
     act(() => {
       render(
         <DateInput
-          id="availableFrom"
-          name="availableFrom"
+          id="availableSince"
+          name="availableSince"
           label="Available from"
           value="2025-03-01"
           onInput={handleInput}
@@ -32,8 +32,8 @@ describe('DateInput', () => {
 
     expect(legend?.textContent).toBe('Available from')
     expect(input).not.toBeNull()
-    expect(input.id).toBe('availableFrom')
-    expect(input.name).toBe('availableFrom')
+    expect(input.id).toBe('availableSince')
+    expect(input.name).toBe('availableSince')
     expect(input.type).toBe('date')
     expect(input.value).toBe('2025-03-01')
     expect(input.classList.contains('input')).toBe(true)
@@ -48,8 +48,8 @@ describe('DateInput', () => {
     act(() => {
       render(
         <DateInput
-          id="availableFrom"
-          name="availableFrom"
+          id="availableSince"
+          name="availableSince"
           label="Available from"
           value="2025-03-01"
           min="2025-01-01"
@@ -100,8 +100,8 @@ describe('DateInput', () => {
     act(() => {
       render(
         <DateInput
-          id="availableFrom"
-          name="availableFrom"
+          id="availableSince"
+          name="availableSince"
           label="Available from"
           value=""
           onInput={handleInput}
@@ -128,8 +128,8 @@ describe('DateInput', () => {
     act(() => {
       render(
         <DateInput
-          id="availableFrom"
-          name="availableFrom"
+          id="availableSince"
+          name="availableSince"
           label="Available from"
           value=""
           error="Availability date is required"
@@ -144,7 +144,7 @@ describe('DateInput', () => {
 
     expect(input.classList.contains('input-error')).toBe(true)
     expect(input.getAttribute('aria-invalid')).toBe('true')
-    expect(input.getAttribute('aria-describedby')).toBe('availableFrom-error')
+    expect(input.getAttribute('aria-describedby')).toBe('availableSince-error')
     expect(error?.textContent).toBe('Availability date is required')
   })
 
@@ -156,8 +156,8 @@ describe('DateInput', () => {
     act(() => {
       render(
         <DateInput
-          id="availableFrom"
-          name="availableFrom"
+          id="availableSince"
+          name="availableSince"
           label="Available from"
           value=""
           errors={['Data jest wymagana', 'Date cannot be in the past']}

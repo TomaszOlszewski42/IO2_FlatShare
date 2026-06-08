@@ -19,7 +19,7 @@ export type ListingFormData = {
   areaSqm: number
   rooms: number
   bathrooms: number
-  availableFrom: string
+  availableSince: string
   city: string
   district?: string
   street?: string
@@ -55,7 +55,7 @@ const FIELD_NAME_ALIASES: Record<keyof ListingFormData, string[]> = {
   areaSqm: ['area', 'areaSqm'],
   rooms: ['rooms'],
   bathrooms: ['bathrooms'],
-  availableFrom: ['availableFrom', 'availableSince'],
+  availableSince: ['availableSince', 'availableUntil'],
   city: ['location.city', 'city'],
   district: ['location.district', 'district'],
   street: ['location.street', 'street'],
@@ -85,7 +85,7 @@ export function createInitialListingFormData(): ListingFormData {
     areaSqm: 0,
     rooms: 1,
     bathrooms: 1,
-    availableFrom: new Date().toISOString().split('T')[0],
+    availableSince: new Date().toISOString().split('T')[0],
     city: '',
     district: '',
     street: '',
@@ -221,7 +221,7 @@ export function ListingCreateForm({
       areaSqm: getInputError('areaSqm'),
       rooms: getInputError('rooms'),
       bathrooms: getInputError('bathrooms'),
-      availableFrom: getInputError('availableFrom'),
+      availableSince: getInputError('availableSince'),
       city: getInputError('city'),
       district: getInputError('district'),
       street: getInputError('street'),

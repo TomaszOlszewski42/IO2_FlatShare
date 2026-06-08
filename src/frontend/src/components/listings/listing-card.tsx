@@ -33,12 +33,12 @@ function formatBathrooms(value?: number | null): string {
 }
 
 function formatAvailability(listing: Listing): string {
-  if (listing.availableFrom) {
-    return `Available from ${formatDate(listing.availableFrom)}`
+  if (listing.availableSince) {
+    return `Available from ${formatDate(listing.availableSince)}`
   }
 
-  if (listing.availableSince) {
-    return `Available since ${formatDate(listing.availableSince)}`
+  if (listing.availableUntil) {
+    return `Available since ${formatDate(listing.availableUntil)}`
   }
 
   return 'Availability not specified'

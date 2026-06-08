@@ -29,10 +29,10 @@ namespace FlatShareBackend.IntegrationTests
                 Description = "A nice room to review",
                 Price = 900m,
                 Currency = "PLN",
-                AvailableFrom = DateOnly.FromDateTime(DateTime.Now),
+                AvailableSince = DateOnly.FromDateTime(DateTime.Now),
                 OwnerContact = "123",
                 Area = 16m,
-                AvailableSince = DateOnly.FromDateTime(DateTime.Now.AddDays(30)),
+                AvailableUntil = DateOnly.FromDateTime(DateTime.Now.AddDays(30)),
                 Location = new Address { City = "Warsaw", District = "Wola", Street = "Prosta", AptNumber = "3" },
                 Attributes = new ListingAttributes { PetsAllowed = true, NonSmokingOnly = true, CloseToShops = true, Profile = UserProfile.Student }
             };

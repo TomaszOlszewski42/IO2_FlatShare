@@ -59,10 +59,10 @@ export function ListingCreatePage(_: RoutableProps) {
       description: formData.description.trim(),
       price: formData.pricePerMonth,
       currency: 'PLN',
-      availableFrom: formData.availableFrom,
+      availableSince: formData.availableSince,
       ownerContact: buildOwnerContactValue(formData.contact, formData.phone),
       area: formData.areaSqm,
-      availableSince: formData.availableFrom,
+      availableUntil: formData.availableSince,
       location: {
         city: formData.city.trim(),
         district: trimToEmpty(formData.district),

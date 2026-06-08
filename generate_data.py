@@ -77,10 +77,10 @@ def create_listing(token, owner_email):
         "description": f"Bardzo {adj.lower()} {noun} zlokalizowane w {city}, dzielnica {district}. Blisko komunikacji miejskiej. Zapraszam do kontaktu.",
         "price": price,
         "currency": "PLN",
-        "availableFrom": available_from,
+        "availableSince": available_from,
         "ownerContact": f"{owner_email} tel. {random.randint(500000000, 799999999)}",
         "area": area,
-        "availableSince": available_since,
+        "availableUntil": available_since,
         "location": {
             "city": city,
             "district": district,
@@ -269,7 +269,7 @@ def main():
         user1_token = login_user("User1@User", "User1234")
         if user1_token:
             first_listing = approved_listings[0]
-            available_from = first_listing.get("availableFrom") or first_listing.get("AvailableFrom")
+            available_from = first_listing.get("availableSince") or first_listing.get("AvailableSince")
 
             if available_from:
                 available_from_date = datetime.strptime(str(available_from)[:10], "%Y-%m-%d")
@@ -279,7 +279,7 @@ def main():
                 if not create_booking(user1_token, first_listing["id"], booking_start, booking_end):
                     success = False
             else:
-                print(f"Skipping booking seed because listing {first_listing['id']} has no availableFrom value")
+                print(f"Skipping booking seed because listing {first_listing['id']} has no availableSince value")
                 success = False
         else:
             print("Failed to login as User1 for booking seed")

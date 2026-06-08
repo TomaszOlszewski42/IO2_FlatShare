@@ -68,10 +68,10 @@ namespace FlatShareBackend.Migrations
                     b.Property<decimal>("Area")
                         .HasColumnType("numeric");
 
-                    b.Property<DateOnly>("AvailableFrom")
+                    b.Property<DateOnly>("AvailableSince")
                         .HasColumnType("date");
 
-                    b.Property<DateOnly>("AvailableSince")
+                    b.Property<DateOnly>("AvailableUntil")
                         .HasColumnType("date");
 
                     b.Property<string>("Currency")
