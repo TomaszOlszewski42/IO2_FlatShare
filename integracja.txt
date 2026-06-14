@@ -1,0 +1,15 @@
+0. Z jakiegoś powodu czasami przy wejściu na stronę widać "Backend unavailable" i wystarczy kliknąć "logout" aby wszystko się naprawiło. Zdarza się głównie po przepięciu backendu, więc być może problem z cachowaniem.
+1. Rejestracja - działa
+2. Logowanie - działa
+3. Wyświetlanie listingów działa
+4. Niezgodność przy tworzeniu listngów, niektóre elementy uznane przez nas za nieobowiązkowe są wymagane przez inną grupę. Jak poda się wszystko to działa.
+5. Edycja listingów - działa
+6. Wysyłanie zgłoszeń - działa
+7. Wyświetlanie bookingów - internal server error, z powodu braku endpointu /api/bookings/me - nie został on nigdy zmergowany do dokumentacji
+8. Panel administratora w naszym frontendzie wykorzystywał endpoint, który w backendzie kolegów jest dostępny tylko dla tenantów
+9. Przy pobieraniu reportów pojawia się error: items.map is not a function; wynika to z różnicy w strukturze klasy ReportDto - nie była ona dokładnie opisana w dokumentacji
+10. Dodawanie okresów niedostępności: struktura żądania jest taka sama a mimo to zwracany jest error o brakujących polach
+11. W związku z brakiem działania panelu administratora nie jest możliwe opublikowanie listingu
+12. Tenant poprawnie widzi oublikowane listing (udało się to sprawdzić przez zmianę statusu w bazie danych)
+13. Brak możliwości dodawania opinii - brak endpointu (zapomnieliśmy zrobić pull requsta do dokumentacji)
+14. Wysłanie prośby o booking działa - nie da się sprawdzić reszty procesu ze względu na nie działanie panelu Bookingów
